@@ -1900,7 +1900,7 @@
       <div class="join-explain">
         가고 싶은 골프 일정을 올리면 멤버들이 <strong>참가</strong>를 누를 수 있어요.
         최대 인원이 넘으면 더 이상 참가할 수 없고, 글 작성자는 최소 인원이 모인 뒤 <strong>확정</strong>할 수 있습니다.
-        확정하면 자동으로 예정 라운딩에 등록됩니다.
+        확정하면 자동으로 예정 라운딩으로 바뀝니다.
       </div>
 
       <div class="join-form-grid">
@@ -2686,12 +2686,25 @@ function startRealtimeListeners() {
   onSnapshot(
     collection(db, "rounds"),
     snapshot => {
-      rounds = snapshot.docs.map(item => ({
+      const allRoundDocs = snapshot.docs.map(item => ({
         id: item.id,
         ...item.data()
       }));
 
+      // 별도 Firestore 컬렉션을 만들지 않고 기존 rounds 컬렉션 안에서
+      // 일반 라운딩과 조인 모집글을 구분한다.
+      joinPosts = allRoundDocs.filter(item => item.recordType === "join");
+      rounds = allRoundDocs.filter(item => item.recordType !== "join");
+
       rounds.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+      joinPosts.sort((a,b) => {
+        const aClosed = a.status === "confirmed" || a.status === "cancelled";
+        const bClosed = b.status === "confirmed" || b.status === "cancelled";
+        if (aClosed !== bClosed) return aClosed ? 1 : -1;
+        return String(a.date || "").localeCompare(String(b.date || "")) ||
+               (b.createdAt || 0) - (a.createdAt || 0);
+      });
 
       const roundCountBox = document.getElementById("roundCount");
       if (roundCountBox) roundCountBox.textContent = rounds.length;
@@ -2717,29 +2730,6 @@ function startRealtimeListeners() {
       if (scoreCountBox) scoreCountBox.textContent = scores.length;
 
       renderAll();
-      setConnected();
-    },
-    error => setError(error)
-  );
-
-
-  onSnapshot(
-    collection(db, "joinPosts"),
-    snapshot => {
-      joinPosts = snapshot.docs.map(item => ({
-        id: item.id,
-        ...item.data()
-      }));
-
-      joinPosts.sort((a,b) => {
-        const aClosed = a.status === "confirmed" || a.status === "cancelled";
-        const bClosed = b.status === "confirmed" || b.status === "cancelled";
-        if (aClosed !== bClosed) return aClosed ? 1 : -1;
-        return String(a.date || "").localeCompare(String(b.date || "")) ||
-               (b.createdAt || 0) - (a.createdAt || 0);
-      });
-
-      safeRender("조인", renderJoinPosts);
       setConnected();
     },
     error => setError(error)
@@ -4184,7 +4174,8 @@ document.getElementById("addJoinPostBtn")?.addEventListener("click", async () =>
   const creatorName = getMemberName(creatorId);
 
   try {
-    await addDoc(collection(db, "joinPosts"), {
+    await addDoc(collection(db, "rounds"), {
+      recordType: "join",
       creatorMemberId: creatorId,
       creatorName,
       course,
@@ -4213,7 +4204,7 @@ document.getElementById("addJoinPostBtn")?.addEventListener("click", async () =>
 
     alert("📣 모집글 올렸어!");
   } catch(error) {
-    alert("모집글 등록 실패");
+    alert("모집글 등록 실패. 화면 위쪽 오류 문구를 확인해줘.");
     setError(error);
   }
 });
@@ -4221,7 +4212,7 @@ document.getElementById("addJoinPostBtn")?.addEventListener("click", async () =>
 async function joinPost(postId) {
   if (!isApproved()) return;
 
-  const ref = doc(db, "joinPosts", postId);
+  const ref = doc(db, "rounds", postId);
   const me = ownMemberId();
 
   try {
@@ -4252,7 +4243,7 @@ async function joinPost(postId) {
 async function leaveJoinPost(postId) {
   if (!isApproved()) return;
 
-  const ref = doc(db, "joinPosts", postId);
+  const ref = doc(db, "rounds", postId);
   const me = ownMemberId();
 
   try {
@@ -4283,7 +4274,7 @@ async function cancelJoinPost(postId) {
   if (!confirm("이 모집을 취소할까?")) return;
 
   try {
-    await updateDoc(doc(db, "joinPosts", postId), {
+    await updateDoc(doc(db, "rounds", postId), {
       status: "cancelled",
       cancelledAt: Date.now()
     });
@@ -4295,8 +4286,7 @@ async function cancelJoinPost(postId) {
 
 async function confirmJoinPost(postId) {
   const me = ownMemberId();
-  const postRef = doc(db, "joinPosts", postId);
-  const roundRef = doc(collection(db, "rounds"));
+  const postRef = doc(db, "rounds", postId);
 
   try {
     await runTransaction(db, async transaction => {
@@ -4322,7 +4312,10 @@ async function confirmJoinPost(postId) {
         throw new Error("최대 인원을 초과해서 확정할 수 없어.");
       }
 
-      transaction.set(roundRef, {
+      // 모집글 자체를 일반 라운딩으로 변환한다.
+      // 이렇게 하면 기존 rounds 권한만 사용하므로 별도 Firestore 규칙이 필요 없다.
+      transaction.update(postRef, {
+        recordType: "round",
         date: post.date,
         time: post.time || "",
         course: post.course,
@@ -4337,14 +4330,9 @@ async function confirmJoinPost(postId) {
           : "🤝 조인에서 확정된 라운딩",
         attendeeIds: participantIds,
         teams: [],
-        createdAt: Date.now(),
-        sourceJoinPostId: postId
-      });
-
-      transaction.update(postRef, {
         status: "confirmed",
         confirmedAt: Date.now(),
-        confirmedRoundId: roundRef.id
+        sourceJoinPostId: postId
       });
     });
 
