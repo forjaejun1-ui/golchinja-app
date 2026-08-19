@@ -7,12 +7,9 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
   <title>골친자들 골치아픔 ⛳</title>
+
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: Arial, "Noto Sans KR", sans-serif;
@@ -28,15 +25,8 @@
       text-align: center;
     }
 
-    header h1 {
-      font-size: 24px;
-      margin-bottom: 6px;
-    }
-
-    header p {
-      font-size: 13px;
-      color: #d1d5db;
-    }
+    header h1 { font-size: 24px; margin-bottom: 6px; }
+    header p { font-size: 13px; color: #d1d5db; }
 
     .status {
       display: inline-block;
@@ -47,13 +37,8 @@
       font-size: 11px;
     }
 
-    .status.online {
-      background: #166534;
-    }
-
-    .status.error {
-      background: #991b1b;
-    }
+    .status.online { background: #166534; }
+    .status.error { background: #991b1b; }
 
     .container {
       max-width: 760px;
@@ -69,10 +54,7 @@
       box-shadow: 0 3px 12px rgba(0,0,0,.06);
     }
 
-    .card h2 {
-      font-size: 18px;
-      margin-bottom: 15px;
-    }
+    .card h2 { font-size: 18px; margin-bottom: 15px; }
 
     .stats {
       display: grid;
@@ -87,20 +69,10 @@
       text-align: center;
     }
 
-    .stat strong {
-      display: block;
-      font-size: 20px;
-      margin-bottom: 4px;
-    }
+    .stat strong { display: block; font-size: 20px; margin-bottom: 4px; }
+    .stat span { font-size: 12px; color: #6b7280; }
 
-    .stat span {
-      font-size: 12px;
-      color: #6b7280;
-    }
-
-    input,
-    select,
-    textarea {
+    input, select, textarea {
       width: 100%;
       padding: 12px;
       margin-top: 7px;
@@ -111,10 +83,14 @@
       background: white;
     }
 
-    textarea {
-      resize: vertical;
-      min-height: 80px;
+    input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+      accent-color: #16a34a;
+      transform: scale(1.15);
     }
+
+    textarea { resize: vertical; min-height: 80px; }
 
     button {
       width: 100%;
@@ -126,15 +102,8 @@
       cursor: pointer;
     }
 
-    .primary {
-      background: #111827;
-      color: white;
-    }
-
-    .green {
-      background: #16a34a;
-      color: white;
-    }
+    .primary { background: #111827; color: white; }
+    .green { background: #16a34a; color: white; }
 
     .delete-btn {
       width: auto;
@@ -143,6 +112,7 @@
       padding: 7px 10px;
       font-size: 12px;
       margin-top: 8px;
+      margin-right: 5px;
     }
 
     .edit-btn {
@@ -152,6 +122,25 @@
       padding: 7px 10px;
       font-size: 12px;
       margin-top: 8px;
+      margin-right: 5px;
+    }
+
+    .team-btn {
+      width: auto;
+      background: #ede9fe;
+      color: #5b21b6;
+      padding: 7px 10px;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    .mini-btn {
+      width: auto;
+      padding: 7px 10px;
+      font-size: 12px;
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
     }
 
     .list-item {
@@ -159,14 +148,13 @@
       padding: 13px 0;
     }
 
-    .list-item:last-child {
-      border-bottom: 0;
-    }
+    .list-item:last-child { border-bottom: 0; }
 
     .small {
       font-size: 12px;
       color: #6b7280;
       margin-top: 4px;
+      line-height: 1.5;
     }
 
     .rank-item {
@@ -177,10 +165,7 @@
       border-bottom: 1px solid #eee;
     }
 
-    .rank-num {
-      font-weight: bold;
-      margin-right: 10px;
-    }
+    .rank-num { font-weight: bold; margin-right: 10px; }
 
     .rank-first {
       background: #fef9c3;
@@ -202,17 +187,62 @@
       border: 1px solid #e5e7eb;
     }
 
+    .attendance-box {
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 12px;
+      margin: 5px 0 12px;
+    }
+
+    .attendance-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .attendance-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .attendance-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px;
+      border-radius: 9px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      font-size: 13px;
+      cursor: pointer;
+      min-width: 0;
+    }
+
+    .attendance-item span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .attendance-count {
+      font-size: 13px;
+      color: #166534;
+      font-weight: bold;
+    }
+
     .team {
       background: #f9fafb;
       margin-bottom: 10px;
       padding: 12px;
       border-radius: 10px;
+      border: 1px solid #e5e7eb;
     }
 
-    .team h3 {
-      margin-bottom: 7px;
-      font-size: 15px;
-    }
+    .team h3 { margin-bottom: 7px; font-size: 15px; }
 
     .badge {
       display: inline-block;
@@ -224,24 +254,89 @@
       font-weight: bold;
     }
 
-    .money-plus {
-      color: #16a34a;
-      font-weight: bold;
-      margin-top: 5px;
+    .badge.gray {
+      background: #f3f4f6;
+      color: #4b5563;
     }
 
-    .loading {
-      text-align: center;
-      padding: 20px;
-      color: #6b7280;
+    .money-plus { color: #16a34a; font-weight: bold; margin-top: 5px; }
+
+    .golf-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 13px;
+      margin-bottom: 10px;
+      background: #f9fafb;
     }
 
-    .page {
-      display: none;
+    .golf-card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
     }
 
-    .page.active {
+    .golf-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .golf-link {
       display: block;
+      text-decoration: none;
+      text-align: center;
+      border-radius: 10px;
+      padding: 10px 8px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .naver-map-btn {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .course-map-btn {
+      background: #e0f2fe;
+      color: #075985;
+    }
+
+    .loading { text-align: center; padding: 20px; color: #6b7280; }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal.show { display: flex; }
+
+    .modal-card {
+      width: 100%;
+      max-width: 600px;
+      max-height: 85vh;
+      overflow: auto;
+      background: white;
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
     }
 
     nav {
@@ -262,7 +357,7 @@
       color: #6b7280;
       border-radius: 0;
       padding: 6px;
-      font-size: 11px;
+      font-size: 10px;
     }
 
     nav button.active {
@@ -270,20 +365,16 @@
       font-weight: bold;
     }
 
-    .nav-icon {
-      display: block;
-      font-size: 21px;
-      margin-bottom: 2px;
+    .nav-icon { display: block; font-size: 19px; margin-bottom: 2px; }
+
+    @media(max-width:600px) {
+      .attendance-grid { grid-template-columns: repeat(2,1fr); }
     }
 
     @media(max-width:450px) {
-      header h1 {
-        font-size: 21px;
-      }
-
-      .container {
-        padding: 10px;
-      }
+      header h1 { font-size: 21px; }
+      .container { padding: 10px; }
+      .member-grid { grid-template-columns: repeat(2,1fr); }
     }
   </style>
 </head>
@@ -293,132 +384,93 @@
 <header>
   <h1>골친자들 골치아픔 ⛳</h1>
   <p>15명 전용 골프모임 · 시즌 2026</p>
-  <div id="connectionStatus" class="status">
-    🔄 Firebase 연결 중...
-  </div>
+  <div id="connectionStatus" class="status">🔄 Firebase 연결 중...</div>
 </header>
 
 <div class="container">
 
-  <!-- 홈 -->
   <section id="home" class="page active">
-
     <div class="card">
       <h2>🏆 시즌 현황</h2>
-
       <div class="stats">
-        <div class="stat">
-          <strong id="memberCount">0</strong>
-          <span>멤버</span>
-        </div>
-
-        <div class="stat">
-          <strong id="roundCount">0</strong>
-          <span>라운딩</span>
-        </div>
-
-        <div class="stat">
-          <strong id="scoreCount">0</strong>
-          <span>스코어 기록</span>
-        </div>
+        <div class="stat"><strong id="memberCount">0</strong><span>멤버</span></div>
+        <div class="stat"><strong id="roundCount">0</strong><span>라운딩</span></div>
+        <div class="stat"><strong id="scoreCount">0</strong><span>스코어 기록</span></div>
       </div>
     </div>
 
     <div class="card">
       <h2>🏅 시즌 랭킹</h2>
-      <div id="ranking">
-        <div class="loading">불러오는 중...</div>
-      </div>
+      <div id="ranking"><div class="loading">불러오는 중...</div></div>
     </div>
 
     <div class="card">
       <h2>⛳ 다음 라운딩</h2>
       <div id="nextRound">불러오는 중...</div>
     </div>
-
   </section>
 
 
-  <!-- 라운딩 -->
   <section id="round" class="page">
-
     <div class="card">
       <h2>📅 라운딩 등록</h2>
 
       <input id="roundDate" type="date">
       <input id="roundTime" type="time">
+      <input id="roundCourse" type="text" list="golfCourseList" autocomplete="off" placeholder="골프장 검색 예) 레이크, 선산, 안성">
+      <datalist id="golfCourseList"></datalist>
+      <div class="small" style="margin-top:-5px;margin-bottom:10px;">협회 회원사 209개 자동완성 + 직접 입력 가능</div>
+      <textarea id="roundMemo" placeholder="메모 / 회비 / 집결시간 등"></textarea>
 
-      <input
-        id="roundCourse"
-        type="text"
-        placeholder="골프장 이름"
-      >
+      <div class="attendance-box">
+        <div class="attendance-head">
+          <div>
+            <strong>🙋 참석자 선택</strong>
+            <div id="newAttendanceCount" class="attendance-count">0명 참석</div>
+          </div>
+          <button id="toggleNewAttendanceBtn" type="button" class="mini-btn">전체 선택</button>
+        </div>
 
-      <textarea
-        id="roundMemo"
-        placeholder="메모 / 회비 / 집결시간 등"
-      ></textarea>
+        <div id="newAttendanceGrid" class="attendance-grid"></div>
+      </div>
 
-      <button id="addRoundBtn" class="green">
-        라운딩 저장
-      </button>
+      <button id="addRoundBtn" class="green">라운딩 저장</button>
     </div>
 
-    <div class="card">
-      <h2>🎲 랜덤 조편성</h2>
 
-      <p class="small" style="margin-bottom:12px;">
-        15명 기준 4명 · 4명 · 4명 · 3명
+    <div class="card">
+      <h2>🎲 참석자 자동 조편성</h2>
+
+      <select id="teamRoundSelect">
+        <option value="">라운딩을 선택하세요</option>
+      </select>
+
+      <p id="teamRoundInfo" class="small" style="margin-bottom:12px;">
+        라운딩을 선택하면 참석 인원으로 자동 조편성합니다.
       </p>
 
-      <button id="makeTeamsBtn" class="primary">
-        15명 랜덤 조편성
-      </button>
+      <button id="makeTeamsBtn" class="primary">랜덤 조편성 + 저장</button>
 
       <div id="teamResult" style="margin-top:15px;"></div>
     </div>
 
+
     <div class="card">
       <h2>📋 라운딩 목록</h2>
-      <div id="roundList">
-        <div class="loading">불러오는 중...</div>
-      </div>
+      <div id="roundList"><div class="loading">불러오는 중...</div></div>
     </div>
-
   </section>
 
 
-  <!-- 스코어 -->
   <section id="score" class="page">
-
     <div class="card">
       <h2>✍️ 스코어 입력</h2>
 
       <select id="scoreMember"></select>
-
       <input id="scoreDate" type="date">
-
-      <input
-        id="scoreCourse"
-        type="text"
-        placeholder="골프장"
-      >
-
-      <input
-        id="scoreValue"
-        type="number"
-        min="50"
-        max="200"
-        placeholder="타수"
-      >
-
-      <input
-        id="birdies"
-        type="number"
-        min="0"
-        value="0"
-        placeholder="버디 개수"
-      >
+      <input id="scoreCourse" type="text" placeholder="골프장">
+      <input id="scoreValue" type="number" min="50" max="200" placeholder="타수">
+      <input id="birdies" type="number" min="0" value="0" placeholder="버디 개수">
 
       <select id="near">
         <option value="0">니어리스트 없음</option>
@@ -430,40 +482,54 @@
         <option value="1">롱기스트 💣</option>
       </select>
 
-      <button id="addScoreBtn" class="green">
-        기록 저장
-      </button>
+      <button id="addScoreBtn" class="green">기록 저장</button>
     </div>
 
     <div class="card">
       <h2>📊 스코어 기록</h2>
-      <div id="scoreList">
-        <div class="loading">불러오는 중...</div>
-      </div>
+      <div id="scoreList"><div class="loading">불러오는 중...</div></div>
     </div>
-
   </section>
 
 
-  <!-- 멤버 -->
-  <section id="member" class="page">
 
+  <section id="golf" class="page">
     <div class="card">
-      <h2>👥 우리 멤버</h2>
-
-      <p class="small" style="margin-bottom:15px;">
-        이름 수정 시 모든 회원 화면에 같이 반영됩니다.
+      <h2>🗺️ 전국 골프장</h2>
+      <p class="small" style="margin-bottom:12px;">
+        골프장명을 검색해서 네이버 지도·18홀 코스맵 검색을 바로 열 수 있어.
       </p>
 
-      <div id="memberGrid" class="member-grid"></div>
-    </div>
+      <input id="golfSearch" type="search" placeholder="골프장 검색 예) 레이크우드, 선산, 제주">
 
+      <select id="golfRegionFilter">
+        <option value="">전체 지역</option>
+        <option value="강원">강원</option>
+        <option value="경기북부">경기북부</option>
+        <option value="경기동부">경기동부</option>
+        <option value="경기남부">경기남부</option>
+        <option value="충청">충청</option>
+        <option value="호남">호남</option>
+        <option value="영남">영남</option>
+        <option value="제주">제주</option>
+      </select>
+
+      <div id="golfResultCount" class="small" style="margin-bottom:10px;"></div>
+      <div id="golfCourseCards"></div>
+    </div>
   </section>
 
 
-  <!-- 회비 -->
-  <section id="money" class="page">
+  <section id="member" class="page">
+    <div class="card">
+      <h2>👥 우리 멤버</h2>
+      <p class="small" style="margin-bottom:15px;">이름 수정 시 모든 회원 화면에 같이 반영됩니다.</p>
+      <div id="memberGrid" class="member-grid"></div>
+    </div>
+  </section>
 
+
+  <section id="money" class="page">
     <div class="card">
       <h2>💰 회비 · 벌금 · 찬조</h2>
 
@@ -475,79 +541,62 @@
         <option value="찬조">찬조</option>
       </select>
 
-      <input
-        id="moneyAmount"
-        type="number"
-        placeholder="금액"
-      >
+      <input id="moneyAmount" type="number" placeholder="금액">
+      <input id="moneyMemo" type="text" placeholder="메모 예) 지각 벌금">
 
-      <input
-        id="moneyMemo"
-        type="text"
-        placeholder="메모 예) 지각 벌금"
-      >
-
-      <button id="addMoneyBtn" class="green">
-        정산 저장
-      </button>
+      <button id="addMoneyBtn" class="green">정산 저장</button>
     </div>
 
     <div class="card">
       <h2>💵 총 정산</h2>
-
-      <div
-        id="moneySummary"
-        style="font-size:22px;font-weight:bold;"
-      >
-        0원
-      </div>
+      <div id="moneySummary" style="font-size:22px;font-weight:bold;">0원</div>
     </div>
 
     <div class="card">
       <h2>🧾 정산 내역</h2>
-      <div id="moneyList">
-        <div class="loading">불러오는 중...</div>
-      </div>
+      <div id="moneyList"><div class="loading">불러오는 중...</div></div>
     </div>
-
   </section>
 
 </div>
 
 
+<div id="attendanceModal" class="modal">
+  <div class="modal-card">
+    <h2 style="margin-bottom:6px;">🙋 참석자 수정</h2>
+    <div id="modalRoundTitle" class="small" style="margin-bottom:12px;"></div>
+
+    <div class="attendance-box">
+      <div class="attendance-head">
+        <div id="modalAttendanceCount" class="attendance-count">0명 참석</div>
+        <button id="toggleModalAttendanceBtn" type="button" class="mini-btn">전체 선택</button>
+      </div>
+
+      <div id="modalAttendanceGrid" class="attendance-grid"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button id="closeAttendanceModalBtn" type="button" class="primary">취소</button>
+      <button id="saveAttendanceBtn" type="button" class="green">저장</button>
+    </div>
+  </div>
+</div>
+
+
 <nav>
-  <button class="active" data-page="home">
-    <span class="nav-icon">🏠</span>
-    홈
-  </button>
-
-  <button data-page="round">
-    <span class="nav-icon">⛳</span>
-    라운딩
-  </button>
-
-  <button data-page="score">
-    <span class="nav-icon">📊</span>
-    스코어
-  </button>
-
-  <button data-page="member">
-    <span class="nav-icon">👥</span>
-    멤버
-  </button>
-
-  <button data-page="money">
-    <span class="nav-icon">💰</span>
-    회비
-  </button>
+  <button class="active" data-page="home"><span class="nav-icon">🏠</span>홈</button>
+  <button data-page="round"><span class="nav-icon">⛳</span>라운딩</button>
+  <button data-page="score"><span class="nav-icon">📊</span>스코어</button>
+  <button data-page="golf"><span class="nav-icon">🗺️</span>골프장</button>
+  <button data-page="member"><span class="nav-icon">👥</span>멤버</button>
+  <button data-page="money"><span class="nav-icon">💰</span>회비</button>
 </nav>
 
 
 <script type="module">
 
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
 import {
   getFirestore,
@@ -559,12 +608,9 @@ import {
   deleteDoc,
   getDocs,
   onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-
-/* ================================
-   Firebase 연결 설정
-================================ */
 
 const firebaseConfig = {
   apiKey: "AIzaSyDckMlm9r_d5sYguAS5TN8brcuoUn98kKU",
@@ -575,499 +621,744 @@ const firebaseConfig = {
   appId: "1:342049765213:web:3863996a94b0ba260ddab4"
 };
 
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-
-/* ================================
-   데이터
-================================ */
 
 let members = [];
 let rounds = [];
 let scores = [];
 let money = [];
 
+let editingRoundId = null;
 
-/* ================================
-   기본 멤버 15명
-================================ */
 
 const defaultMembers = [
-  "재준",
-  "멤버2",
-  "멤버3",
-  "멤버4",
-  "멤버5",
-  "멤버6",
-  "멤버7",
-  "멤버8",
-  "멤버9",
-  "멤버10",
-  "멤버11",
-  "멤버12",
-  "멤버13",
-  "멤버14",
-  "멤버15"
+  "재준","멤버2","멤버3","멤버4","멤버5",
+  "멤버6","멤버7","멤버8","멤버9","멤버10",
+  "멤버11","멤버12","멤버13","멤버14","멤버15"
 ];
 
 
-/* ================================
-   연결 상태
-================================ */
+const golfCourses = [
+  { region: "강원", name: "파인리즈" },
+  { region: "강원", name: "라비에벨 듄스" },
+  { region: "강원", name: "힐드로사이" },
+  { region: "강원", name: "휘슬링락" },
+  { region: "강원", name: "휘닉스평창" },
+  { region: "강원", name: "하이원" },
+  { region: "강원", name: "플라자CC 설악" },
+  { region: "강원", name: "카스카디아" },
+  { region: "강원", name: "제이드팰리스" },
+  { region: "강원", name: "웰리힐리" },
+  { region: "강원", name: "용평" },
+  { region: "강원", name: "올데이 옥스필드" },
+  { region: "강원", name: "오크힐스" },
+  { region: "강원", name: "오크밸리" },
+  { region: "강원", name: "엘리시안강촌" },
+  { region: "강원", name: "알펜시아" },
+  { region: "강원", name: "소노펠리체" },
+  { region: "강원", name: "센추리21" },
+  { region: "강원", name: "세이지우드 홍천" },
+  { region: "강원", name: "설해원" },
+  { region: "강원", name: "샌드파인" },
+  { region: "강원", name: "블랙밸리" },
+  { region: "강원", name: "벨라45오너스클럽" },
+  { region: "강원", name: "베어크리크 춘천" },
+  { region: "강원", name: "라비에벨 올드" },
+  { region: "강원", name: "라데나" },
+  { region: "강원", name: "동원썬밸리" },
+  { region: "경기북부", name: "샴발라" },
+  { region: "경기북부", name: "비전힐스" },
+  { region: "경기북부", name: "해비치(서울)" },
+  { region: "경기북부", name: "한양" },
+  { region: "경기북부", name: "프리스틴밸리" },
+  { region: "경기북부", name: "푸른솔포천" },
+  { region: "경기북부", name: "포천아도니스" },
+  { region: "경기북부", name: "티클라우드" },
+  { region: "경기북부", name: "크리스탈밸리" },
+  { region: "경기북부", name: "잭니클라우스" },
+  { region: "경기북부", name: "일동레이크" },
+  { region: "경기북부", name: "인천국제" },
+  { region: "경기북부", name: "양주" },
+  { region: "경기북부", name: "아난티클럽서울" },
+  { region: "경기북부", name: "썬힐" },
+  { region: "경기북부", name: "송추" },
+  { region: "경기북부", name: "서원밸리" },
+  { region: "경기북부", name: "서서울" },
+  { region: "경기북부", name: "베뉴지" },
+  { region: "경기북부", name: "몽베르" },
+  { region: "경기북부", name: "마이다스밸리 청평" },
+  { region: "경기북부", name: "레이크우드" },
+  { region: "경기북부", name: "뉴코리아" },
+  { region: "경기북부", name: "노스팜" },
+  { region: "경기북부", name: "김포씨사이드" },
+  { region: "경기북부", name: "가평베네스트" },
+  { region: "경기동부", name: "더 시에나 서울" },
+  { region: "경기동부", name: "페럼" },
+  { region: "경기동부", name: "캐슬렉스" },
+  { region: "경기동부", name: "자유" },
+  { region: "경기동부", name: "크리스밸리" },
+  { region: "경기동부", name: "이포" },
+  { region: "경기동부", name: "이스트밸리" },
+  { region: "경기동부", name: "웰링턴" },
+  { region: "경기동부", name: "여주클래식" },
+  { region: "경기동부", name: "H1 CLUB" },
+  { region: "경기동부", name: "안성베네스트" },
+  { region: "경기동부", name: "신안" },
+  { region: "경기동부", name: "스카이밸리" },
+  { region: "경기동부", name: "솔모로" },
+  { region: "경기동부", name: "소피아그린" },
+  { region: "경기동부", name: "사우스스프링스" },
+  { region: "경기동부", name: "비에이비스타" },
+  { region: "경기동부", name: "블루헤런" },
+  { region: "경기동부", name: "블랙스톤 이천" },
+  { region: "경기동부", name: "마이다스레이크 이천" },
+  { region: "경기동부", name: "ROUTE52" },
+  { region: "경기동부", name: "렉스필드" },
+  { region: "경기동부", name: "더스타휴" },
+  { region: "경기동부", name: "뉴스프링빌" },
+  { region: "경기동부", name: "뉴서울" },
+  { region: "경기동부", name: "남촌" },
+  { region: "경기동부", name: "남여주" },
+  { region: "경기동부", name: "남서울" },
+  { region: "경기동부", name: "금강" },
+  { region: "경기동부", name: "그린힐" },
+  { region: "경기동부", name: "곤지암" },
+  { region: "경기동부", name: "강남300" },
+  { region: "경기남부", name: "화성상록" },
+  { region: "경기남부", name: "화산" },
+  { region: "경기남부", name: "해슬리나인브릿지" },
+  { region: "경기남부", name: "한원" },
+  { region: "경기남부", name: "한성" },
+  { region: "경기남부", name: "플라자CC 용인" },
+  { region: "경기남부", name: "88" },
+  { region: "경기남부", name: "태광" },
+  { region: "경기남부", name: "코리아" },
+  { region: "경기남부", name: "지산" },
+  { region: "경기남부", name: "제일" },
+  { region: "경기남부", name: "은화삼" },
+  { region: "경기남부", name: "양지파인" },
+  { region: "경기남부", name: "안양" },
+  { region: "경기남부", name: "안성" },
+  { region: "경기남부", name: "아시아나" },
+  { region: "경기남부", name: "써닝포인트" },
+  { region: "경기남부", name: "신원" },
+  { region: "경기남부", name: "수원" },
+  { region: "경기남부", name: "블루원용인" },
+  { region: "경기남부", name: "발리오스" },
+  { region: "경기남부", name: "리베라" },
+  { region: "경기남부", name: "레이크사이드" },
+  { region: "경기남부", name: "남부" },
+  { region: "경기남부", name: "기흥" },
+  { region: "경기남부", name: "골프클럽Q" },
+  { region: "경기남부", name: "골프존카운티 안성H" },
+  { region: "경기남부", name: "골드" },
+  { region: "충청", name: "예미지" },
+  { region: "충청", name: "포웰CC 프린세스" },
+  { region: "충청", name: "킹즈락" },
+  { region: "충청", name: "킹스데일" },
+  { region: "충청", name: "코스카" },
+  { region: "충청", name: "천안상록" },
+  { region: "충청", name: "천룡" },
+  { region: "충청", name: "유성" },
+  { region: "충청", name: "우정힐스" },
+  { region: "충청", name: "올데이 임페리얼레이크" },
+  { region: "충청", name: "올데이 로얄포레" },
+  { region: "충청", name: "SG아름다운" },
+  { region: "충청", name: "에딘버러" },
+  { region: "충청", name: "아난티중앙" },
+  { region: "충청", name: "썬밸리" },
+  { region: "충청", name: "센테리움" },
+  { region: "충청", name: "세종필드" },
+  { region: "충청", name: "세종에머슨" },
+  { region: "충청", name: "세레니티" },
+  { region: "충청", name: "서산수" },
+  { region: "충청", name: "마론" },
+  { region: "충청", name: "롯데스카이힐 부여" },
+  { region: "충청", name: "도고" },
+  { region: "충청", name: "그랜드" },
+  { region: "충청", name: "골든베이" },
+  { region: "충청", name: "계룡대" },
+  { region: "충청", name: "감곡" },
+  { region: "호남", name: "포세븐금강" },
+  { region: "호남", name: "르오네뜨" },
+  { region: "호남", name: "화순" },
+  { region: "호남", name: "해피니스" },
+  { region: "호남", name: "푸른솔장성" },
+  { region: "호남", name: "포라이즌(구.승주)" },
+  { region: "호남", name: "파인비치" },
+  { region: "호남", name: "어등산" },
+  { region: "호남", name: "세이지우드 여수경도" },
+  { region: "호남", name: "석정힐" },
+  { region: "호남", name: "무주덕유산" },
+  { region: "호남", name: "무등산" },
+  { region: "호남", name: "담양레이나" },
+  { region: "호남", name: "다산베아채" },
+  { region: "호남", name: "남원상록" },
+  { region: "호남", name: "광주" },
+  { region: "호남", name: "골프존카운티 선운" },
+  { region: "호남", name: "골드레이크" },
+  { region: "호남", name: "고창" },
+  { region: "영남", name: "힐마루 골프앤리조트 창녕" },
+  { region: "영남", name: "세븐밸리" },
+  { region: "영남", name: "4WELL" },
+  { region: "영남", name: "해운대비치" },
+  { region: "영남", name: "해운대" },
+  { region: "영남", name: "해내다" },
+  { region: "영남", name: "팔공" },
+  { region: "영남", name: "파미힐스" },
+  { region: "영남", name: "창원" },
+  { region: "영남", name: "정산" },
+  { region: "영남", name: "이지스카이" },
+  { region: "영남", name: "울산" },
+  { region: "영남", name: "오펠" },
+  { region: "영남", name: "에이원" },
+  { region: "영남", name: "양산에덴밸리" },
+  { region: "영남", name: "서경타니" },
+  { region: "영남", name: "블루원상주" },
+  { region: "영남", name: "부산" },
+  { region: "영남", name: "부곡" },
+  { region: "영남", name: "보라" },
+  { region: "영남", name: "베이사이드" },
+  { region: "영남", name: "문경" },
+  { region: "영남", name: "마우나오션" },
+  { region: "영남", name: "드비치" },
+  { region: "영남", name: "동부산" },
+  { region: "영남", name: "동래베네스트" },
+  { region: "영남", name: "대구" },
+  { region: "영남", name: "노벨" },
+  { region: "영남", name: "김해상록" },
+  { region: "영남", name: "구미" },
+  { region: "영남", name: "골프존카운티 선산" },
+  { region: "영남", name: "경주신라" },
+  { region: "영남", name: "강동 디아너스" },
+  { region: "영남", name: "가야" },
+  { region: "제주", name: "아난티클럽제주" },
+  { region: "제주", name: "해비치(제주)" },
+  { region: "제주", name: "핀크스" },
+  { region: "제주", name: "테디밸리" },
+  { region: "제주", name: "크라운" },
+  { region: "제주", name: "캐슬렉스제주" },
+  { region: "제주", name: "중문" },
+  { region: "제주", name: "엘리시안제주" },
+  { region: "제주", name: "에버리스" },
+  { region: "제주", name: "사이프러스" },
+  { region: "제주", name: "블랙스톤" },
+  { region: "제주", name: "볼카노" },
+  { region: "제주", name: "롯데스카이힐 제주" },
+  { region: "제주", name: "나인브릿지" },
+  { region: "제주", name: "그린필드" },
+  { region: "제주", name: "골프존카운티 오라" }
+];
 
-const statusBox =
-  document.getElementById("connectionStatus");
 
+const statusBox = document.getElementById("connectionStatus");
 
 function setConnected() {
-
-  statusBox.textContent =
-    "🟢 15명 실시간 연결";
-
-  statusBox.className =
-    "status online";
+  statusBox.textContent = "🟢 15명 실시간 연결";
+  statusBox.className = "status online";
 }
 
-
 function setError(message) {
-
-  statusBox.textContent =
-    "🔴 연결 오류";
-
-  statusBox.className =
-    "status error";
-
+  statusBox.textContent = "🔴 연결 오류";
+  statusBox.className = "status error";
   console.error(message);
 }
 
 
-/* ================================
-   최초 멤버 생성
-================================ */
-
 async function seedMembers() {
-
   try {
+    const snapshot = await getDocs(collection(db, "members"));
 
-    const snapshot =
-      await getDocs(
-        collection(db, "members")
-      );
+    if (!snapshot.empty) return;
 
-    if (!snapshot.empty) {
-      return;
+    for (let i = 0; i < defaultMembers.length; i++) {
+      const id = "member" + String(i + 1).padStart(2, "0");
+
+      await setDoc(doc(db, "members", id), {
+        name: defaultMembers[i],
+        order: i + 1
+      });
     }
-
-    for (
-      let i = 0;
-      i < defaultMembers.length;
-      i++
-    ) {
-
-      const id =
-        "member" +
-        String(i + 1)
-          .padStart(2, "0");
-
-      await setDoc(
-        doc(db, "members", id),
-        {
-          name: defaultMembers[i],
-          order: i + 1
-        }
-      );
-    }
-
   } catch (error) {
-
     setError(error);
   }
 }
 
 
-/* ================================
-   실시간 데이터 수신
-================================ */
-
 function startRealtimeListeners() {
 
   onSnapshot(
     collection(db, "members"),
-
     snapshot => {
+      members = snapshot.docs.map(item => ({
+        id: item.id,
+        ...item.data()
+      }));
 
-      members =
-        snapshot.docs.map(item => ({
-          id: item.id,
-          ...item.data()
-        }));
-
-      members.sort(
-        (a,b) =>
-          (a.order || 0) -
-          (b.order || 0)
-      );
+      members.sort((a,b) => (a.order || 0) - (b.order || 0));
 
       renderAll();
       setConnected();
     },
-
     error => setError(error)
   );
 
 
   onSnapshot(
     collection(db, "rounds"),
-
     snapshot => {
+      rounds = snapshot.docs.map(item => ({
+        id: item.id,
+        ...item.data()
+      }));
 
-      rounds =
-        snapshot.docs.map(item => ({
-          id: item.id,
-          ...item.data()
-        }));
-
-      rounds.sort(
-        (a,b) =>
-          new Date(a.date) -
-          new Date(b.date)
-      );
+      rounds.sort((a,b) => new Date(a.date) - new Date(b.date));
 
       renderAll();
       setConnected();
     },
-
     error => setError(error)
   );
 
 
   onSnapshot(
     collection(db, "scores"),
-
     snapshot => {
+      scores = snapshot.docs.map(item => ({
+        id: item.id,
+        ...item.data()
+      }));
 
-      scores =
-        snapshot.docs.map(item => ({
-          id: item.id,
-          ...item.data()
-        }));
-
-      scores.sort(
-        (a,b) =>
-          (b.createdAt || 0) -
-          (a.createdAt || 0)
-      );
+      scores.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
 
       renderAll();
       setConnected();
     },
-
     error => setError(error)
   );
 
 
   onSnapshot(
     collection(db, "money"),
-
     snapshot => {
+      money = snapshot.docs.map(item => ({
+        id: item.id,
+        ...item.data()
+      }));
 
-      money =
-        snapshot.docs.map(item => ({
-          id: item.id,
-          ...item.data()
-        }));
-
-      money.sort(
-        (a,b) =>
-          (b.createdAt || 0) -
-          (a.createdAt || 0)
-      );
+      money.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
 
       renderAll();
       setConnected();
     },
-
     error => setError(error)
   );
 }
 
 
-/* ================================
-   페이지 이동
-================================ */
+document.querySelectorAll("nav button").forEach(button => {
+  button.addEventListener("click", () => {
 
-document
-  .querySelectorAll("nav button")
-  .forEach(button => {
+    const pageId = button.dataset.page;
 
-    button.addEventListener(
-      "click",
-      () => {
+    document.querySelectorAll(".page")
+      .forEach(page => page.classList.remove("active"));
 
-        const pageId =
-          button.dataset.page;
+    document.querySelectorAll("nav button")
+      .forEach(btn => btn.classList.remove("active"));
 
-        document
-          .querySelectorAll(".page")
-          .forEach(page => {
-            page.classList.remove("active");
-          });
+    document.getElementById(pageId).classList.add("active");
+    button.classList.add("active");
 
-        document
-          .querySelectorAll("nav button")
-          .forEach(btn => {
-            btn.classList.remove("active");
-          });
+    renderAll();
+  });
+});
 
-        document
-          .getElementById(pageId)
-          .classList.add("active");
 
-        button.classList.add("active");
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
 
-        renderAll();
-      }
-    );
+
+function getMemberName(id) {
+  return members.find(member => member.id === id)?.name || "멤버";
+}
+
+
+function getAttendeeIds(round) {
+  return Array.isArray(round?.attendeeIds) ? round.attendeeIds : [];
+}
+
+
+function getTeamSizes(count) {
+  if (count <= 0) return [];
+
+  const groups = Math.ceil(count / 4);
+  const base = Math.floor(count / groups);
+  const extra = count % groups;
+
+  return Array.from({ length: groups }, (_, index) =>
+    base + (index < extra ? 1 : 0)
+  );
+}
+
+
+function shuffleArray(array) {
+  const copy = [...array];
+
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+
+  return copy;
+}
+
+
+
+function normalizeCourseText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replaceAll(" ", "")
+    .replaceAll("컨트리클럽", "")
+    .replaceAll("countryclub", "")
+    .replaceAll("golfclub", "")
+    .replaceAll("골프클럽", "")
+    .replaceAll("cc", "")
+    .replaceAll("gc", "");
+}
+
+
+function buildGolfAutocomplete() {
+  const list = document.getElementById("golfCourseList");
+  if (!list) return;
+
+  list.innerHTML = "";
+
+  golfCourses.forEach(course => {
+    const option = document.createElement("option");
+    option.value = course.name;
+    option.label = `${course.region} · ${course.name}`;
+    list.appendChild(option);
+  });
+}
+
+
+function makeNaverMapUrl(name) {
+  return "https://map.naver.com/p/search/" +
+    encodeURIComponent(name + " 골프장");
+}
+
+
+function makeCourseMapSearchUrl(name) {
+  return "https://search.naver.com/search.naver?where=image&query=" +
+    encodeURIComponent(name + " 18홀 코스맵");
+}
+
+
+function renderGolfCourses() {
+  const box = document.getElementById("golfCourseCards");
+  const countBox = document.getElementById("golfResultCount");
+  if (!box || !countBox) return;
+
+  const query = normalizeCourseText(
+    document.getElementById("golfSearch")?.value || ""
+  );
+
+  const region =
+    document.getElementById("golfRegionFilter")?.value || "";
+
+  const filtered = golfCourses.filter(course => {
+    const regionMatch = !region || course.region === region;
+    const nameMatch =
+      !query ||
+      normalizeCourseText(course.name).includes(query) ||
+      normalizeCourseText(course.region).includes(query);
+
+    return regionMatch && nameMatch;
   });
 
+  countBox.textContent =
+    `검색 ${filtered.length}개 / 등록 ${golfCourses.length}개`;
 
-/* ================================
-   멤버
-================================ */
+  box.innerHTML = "";
+
+  if (filtered.length === 0) {
+    box.innerHTML =
+      '<div class="small">검색 결과가 없어. 라운딩 등록에서는 골프장명을 직접 입력해도 돼.</div>';
+    return;
+  }
+
+  filtered.slice(0, 80).forEach(course => {
+    const div = document.createElement("div");
+    div.className = "golf-card";
+
+    const mapUrl = makeNaverMapUrl(course.name);
+    const courseMapUrl = makeCourseMapSearchUrl(course.name);
+
+    div.innerHTML = `
+      <div class="golf-card-head">
+        <strong>⛳ ${escapeHtml(course.name)}</strong>
+        <span class="badge gray">${escapeHtml(course.region)}</span>
+      </div>
+
+      <div class="small">
+        네이버에서 해당 골프장 위치와 18홀 코스맵 자료를 바로 검색해.
+      </div>
+
+      <div class="golf-actions">
+        <a class="golf-link naver-map-btn"
+           href="${mapUrl}"
+           target="_blank"
+           rel="noopener noreferrer">
+          🧭 네이버 지도
+        </a>
+
+        <a class="golf-link course-map-btn"
+           href="${courseMapUrl}"
+           target="_blank"
+           rel="noopener noreferrer">
+          🗺️ 18홀 코스맵
+        </a>
+      </div>
+    `;
+
+    box.appendChild(div);
+  });
+
+  if (filtered.length > 80) {
+    box.insertAdjacentHTML(
+      "beforeend",
+      `<div class="small" style="text-align:center;padding:10px;">
+        결과가 많아서 80개까지만 표시 중이야. 검색어를 더 입력해줘.
+      </div>`
+    );
+  }
+}
+
+
+document.getElementById("golfSearch")
+  ?.addEventListener("input", renderGolfCourses);
+
+document.getElementById("golfRegionFilter")
+  ?.addEventListener("change", renderGolfCourses);
+
 
 function renderMembers() {
+  const grid = document.getElementById("memberGrid");
+  const scoreSelect = document.getElementById("scoreMember");
+  const moneySelect = document.getElementById("moneyMember");
 
-  const grid =
-    document.getElementById("memberGrid");
-
-  const scoreSelect =
-    document.getElementById("scoreMember");
-
-  const moneySelect =
-    document.getElementById("moneyMember");
-
+  const prevScoreMember = scoreSelect.value;
+  const prevMoneyMember = moneySelect.value;
 
   grid.innerHTML = "";
   scoreSelect.innerHTML = "";
   moneySelect.innerHTML = "";
 
+  members.forEach((member,index) => {
 
-  members.forEach(
-    (member,index) => {
+    const div = document.createElement("div");
+    div.className = "member";
 
-      const div =
-        document.createElement("div");
+    div.innerHTML = `
+      <strong>${index + 1}. ${escapeHtml(member.name)}</strong>
+      <br>
+      <button class="edit-btn" data-member-id="${member.id}">이름 수정</button>
+    `;
 
-      div.className = "member";
+    grid.appendChild(div);
 
-      div.innerHTML = `
-        <strong>
-          ${index + 1}. ${escapeHtml(member.name)}
-        </strong>
+    scoreSelect.innerHTML += `
+      <option value="${member.id}">${escapeHtml(member.name)}</option>
+    `;
 
-        <br>
+    moneySelect.innerHTML += `
+      <option value="${member.id}">${escapeHtml(member.name)}</option>
+    `;
+  });
 
-        <button
-          class="edit-btn"
-          data-member-id="${member.id}"
-        >
-          이름 수정
-        </button>
-      `;
+  if (members.some(m => m.id === prevScoreMember)) scoreSelect.value = prevScoreMember;
+  if (members.some(m => m.id === prevMoneyMember)) moneySelect.value = prevMoneyMember;
 
-      grid.appendChild(div);
+  document.querySelectorAll("[data-member-id]").forEach(button => {
 
+    button.addEventListener("click", async () => {
 
-      scoreSelect.innerHTML += `
-        <option value="${member.id}">
-          ${escapeHtml(member.name)}
-        </option>
-      `;
-
-
-      moneySelect.innerHTML += `
-        <option value="${member.id}">
-          ${escapeHtml(member.name)}
-        </option>
-      `;
-    }
-  );
-
-
-  document
-    .querySelectorAll("[data-member-id]")
-    .forEach(button => {
-
-      button.addEventListener(
-        "click",
-        async () => {
-
-          const member =
-            members.find(
-              item =>
-                item.id ===
-                button.dataset.memberId
-            );
-
-          if (!member) return;
-
-
-          const newName =
-            prompt(
-              "새 이름 입력",
-              member.name
-            );
-
-
-          if (
-            !newName ||
-            !newName.trim()
-          ) return;
-
-
-          try {
-
-            await updateDoc(
-              doc(
-                db,
-                "members",
-                member.id
-              ),
-              {
-                name: newName.trim()
-              }
-            );
-
-          } catch(error) {
-
-            alert(
-              "이름 수정 실패"
-            );
-
-            setError(error);
-          }
-        }
+      const member = members.find(item =>
+        item.id === button.dataset.memberId
       );
+
+      if (!member) return;
+
+      const newName = prompt("새 이름 입력", member.name);
+
+      if (!newName || !newName.trim()) return;
+
+      try {
+        await updateDoc(doc(db, "members", member.id), {
+          name: newName.trim()
+        });
+      } catch(error) {
+        alert("이름 수정 실패");
+        setError(error);
+      }
     });
+  });
 }
 
 
-/* ================================
-   라운딩 등록
-================================ */
+function renderNewAttendance() {
+  const grid = document.getElementById("newAttendanceGrid");
 
-document
-  .getElementById("addRoundBtn")
-  .addEventListener(
-    "click",
-    async () => {
-
-      const date =
-        document
-          .getElementById("roundDate")
-          .value;
-
-      const time =
-        document
-          .getElementById("roundTime")
-          .value;
-
-      const course =
-        document
-          .getElementById("roundCourse")
-          .value
-          .trim();
-
-      const memo =
-        document
-          .getElementById("roundMemo")
-          .value
-          .trim();
-
-
-      if (!date || !course) {
-
-        alert(
-          "날짜랑 골프장을 입력해줘!"
-        );
-
-        return;
-      }
-
-
-      try {
-
-        await addDoc(
-          collection(db, "rounds"),
-          {
-            date,
-            time,
-            course,
-            memo,
-            createdAt: Date.now()
-          }
-        );
-
-
-        document
-          .getElementById("roundCourse")
-          .value = "";
-
-        document
-          .getElementById("roundMemo")
-          .value = "";
-
-
-        alert(
-          "⛳ 라운딩 등록 완료!"
-        );
-
-      } catch(error) {
-
-        alert(
-          "라운딩 저장 실패"
-        );
-
-        setError(error);
-      }
-    }
+  const selected = new Set(
+    [...grid.querySelectorAll('input[type="checkbox"]:checked')]
+      .map(input => input.value)
   );
 
+  grid.innerHTML = "";
 
-function renderRounds() {
+  members.forEach(member => {
+    const label = document.createElement("label");
+    label.className = "attendance-item";
 
-  const list =
-    document.getElementById("roundList");
+    label.innerHTML = `
+      <input type="checkbox"
+             class="new-attendee-check"
+             value="${member.id}"
+             ${selected.has(member.id) ? "checked" : ""}>
+      <span>${escapeHtml(member.name)}</span>
+    `;
+
+    grid.appendChild(label);
+  });
+
+  updateNewAttendanceCount();
+}
 
 
-  if (rounds.length === 0) {
+function updateNewAttendanceCount() {
+  const checks = [...document.querySelectorAll(".new-attendee-check")];
+  const selectedCount = checks.filter(check => check.checked).length;
 
-    list.innerHTML =
-      "아직 등록된 라운딩이 없습니다.";
+  document.getElementById("newAttendanceCount").textContent =
+    `${selectedCount}명 참석 / ${Math.max(members.length - selectedCount, 0)}명 불참`;
 
+  document.getElementById("toggleNewAttendanceBtn").textContent =
+    selectedCount === members.length && members.length > 0
+      ? "전체 해제"
+      : "전체 선택";
+}
+
+
+document.getElementById("newAttendanceGrid")
+  .addEventListener("change", updateNewAttendanceCount);
+
+
+document.getElementById("toggleNewAttendanceBtn")
+  .addEventListener("click", () => {
+
+    const checks = [...document.querySelectorAll(".new-attendee-check")];
+    const allChecked = checks.length > 0 && checks.every(check => check.checked);
+
+    checks.forEach(check => {
+      check.checked = !allChecked;
+    });
+
+    updateNewAttendanceCount();
+  });
+
+
+document.getElementById("addRoundBtn").addEventListener("click", async () => {
+
+  const date = document.getElementById("roundDate").value;
+  const time = document.getElementById("roundTime").value;
+  const course = document.getElementById("roundCourse").value.trim();
+  const memo = document.getElementById("roundMemo").value.trim();
+
+  const attendeeIds = [...document.querySelectorAll(".new-attendee-check:checked")]
+    .map(input => input.value);
+
+  if (!date || !course) {
+    alert("날짜랑 골프장을 입력해줘!");
     return;
   }
 
+  if (attendeeIds.length === 0) {
+    alert("참석자를 1명 이상 선택해줘!");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "rounds"), {
+      date,
+      time,
+      course,
+      memo,
+      attendeeIds,
+      teams: [],
+      createdAt: Date.now()
+    });
+
+    document.getElementById("roundCourse").value = "";
+    document.getElementById("roundMemo").value = "";
+
+    document.querySelectorAll(".new-attendee-check")
+      .forEach(check => check.checked = false);
+
+    updateNewAttendanceCount();
+
+    alert(`⛳ 라운딩 등록 완료! 참석 ${attendeeIds.length}명`);
+  } catch(error) {
+    alert("라운딩 저장 실패");
+    setError(error);
+  }
+});
+
+
+function renderRounds() {
+  const list = document.getElementById("roundList");
+
+  if (rounds.length === 0) {
+    list.innerHTML = "아직 등록된 라운딩이 없습니다.";
+    return;
+  }
 
   list.innerHTML = "";
 
-
   rounds.forEach(round => {
 
-    const item =
-      document.createElement("div");
+    const attendeeIds = getAttendeeIds(round);
+    const attendeeNames = attendeeIds.map(getMemberName);
+    const absentCount = Math.max(members.length - attendeeIds.length, 0);
 
-    item.className =
-      "list-item";
+    const item = document.createElement("div");
+    item.className = "list-item";
 
+    let savedTeams = "";
+
+    if (Array.isArray(round.teams) && round.teams.length > 0) {
+      savedTeams = `
+        <div style="margin-top:9px;">
+          <span class="badge gray">저장된 조편성</span>
+          <div class="small">
+            ${round.teams.map((team,index) =>
+              `${index + 1}조: ${team.map(getMemberName).join(" · ")}`
+            ).join("<br>")}
+          </div>
+        </div>
+      `;
+    }
 
     item.innerHTML = `
-
-      <strong>
-        ⛳ ${escapeHtml(round.course)}
-      </strong>
+      <strong>⛳ ${escapeHtml(round.course)}</strong>
 
       <div class="small">
         ${escapeHtml(round.date || "")}
@@ -1078,328 +1369,366 @@ function renderRounds() {
         ${escapeHtml(round.memo || "")}
       </div>
 
-      <button
-        class="delete-btn"
-        data-delete-round="${round.id}"
-      >
-        삭제
-      </button>
-    `;
+      <div style="margin-top:8px;">
+        <span class="badge">참석 ${attendeeIds.length}명</span>
+        <span class="badge gray">불참 ${absentCount}명</span>
+      </div>
 
+      <div class="small">
+        ${attendeeNames.length
+          ? "🙋 " + attendeeNames.map(escapeHtml).join(" · ")
+          : "참석자가 아직 선택되지 않았습니다."
+        }
+      </div>
+
+      ${savedTeams}
+
+      <button class="edit-btn" data-edit-attendance="${round.id}">참석 수정</button>
+      <button class="team-btn" data-pick-team-round="${round.id}">이 라운딩 조편성</button>
+      <button class="delete-btn" data-delete-round="${round.id}">삭제</button>
+    `;
 
     list.appendChild(item);
   });
 
 
-  document
-    .querySelectorAll(
-      "[data-delete-round]"
-    )
-    .forEach(button => {
+  document.querySelectorAll("[data-delete-round]").forEach(button => {
+    button.addEventListener("click", async () => {
 
-      button.addEventListener(
-        "click",
-        async () => {
+      if (!confirm("이 라운딩 삭제할까?")) return;
 
-          if (
-            !confirm(
-              "이 라운딩 삭제할까?"
-            )
-          ) return;
-
-
-          try {
-
-            await deleteDoc(
-              doc(
-                db,
-                "rounds",
-                button.dataset.deleteRound
-              )
-            );
-
-          } catch(error) {
-
-            alert("삭제 실패");
-            setError(error);
-          }
-        }
-      );
+      try {
+        await deleteDoc(doc(db, "rounds", button.dataset.deleteRound));
+      } catch(error) {
+        alert("삭제 실패");
+        setError(error);
+      }
     });
+  });
+
+
+  document.querySelectorAll("[data-edit-attendance]").forEach(button => {
+    button.addEventListener("click", () => {
+      openAttendanceModal(button.dataset.editAttendance);
+    });
+  });
+
+
+  document.querySelectorAll("[data-pick-team-round]").forEach(button => {
+    button.addEventListener("click", () => {
+      document.getElementById("teamRoundSelect").value =
+        button.dataset.pickTeamRound;
+
+      renderTeamRoundInfo();
+      document.getElementById("teamRoundSelect")
+        .scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  });
 }
 
 
-/* ================================
-   랜덤 조편성
-================================ */
+function renderTeamRoundSelect() {
+  const select = document.getElementById("teamRoundSelect");
+  const prev = select.value;
 
-document
-  .getElementById("makeTeamsBtn")
-  .addEventListener(
-    "click",
-    () => {
+  select.innerHTML = '<option value="">라운딩을 선택하세요</option>';
 
-      if (
-        members.length === 0
-      ) {
+  rounds.forEach(round => {
+    const attendeeCount = getAttendeeIds(round).length;
 
-        alert(
-          "멤버 불러오는 중이야!"
-        );
+    select.innerHTML += `
+      <option value="${round.id}">
+        ${escapeHtml(round.date || "")} · ${escapeHtml(round.course || "")}
+        (${attendeeCount}명)
+      </option>
+    `;
+  });
 
-        return;
-      }
+  if (rounds.some(round => round.id === prev)) {
+    select.value = prev;
+  }
 
+  renderTeamRoundInfo();
+}
 
-      const shuffled =
-        [...members]
-          .sort(
-            () =>
-              Math.random() - 0.5
-          );
 
+function renderTeamRoundInfo() {
+  const roundId = document.getElementById("teamRoundSelect").value;
+  const info = document.getElementById("teamRoundInfo");
+  const result = document.getElementById("teamResult");
 
-      const teamSizes =
-        [4,4,4,3];
+  const round = rounds.find(item => item.id === roundId);
 
-
-      const teams = [];
-
-      let start = 0;
-
-
-      teamSizes.forEach(size => {
-
-        teams.push(
-          shuffled.slice(
-            start,
-            start + size
-          )
-        );
-
-        start += size;
-      });
-
-
-      const result =
-        document.getElementById(
-          "teamResult"
-        );
-
-
-      result.innerHTML = "";
-
-
-      teams.forEach(
-        (team,index) => {
-
-          if (
-            team.length === 0
-          ) return;
-
-
-          result.innerHTML += `
-
-            <div class="team">
-
-              <h3>
-                ${index + 1}조
-                (${team.length}명)
-              </h3>
-
-              ${team
-                .map(member =>
-                  escapeHtml(member.name)
-                )
-                .join(" · ")
-              }
-
-            </div>
-          `;
-        }
-      );
-    }
-  );
-
-
-/* ================================
-   스코어
-================================ */
-
-document
-  .getElementById("addScoreBtn")
-  .addEventListener(
-    "click",
-    async () => {
-
-      const memberId =
-        document
-          .getElementById("scoreMember")
-          .value;
-
-      const member =
-        members.find(
-          item =>
-            item.id === memberId
-        );
-
-
-      const date =
-        document
-          .getElementById("scoreDate")
-          .value;
-
-      const course =
-        document
-          .getElementById("scoreCourse")
-          .value
-          .trim();
-
-      const score =
-        Number(
-          document
-            .getElementById("scoreValue")
-            .value
-        );
-
-      const birdies =
-        Number(
-          document
-            .getElementById("birdies")
-            .value
-        ) || 0;
-
-      const near =
-        Number(
-          document
-            .getElementById("near")
-            .value
-        );
-
-      const longest =
-        Number(
-          document
-            .getElementById("longest")
-            .value
-        );
-
-
-      if (
-        !member ||
-        !date ||
-        !course ||
-        !score
-      ) {
-
-        alert(
-          "멤버, 날짜, 골프장, 타수를 확인해줘!"
-        );
-
-        return;
-      }
-
-
-      try {
-
-        await addDoc(
-          collection(db, "scores"),
-          {
-            memberId: member.id,
-            memberName: member.name,
-            date,
-            course,
-            score,
-            birdies,
-            near,
-            longest,
-            createdAt: Date.now()
-          }
-        );
-
-
-        document
-          .getElementById("scoreCourse")
-          .value = "";
-
-        document
-          .getElementById("scoreValue")
-          .value = "";
-
-        document
-          .getElementById("birdies")
-          .value = 0;
-
-        document
-          .getElementById("near")
-          .value = "0";
-
-        document
-          .getElementById("longest")
-          .value = "0";
-
-
-        alert(
-          `🏌️ ${member.name} ${score}타 저장 완료!`
-        );
-
-      } catch(error) {
-
-        alert("스코어 저장 실패");
-        setError(error);
-      }
-    }
-  );
-
-
-function renderScores() {
-
-  const list =
-    document.getElementById("scoreList");
-
-
-  if (
-    scores.length === 0
-  ) {
-
-    list.innerHTML =
-      "아직 스코어 기록이 없습니다.";
-
+  if (!round) {
+    info.textContent = "라운딩을 선택하면 참석 인원으로 자동 조편성합니다.";
+    result.innerHTML = "";
     return;
   }
 
+  const attendeeIds = getAttendeeIds(round);
+  const sizes = getTeamSizes(attendeeIds.length);
+
+  info.textContent =
+    `참석 ${attendeeIds.length}명 · 예상 조 구성 ${sizes.length ? sizes.join("-") : "없음"}`;
+
+  if (Array.isArray(round.teams) && round.teams.length > 0) {
+    renderTeams(round.teams, true);
+  } else {
+    result.innerHTML = '<div class="small">아직 저장된 조편성이 없습니다.</div>';
+  }
+}
+
+
+document.getElementById("teamRoundSelect")
+  .addEventListener("change", renderTeamRoundInfo);
+
+
+document.getElementById("makeTeamsBtn")
+  .addEventListener("click", async () => {
+
+    const roundId = document.getElementById("teamRoundSelect").value;
+    const round = rounds.find(item => item.id === roundId);
+
+    if (!round) {
+      alert("조편성할 라운딩부터 선택해줘!");
+      return;
+    }
+
+    const attendeeIds = getAttendeeIds(round);
+
+    if (attendeeIds.length === 0) {
+      alert("이 라운딩에는 참석자가 없어. 참석자부터 수정해줘!");
+      return;
+    }
+
+    const shuffled = shuffleArray(attendeeIds);
+    const sizes = getTeamSizes(shuffled.length);
+
+    const teams = [];
+    let offset = 0;
+
+    sizes.forEach(size => {
+      teams.push(shuffled.slice(offset, offset + size));
+      offset += size;
+    });
+
+    try {
+      await updateDoc(doc(db, "rounds", roundId), {
+        teams,
+        teamUpdatedAt: Date.now()
+      });
+
+      renderTeams(teams, false);
+      alert(`🎲 조편성 완료! ${sizes.join("-")} 구성으로 저장했어.`);
+    } catch(error) {
+      alert("조편성 저장 실패");
+      setError(error);
+    }
+  });
+
+
+function renderTeams(teams, saved = false) {
+  const result = document.getElementById("teamResult");
+
+  if (!Array.isArray(teams) || teams.length === 0) {
+    result.innerHTML = '<div class="small">저장된 조편성이 없습니다.</div>';
+    return;
+  }
+
+  result.innerHTML = saved
+    ? '<div class="small" style="margin-bottom:8px;">💾 현재 저장된 조편성</div>'
+    : '<div class="small" style="margin-bottom:8px;">✅ 새 조편성이 Firebase에 저장되었습니다.</div>';
+
+  teams.forEach((team,index) => {
+    result.innerHTML += `
+      <div class="team">
+        <h3>${index + 1}조 (${team.length}명)</h3>
+        ${team.map(id => escapeHtml(getMemberName(id))).join(" · ")}
+      </div>
+    `;
+  });
+}
+
+
+function openAttendanceModal(roundId) {
+  const round = rounds.find(item => item.id === roundId);
+  if (!round) return;
+
+  editingRoundId = roundId;
+
+  document.getElementById("modalRoundTitle").textContent =
+    `${round.date || ""} · ${round.course || ""}`;
+
+  const selected = new Set(getAttendeeIds(round));
+  const grid = document.getElementById("modalAttendanceGrid");
+
+  grid.innerHTML = "";
+
+  members.forEach(member => {
+    const label = document.createElement("label");
+    label.className = "attendance-item";
+
+    label.innerHTML = `
+      <input type="checkbox"
+             class="modal-attendee-check"
+             value="${member.id}"
+             ${selected.has(member.id) ? "checked" : ""}>
+      <span>${escapeHtml(member.name)}</span>
+    `;
+
+    grid.appendChild(label);
+  });
+
+  updateModalAttendanceCount();
+  document.getElementById("attendanceModal").classList.add("show");
+}
+
+
+function closeAttendanceModal() {
+  editingRoundId = null;
+  document.getElementById("attendanceModal").classList.remove("show");
+}
+
+
+function updateModalAttendanceCount() {
+  const checks = [...document.querySelectorAll(".modal-attendee-check")];
+  const count = checks.filter(check => check.checked).length;
+
+  document.getElementById("modalAttendanceCount").textContent =
+    `${count}명 참석 / ${Math.max(members.length - count, 0)}명 불참`;
+
+  document.getElementById("toggleModalAttendanceBtn").textContent =
+    count === members.length && members.length > 0
+      ? "전체 해제"
+      : "전체 선택";
+}
+
+
+document.getElementById("modalAttendanceGrid")
+  .addEventListener("change", updateModalAttendanceCount);
+
+
+document.getElementById("toggleModalAttendanceBtn")
+  .addEventListener("click", () => {
+
+    const checks = [...document.querySelectorAll(".modal-attendee-check")];
+    const allChecked = checks.length > 0 && checks.every(check => check.checked);
+
+    checks.forEach(check => check.checked = !allChecked);
+    updateModalAttendanceCount();
+  });
+
+
+document.getElementById("closeAttendanceModalBtn")
+  .addEventListener("click", closeAttendanceModal);
+
+
+document.getElementById("attendanceModal")
+  .addEventListener("click", event => {
+    if (event.target.id === "attendanceModal") {
+      closeAttendanceModal();
+    }
+  });
+
+
+document.getElementById("saveAttendanceBtn")
+  .addEventListener("click", async () => {
+
+    if (!editingRoundId) return;
+
+    const attendeeIds =
+      [...document.querySelectorAll(".modal-attendee-check:checked")]
+        .map(input => input.value);
+
+    if (attendeeIds.length === 0) {
+      alert("참석자를 1명 이상 선택해줘!");
+      return;
+    }
+
+    try {
+      await updateDoc(doc(db, "rounds", editingRoundId), {
+        attendeeIds,
+        teams: [],
+        attendanceUpdatedAt: Date.now()
+      });
+
+      closeAttendanceModal();
+
+      alert(`🙋 참석자 수정 완료! ${attendeeIds.length}명 참석`);
+    } catch(error) {
+      alert("참석자 수정 실패");
+      setError(error);
+    }
+  });
+
+
+document.getElementById("addScoreBtn").addEventListener("click", async () => {
+
+  const memberId = document.getElementById("scoreMember").value;
+  const member = members.find(item => item.id === memberId);
+
+  const date = document.getElementById("scoreDate").value;
+  const course = document.getElementById("scoreCourse").value.trim();
+
+  const score = Number(document.getElementById("scoreValue").value);
+  const birdies = Number(document.getElementById("birdies").value) || 0;
+  const near = Number(document.getElementById("near").value);
+  const longest = Number(document.getElementById("longest").value);
+
+  if (!member || !date || !course || !score) {
+    alert("멤버, 날짜, 골프장, 타수를 확인해줘!");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "scores"), {
+      memberId: member.id,
+      memberName: member.name,
+      date,
+      course,
+      score,
+      birdies,
+      near,
+      longest,
+      createdAt: Date.now()
+    });
+
+    document.getElementById("scoreCourse").value = "";
+    document.getElementById("scoreValue").value = "";
+    document.getElementById("birdies").value = 0;
+    document.getElementById("near").value = "0";
+    document.getElementById("longest").value = "0";
+
+    alert(`🏌️ ${member.name} ${score}타 저장 완료!`);
+  } catch(error) {
+    alert("스코어 저장 실패");
+    setError(error);
+  }
+});
+
+
+function renderScores() {
+  const list = document.getElementById("scoreList");
+
+  if (scores.length === 0) {
+    list.innerHTML = "아직 스코어 기록이 없습니다.";
+    return;
+  }
 
   list.innerHTML = "";
-
 
   scores.forEach(score => {
 
     const currentMember =
-      members.find(
-        member =>
-          member.id === score.memberId
-      );
+      members.find(member => member.id === score.memberId);
 
-    const name =
-      currentMember?.name ||
-      score.memberName ||
-      "멤버";
+    const name = currentMember?.name || score.memberName || "멤버";
 
-
-    const item =
-      document.createElement("div");
-
-
-    item.className =
-      "list-item";
-
+    const item = document.createElement("div");
+    item.className = "list-item";
 
     item.innerHTML = `
-
-      <strong>
-        ${escapeHtml(name)}
-        ·
-        ${Number(score.score)}타
-      </strong>
+      <strong>${escapeHtml(name)} · ${Number(score.score)}타</strong>
 
       <div class="small">
         ${escapeHtml(score.date || "")}
@@ -1408,128 +1737,56 @@ function renderScores() {
       </div>
 
       <div class="small">
-
-        🐦 버디
-        ${Number(score.birdies || 0)}
-
+        🐦 버디 ${Number(score.birdies || 0)}
         ${score.near ? " &nbsp;🎯 니어" : ""}
-
         ${score.longest ? " &nbsp;💣 롱기" : ""}
-
       </div>
 
-      <button
-        class="delete-btn"
-        data-delete-score="${score.id}"
-      >
-        삭제
-      </button>
+      <button class="delete-btn" data-delete-score="${score.id}">삭제</button>
     `;
-
 
     list.appendChild(item);
   });
 
 
-  document
-    .querySelectorAll(
-      "[data-delete-score]"
-    )
-    .forEach(button => {
+  document.querySelectorAll("[data-delete-score]").forEach(button => {
+    button.addEventListener("click", async () => {
 
-      button.addEventListener(
-        "click",
-        async () => {
+      if (!confirm("스코어 기록 삭제할까?")) return;
 
-          if (
-            !confirm(
-              "스코어 기록 삭제할까?"
-            )
-          ) return;
-
-
-          try {
-
-            await deleteDoc(
-              doc(
-                db,
-                "scores",
-                button.dataset.deleteScore
-              )
-            );
-
-          } catch(error) {
-
-            alert("삭제 실패");
-            setError(error);
-          }
-        }
-      );
+      try {
+        await deleteDoc(doc(db, "scores", button.dataset.deleteScore));
+      } catch(error) {
+        alert("삭제 실패");
+        setError(error);
+      }
     });
+  });
 }
 
 
-/* ================================
-   시즌 랭킹
-================================ */
-
 function renderRanking() {
-
-  const ranking =
-    document.getElementById("ranking");
-
-
+  const ranking = document.getElementById("ranking");
   const data = [];
-
 
   members.forEach(member => {
 
-    const memberScores =
-      scores.filter(
-        score =>
-          score.memberId ===
-          member.id
-      );
+    const memberScores = scores.filter(score =>
+      score.memberId === member.id
+    );
 
+    if (memberScores.length === 0) return;
 
-    if (
-      memberScores.length === 0
-    ) return;
+    const scoreValues = memberScores.map(item => Number(item.score));
 
+    const total = scoreValues.reduce((a,b) => a + b, 0);
+    const avg = total / scoreValues.length;
+    const best = Math.min(...scoreValues);
 
-    const scoreValues =
-      memberScores.map(
-        item =>
-          Number(item.score)
-      );
-
-
-    const total =
-      scoreValues.reduce(
-        (a,b) => a + b,
-        0
-      );
-
-
-    const avg =
-      total /
-      scoreValues.length;
-
-
-    const best =
-      Math.min(
-        ...scoreValues
-      );
-
-
-    const totalBirdies =
-      memberScores.reduce(
-        (total,item) =>
-          total +
-          Number(item.birdies || 0),
-        0
-      );
-
+    const totalBirdies = memberScores.reduce(
+      (total,item) => total + Number(item.birdies || 0),
+      0
+    );
 
     data.push({
       name: member.name,
@@ -1540,389 +1797,179 @@ function renderRanking() {
     });
   });
 
+  data.sort((a,b) => {
+    if (a.avg !== b.avg) return a.avg - b.avg;
+    return a.best - b.best;
+  });
 
-  data.sort(
-    (a,b) => {
-
-      if (
-        a.avg !== b.avg
-      ) return a.avg - b.avg;
-
-      return a.best - b.best;
-    }
-  );
-
-
-  if (
-    data.length === 0
-  ) {
-
-    ranking.innerHTML =
-      "스코어가 입력되면 랭킹이 표시됩니다.";
-
+  if (data.length === 0) {
+    ranking.innerHTML = "스코어가 입력되면 랭킹이 표시됩니다.";
     return;
   }
-
 
   ranking.innerHTML = "";
 
+  data.forEach((item,index) => {
 
-  data.forEach(
-    (item,index) => {
+    const div = document.createElement("div");
 
-      const div =
-        document.createElement("div");
+    div.className =
+      "rank-item" +
+      (index === 0 ? " rank-first" : "");
 
+    let medal = "";
 
-      div.className =
-        "rank-item" +
-        (
-          index === 0
-            ? " rank-first"
-            : ""
-        );
+    if (index === 0) medal = "🥇";
+    if (index === 1) medal = "🥈";
+    if (index === 2) medal = "🥉";
 
+    div.innerHTML = `
+      <div>
+        <span class="rank-num">${medal} ${index + 1}위</span>
+        ${escapeHtml(item.name)}
 
-      let medal = "";
-
-      if (index === 0)
-        medal = "🥇";
-
-      if (index === 1)
-        medal = "🥈";
-
-      if (index === 2)
-        medal = "🥉";
-
-
-      div.innerHTML = `
-
-        <div>
-
-          <span class="rank-num">
-            ${medal}
-            ${index + 1}위
-          </span>
-
-          ${escapeHtml(item.name)}
-
-          <div class="small">
-            ${item.games}회 라운드
-            ·
-            🐦 ${item.birdies}
-          </div>
-
+        <div class="small">
+          ${item.games}회 라운드 · 🐦 ${item.birdies}
         </div>
+      </div>
 
-        <div style="text-align:right;">
+      <div style="text-align:right;">
+        <strong>평균 ${item.avg.toFixed(1)}</strong>
+        <div class="small">라베 ${item.best}</div>
+      </div>
+    `;
 
-          <strong>
-            평균
-            ${item.avg.toFixed(1)}
-          </strong>
-
-          <div class="small">
-            라베 ${item.best}
-          </div>
-
-        </div>
-      `;
-
-
-      ranking.appendChild(div);
-    }
-  );
+    ranking.appendChild(div);
+  });
 }
 
 
-/* ================================
-   회비
-================================ */
+document.getElementById("addMoneyBtn").addEventListener("click", async () => {
 
-document
-  .getElementById("addMoneyBtn")
-  .addEventListener(
-    "click",
-    async () => {
+  const memberId = document.getElementById("moneyMember").value;
+  const member = members.find(item => item.id === memberId);
 
-      const memberId =
-        document
-          .getElementById("moneyMember")
-          .value;
+  const type = document.getElementById("moneyType").value;
+  const amount = Number(document.getElementById("moneyAmount").value);
+  const memo = document.getElementById("moneyMemo").value.trim();
 
-      const member =
-        members.find(
-          item =>
-            item.id === memberId
-        );
-
-
-      const type =
-        document
-          .getElementById("moneyType")
-          .value;
-
-      const amount =
-        Number(
-          document
-            .getElementById("moneyAmount")
-            .value
-        );
-
-      const memo =
-        document
-          .getElementById("moneyMemo")
-          .value
-          .trim();
-
-
-      if (
-        !member ||
-        !amount ||
-        amount <= 0
-      ) {
-
-        alert(
-          "멤버와 금액을 확인해줘!"
-        );
-
-        return;
-      }
-
-
-      try {
-
-        await addDoc(
-          collection(db, "money"),
-          {
-            memberId: member.id,
-            memberName: member.name,
-            type,
-            amount,
-            memo,
-            date:
-              new Date()
-                .toLocaleDateString("ko-KR"),
-            createdAt: Date.now()
-          }
-        );
-
-
-        document
-          .getElementById("moneyAmount")
-          .value = "";
-
-        document
-          .getElementById("moneyMemo")
-          .value = "";
-
-
-        alert(
-          "💰 정산 저장 완료!"
-        );
-
-      } catch(error) {
-
-        alert("정산 저장 실패");
-        setError(error);
-      }
-    }
-  );
-
-
-function renderMoney() {
-
-  const list =
-    document.getElementById("moneyList");
-
-  const summary =
-    document.getElementById("moneySummary");
-
-
-  const total =
-    money.reduce(
-      (sum,item) =>
-        sum +
-        Number(item.amount || 0),
-      0
-    );
-
-
-  summary.textContent =
-    total.toLocaleString("ko-KR")
-    + "원";
-
-
-  if (
-    money.length === 0
-  ) {
-
-    list.innerHTML =
-      "아직 정산 내역이 없습니다.";
-
+  if (!member || !amount || amount <= 0) {
+    alert("멤버와 금액을 확인해줘!");
     return;
   }
 
+  try {
+    await addDoc(collection(db, "money"), {
+      memberId: member.id,
+      memberName: member.name,
+      type,
+      amount,
+      memo,
+      date: new Date().toLocaleDateString("ko-KR"),
+      createdAt: Date.now()
+    });
+
+    document.getElementById("moneyAmount").value = "";
+    document.getElementById("moneyMemo").value = "";
+
+    alert("💰 정산 저장 완료!");
+  } catch(error) {
+    alert("정산 저장 실패");
+    setError(error);
+  }
+});
+
+
+function renderMoney() {
+  const list = document.getElementById("moneyList");
+  const summary = document.getElementById("moneySummary");
+
+  const total = money.reduce(
+    (sum,item) => sum + Number(item.amount || 0),
+    0
+  );
+
+  summary.textContent = total.toLocaleString("ko-KR") + "원";
+
+  if (money.length === 0) {
+    list.innerHTML = "아직 정산 내역이 없습니다.";
+    return;
+  }
 
   list.innerHTML = "";
-
 
   money.forEach(item => {
 
     const currentMember =
-      members.find(
-        member =>
-          member.id === item.memberId
-      );
-
+      members.find(member => member.id === item.memberId);
 
     const name =
       currentMember?.name ||
       item.memberName ||
       "멤버";
 
-
-    const div =
-      document.createElement("div");
-
-
-    div.className =
-      "list-item";
-
+    const div = document.createElement("div");
+    div.className = "list-item";
 
     div.innerHTML = `
+      <strong>${escapeHtml(name)}</strong>
 
-      <strong>
-        ${escapeHtml(name)}
-      </strong>
-
-      <span class="badge">
-        ${escapeHtml(item.type)}
-      </span>
+      <span class="badge">${escapeHtml(item.type)}</span>
 
       <div class="money-plus">
-        +
-        ${Number(item.amount)
-          .toLocaleString("ko-KR")}
-        원
+        +${Number(item.amount).toLocaleString("ko-KR")}원
       </div>
 
       <div class="small">
         ${escapeHtml(item.date || "")}
-        ${item.memo
-          ? " · " +
-            escapeHtml(item.memo)
-          : ""
-        }
+        ${item.memo ? " · " + escapeHtml(item.memo) : ""}
       </div>
 
-      <button
-        class="delete-btn"
-        data-delete-money="${item.id}"
-      >
-        삭제
-      </button>
+      <button class="delete-btn" data-delete-money="${item.id}">삭제</button>
     `;
-
 
     list.appendChild(div);
   });
 
 
-  document
-    .querySelectorAll(
-      "[data-delete-money]"
-    )
-    .forEach(button => {
+  document.querySelectorAll("[data-delete-money]").forEach(button => {
+    button.addEventListener("click", async () => {
 
-      button.addEventListener(
-        "click",
-        async () => {
+      if (!confirm("정산 내역 삭제할까?")) return;
 
-          if (
-            !confirm(
-              "정산 내역 삭제할까?"
-            )
-          ) return;
-
-
-          try {
-
-            await deleteDoc(
-              doc(
-                db,
-                "money",
-                button.dataset.deleteMoney
-              )
-            );
-
-          } catch(error) {
-
-            alert("삭제 실패");
-            setError(error);
-          }
-        }
-      );
+      try {
+        await deleteDoc(doc(db, "money", button.dataset.deleteMoney));
+      } catch(error) {
+        alert("삭제 실패");
+        setError(error);
+      }
     });
+  });
 }
 
 
-/* ================================
-   다음 라운딩
-================================ */
-
 function renderNextRound() {
+  const box = document.getElementById("nextRound");
 
-  const box =
-    document.getElementById(
-      "nextRound"
-    );
+  const today = new Date();
+  today.setHours(0,0,0,0);
 
+  const upcoming = rounds
+    .filter(round => {
+      const date = new Date(round.date + "T00:00:00");
+      return date >= today;
+    })
+    .sort((a,b) => new Date(a.date) - new Date(b.date));
 
-  const today =
-    new Date();
-
-  today.setHours(
-    0,0,0,0
-  );
-
-
-  const upcoming =
-    rounds
-      .filter(round => {
-
-        const date =
-          new Date(
-            round.date +
-            "T00:00:00"
-          );
-
-        return date >= today;
-      })
-      .sort(
-        (a,b) =>
-          new Date(a.date) -
-          new Date(b.date)
-      );
-
-
-  if (
-    upcoming.length === 0
-  ) {
-
-    box.innerHTML =
-      "예정된 라운딩이 없습니다.";
-
+  if (upcoming.length === 0) {
+    box.innerHTML = "예정된 라운딩이 없습니다.";
     return;
   }
 
-
-  const round =
-    upcoming[0];
-
+  const round = upcoming[0];
+  const attendeeIds = getAttendeeIds(round);
 
   box.innerHTML = `
-
     <strong style="font-size:18px;">
       ⛳ ${escapeHtml(round.course)}
     </strong>
@@ -1935,58 +1982,35 @@ function renderNextRound() {
     <div style="margin-top:8px;">
       ${escapeHtml(round.memo || "")}
     </div>
+
+    <div style="margin-top:9px;">
+      <span class="badge">참석 ${attendeeIds.length}명</span>
+    </div>
+
+    <div class="small">
+      ${attendeeIds.length
+        ? attendeeIds.map(id => escapeHtml(getMemberName(id))).join(" · ")
+        : "참석자 미정"
+      }
+    </div>
   `;
 }
 
 
-/* ================================
-   통계
-================================ */
-
 function renderStats() {
-
-  document
-    .getElementById("memberCount")
-    .textContent =
-    members.length;
-
-
-  document
-    .getElementById("roundCount")
-    .textContent =
-    rounds.length;
-
-
-  document
-    .getElementById("scoreCount")
-    .textContent =
-    scores.length;
+  document.getElementById("memberCount").textContent = members.length;
+  document.getElementById("roundCount").textContent = rounds.length;
+  document.getElementById("scoreCount").textContent = scores.length;
 }
 
-
-/* ================================
-   보안용 HTML 문자 처리
-================================ */
-
-function escapeHtml(value) {
-
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-
-/* ================================
-   전체 화면 갱신
-================================ */
 
 function renderAll() {
-
+  buildGolfAutocomplete();
+  renderGolfCourses();
   renderMembers();
+  renderNewAttendance();
   renderRounds();
+  renderTeamRoundSelect();
   renderScores();
   renderRanking();
   renderMoney();
@@ -1995,46 +2019,19 @@ function renderAll() {
 }
 
 
-/* ================================
-   오늘 날짜 기본 입력
-================================ */
+const todayString = new Date().toISOString().split("T")[0];
+document.getElementById("roundDate").value = todayString;
+document.getElementById("scoreDate").value = todayString;
 
-const todayString =
-  new Date()
-    .toISOString()
-    .split("T")[0];
-
-
-document
-  .getElementById("roundDate")
-  .value =
-  todayString;
-
-
-document
-  .getElementById("scoreDate")
-  .value =
-  todayString;
-
-
-/* ================================
-   앱 시작
-================================ */
 
 async function startApp() {
-
   try {
-
     await seedMembers();
-
     startRealtimeListeners();
-
   } catch(error) {
-
     setError(error);
   }
 }
-
 
 startApp();
 
