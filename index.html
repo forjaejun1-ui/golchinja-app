@@ -1403,6 +1403,166 @@
       .home-schedule-box { padding: 9px 6px; }
     }
 
+
+    /* ===== V12 홈 일정 팝업 + 조인 ===== */
+    .home-schedule-box {
+      cursor: pointer;
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    }
+    .home-schedule-box:active {
+      transform: scale(.98);
+      background: #f3f4f6;
+    }
+    .home-schedule-box.has-schedule {
+      border-color: #86efac;
+      background: #f0fdf4;
+    }
+
+    .schedule-mini-modal-card {
+      width: min(92vw, 430px);
+      max-height: 72vh;
+      overflow: auto;
+      background: white;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.28);
+    }
+    .schedule-popup-title {
+      font-size: 19px;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+    .schedule-popup-row {
+      padding: 9px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .schedule-popup-row:last-child { border-bottom: 0; }
+    .schedule-popup-label {
+      display: block;
+      font-size: 11px;
+      color: #6b7280;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+
+    .join-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+    .join-form-grid .full { grid-column: 1 / -1; }
+    .join-number-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+    .join-field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 900;
+      color: #374151;
+      margin: 4px 0 -2px;
+    }
+    .join-explain {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e3a8a;
+      padding: 11px;
+      border-radius: 11px;
+      font-size: 12px;
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+    .join-post {
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 13px;
+      margin-bottom: 10px;
+      background: #fff;
+    }
+    .join-post.full {
+      border-color: #86efac;
+      background: #f0fdf4;
+    }
+    .join-post.closed {
+      opacity: .72;
+      background: #f9fafb;
+    }
+    .join-post-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .join-post-course {
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+    .join-status-badge {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 10.5px;
+      font-weight: 900;
+      background: #e5e7eb;
+      color: #374151;
+    }
+    .join-status-badge.open { background:#dcfce7; color:#166534; }
+    .join-status-badge.full { background:#fef3c7; color:#92400e; }
+    .join-status-badge.confirmed { background:#dbeafe; color:#1e40af; }
+
+    .join-count {
+      margin: 10px 0 6px;
+      font-size: 14px;
+      font-weight: 900;
+    }
+    .join-progress {
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 9px;
+    }
+    .join-progress > span {
+      display: block;
+      height: 100%;
+      background: #16a34a;
+      border-radius: 999px;
+    }
+    .join-members {
+      font-size: 12px;
+      color: #4b5563;
+      line-height: 1.55;
+      margin-top: 7px;
+    }
+    .join-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-top: 10px;
+    }
+    .join-actions.one { grid-template-columns: 1fr; }
+    .join-btn {
+      min-height: 44px;
+      padding: 10px 8px;
+      font-size: 13px;
+      border-radius: 10px;
+    }
+    .join-btn.join { background:#16a34a; color:white; }
+    .join-btn.leave { background:#f3f4f6; color:#374151; border:1px solid #d1d5db; }
+    .join-btn.confirm { background:#111827; color:white; }
+    .join-btn.cancel { background:#fee2e2; color:#991b1b; }
+    .join-btn:disabled { opacity:.45; cursor:not-allowed; }
+
+    @media(max-width:430px) {
+      .schedule-mini-modal-card { padding: 15px; border-radius: 16px; }
+      .join-form-grid { grid-template-columns: 1fr; }
+      .join-form-grid .full { grid-column: auto; }
+    }
+
   </style>
 </head>
 
@@ -1482,6 +1642,7 @@
   <h1>골친자들 골치아픔 ⛳</h1>
   <p>15명 전용 골프모임 · 시즌 2026</p>
   <div id="connectionStatus" class="status">🔄 Firebase 연결 중...</div>
+  <div id="appErrorDetail" class="hidden" style="margin-top:8px;font-size:11px;color:#fecaca;word-break:break-all;"></div>
   <div id="currentUserBar" class="userbar"></div>
 </header>
 
@@ -1732,7 +1893,89 @@
   </section>
 
 
-  <section id="money" class="page">
+
+  <section id="join" class="page">
+    <div class="card">
+      <h2>🤝 같이 가실 분?</h2>
+      <div class="join-explain">
+        가고 싶은 골프 일정을 올리면 멤버들이 <strong>참가</strong>를 누를 수 있어요.
+        최대 인원이 넘으면 더 이상 참가할 수 없고, 글 작성자는 최소 인원이 모인 뒤 <strong>확정</strong>할 수 있습니다.
+        확정하면 자동으로 예정 라운딩에 등록됩니다.
+      </div>
+
+      <div class="join-form-grid">
+        <div class="full">
+          <label class="join-field-label" for="joinCourse">골프장</label>
+          <input id="joinCourse" type="text" list="golfCourseList" autocomplete="off" placeholder="예) 레이크우드CC">
+        </div>
+
+        <div>
+          <label class="join-field-label" for="joinDate">날짜</label>
+          <input id="joinDate" type="date">
+        </div>
+        <div>
+          <label class="join-field-label" for="joinTime">시간</label>
+          <input id="joinTime" type="time">
+        </div>
+
+        <div>
+          <label class="join-field-label" for="joinGreenFee">그린피</label>
+          <input id="joinGreenFee" type="number" inputmode="numeric" min="0" placeholder="원">
+        </div>
+        <div>
+          <label class="join-field-label" for="joinCaddieFee">캐디피</label>
+          <input id="joinCaddieFee" type="number" inputmode="numeric" min="0" placeholder="원">
+        </div>
+        <div>
+          <label class="join-field-label" for="joinCartFee">카트비</label>
+          <input id="joinCartFee" type="number" inputmode="numeric" min="0" placeholder="원">
+        </div>
+        <div>
+          <label class="join-field-label" for="joinMemo">메모</label>
+          <input id="joinMemo" type="text" placeholder="예) 티 잡아놨음">
+        </div>
+      </div>
+
+      <div class="join-number-grid">
+        <div>
+          <label class="join-field-label" for="joinMinPlayers">최소 인원</label>
+          <select id="joinMinPlayers">
+            <option value="2">2명</option>
+            <option value="3">3명</option>
+            <option value="4" selected>4명</option>
+            <option value="5">5명</option>
+            <option value="6">6명</option>
+            <option value="7">7명</option>
+            <option value="8">8명</option>
+          </select>
+        </div>
+        <div>
+          <label class="join-field-label" for="joinMaxPlayers">최대 인원</label>
+          <select id="joinMaxPlayers">
+            <option value="2">2명</option>
+            <option value="3">3명</option>
+            <option value="4" selected>4명</option>
+            <option value="5">5명</option>
+            <option value="6">6명</option>
+            <option value="7">7명</option>
+            <option value="8">8명</option>
+            <option value="12">12명</option>
+            <option value="16">16명</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="addJoinPostBtn" type="button" class="green">📣 같이 갈 사람 모집하기</button>
+    </div>
+
+    <div class="card">
+      <h2>📋 모집 중</h2>
+      <div id="joinPostList"><div class="loading">불러오는 중...</div></div>
+    </div>
+  </section>
+
+
+  <section id="money" class="page hidden">
     <div id="moneyCreateCard" class="card">
       <h2>💰 회비 · 벌금 · 찬조</h2>
 
@@ -1777,7 +2020,7 @@
         <div>📊 <strong>스코어</strong><br>내 타수와 기록 입력</div>
         <div>🗺️ <strong>골프장</strong><br>골프장 검색·길찾기</div>
         <div>👥 <strong>멤버</strong><br>회원 이름 확인</div>
-        <div>💰 <strong>회비</strong><br>회비·벌금·찬조 내역 확인</div>
+        <div>🤝 <strong>조인</strong><br>같이 갈 골프 일정 모집·참가</div>
       </div>
 
       <details class="guide-section" open>
@@ -1911,13 +2154,22 @@
 </div>
 
 
+
+<div id="scheduleDetailModal" class="modal">
+  <div class="schedule-mini-modal-card">
+    <div id="scheduleDetailContent"></div>
+    <button id="closeScheduleDetailBtn" type="button" class="primary" style="margin-top:14px;">닫기</button>
+  </div>
+</div>
+
+
 <nav>
   <button class="active" data-page="home"><span class="nav-icon">🏠</span>홈</button>
   <button data-page="round"><span class="nav-icon">⛳</span>라운딩</button>
   <button data-page="score"><span class="nav-icon">📊</span>스코어</button>
   <button data-page="golf"><span class="nav-icon">🗺️</span>골프장</button>
   <button data-page="member"><span class="nav-icon">👥</span>멤버</button>
-  <button data-page="money"><span class="nav-icon">💰</span>회비</button>
+  <button data-page="join"><span class="nav-icon">🤝</span>조인</button>
   <button data-page="guide"><span class="nav-icon">📖</span>사용법</button>
 </nav>
 </div>
@@ -1969,6 +2221,7 @@ let members = [];
 let rounds = [];
 let scores = [];
 let money = [];
+let joinPosts = [];
 
 let favoriteGolfCourses =
   JSON.parse(localStorage.getItem("favoriteGolfCourses") || "[]");
@@ -2361,11 +2614,29 @@ document.getElementById("retryJoinRequestBtn")
 function setConnected() {
   statusBox.textContent = "🟢 15명 실시간 연결";
   statusBox.className = "status online";
+
+  const detail = document.getElementById("appErrorDetail");
+  if (detail && !detail.textContent.startsWith("화면 오류")) {
+    detail.textContent = "";
+    detail.classList.add("hidden");
+  }
 }
 
 function setError(message) {
   statusBox.textContent = "🔴 연결 오류";
   statusBox.className = "status error";
+
+  const detail = document.getElementById("appErrorDetail");
+  const errorText =
+    message?.message ||
+    message?.code ||
+    String(message || "알 수 없는 오류");
+
+  if (detail) {
+    detail.textContent = `오류: ${errorText}`;
+    detail.classList.remove("hidden");
+  }
+
   console.error(message);
 }
 
@@ -2402,6 +2673,9 @@ function startRealtimeListeners() {
 
       members.sort((a,b) => (a.order || 0) - (b.order || 0));
 
+      const memberCountBox = document.getElementById("memberCount");
+      if (memberCountBox) memberCountBox.textContent = members.length;
+
       renderAll();
       setConnected();
     },
@@ -2418,6 +2692,9 @@ function startRealtimeListeners() {
       }));
 
       rounds.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+      const roundCountBox = document.getElementById("roundCount");
+      if (roundCountBox) roundCountBox.textContent = rounds.length;
 
       renderAll();
       setConnected();
@@ -2436,7 +2713,33 @@ function startRealtimeListeners() {
 
       scores.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
 
+      const scoreCountBox = document.getElementById("scoreCount");
+      if (scoreCountBox) scoreCountBox.textContent = scores.length;
+
       renderAll();
+      setConnected();
+    },
+    error => setError(error)
+  );
+
+
+  onSnapshot(
+    collection(db, "joinPosts"),
+    snapshot => {
+      joinPosts = snapshot.docs.map(item => ({
+        id: item.id,
+        ...item.data()
+      }));
+
+      joinPosts.sort((a,b) => {
+        const aClosed = a.status === "confirmed" || a.status === "cancelled";
+        const bClosed = b.status === "confirmed" || b.status === "cancelled";
+        if (aClosed !== bClosed) return aClosed ? 1 : -1;
+        return String(a.date || "").localeCompare(String(b.date || "")) ||
+               (b.createdAt || 0) - (a.createdAt || 0);
+      });
+
+      safeRender("조인", renderJoinPosts);
       setConnected();
     },
     error => setError(error)
@@ -3841,6 +4144,323 @@ function renderRanking() {
 }
 
 
+
+function formatWon(value) {
+  const amount = Number(value || 0);
+  return amount > 0 ? `${amount.toLocaleString("ko-KR")}원` : "";
+}
+
+function getJoinMemberNames(ids) {
+  return (Array.isArray(ids) ? ids : []).map(getMemberName);
+}
+
+document.getElementById("addJoinPostBtn")?.addEventListener("click", async () => {
+  if (!isApproved()) {
+    alert("승인된 회원만 모집글을 올릴 수 있어.");
+    return;
+  }
+
+  const course = document.getElementById("joinCourse").value.trim();
+  const date = document.getElementById("joinDate").value;
+  const time = document.getElementById("joinTime").value;
+  const greenFee = Number(document.getElementById("joinGreenFee").value || 0);
+  const caddieFee = Number(document.getElementById("joinCaddieFee").value || 0);
+  const cartFee = Number(document.getElementById("joinCartFee").value || 0);
+  const memo = document.getElementById("joinMemo").value.trim();
+  const minPlayers = Number(document.getElementById("joinMinPlayers").value);
+  const maxPlayers = Number(document.getElementById("joinMaxPlayers").value);
+
+  if (!course || !date) {
+    alert("골프장과 날짜는 꼭 입력해줘!");
+    return;
+  }
+
+  if (!minPlayers || !maxPlayers || minPlayers > maxPlayers) {
+    alert("최소 인원은 최대 인원보다 많을 수 없어!");
+    return;
+  }
+
+  const creatorId = ownMemberId();
+  const creatorName = getMemberName(creatorId);
+
+  try {
+    await addDoc(collection(db, "joinPosts"), {
+      creatorMemberId: creatorId,
+      creatorName,
+      course,
+      date,
+      time,
+      greenFee,
+      caddieFee,
+      cartFee,
+      memo,
+      minPlayers,
+      maxPlayers,
+      participantIds: [creatorId],
+      status: "open",
+      createdAt: Date.now()
+    });
+
+    ["joinCourse","joinTime","joinGreenFee","joinCaddieFee","joinCartFee","joinMemo"]
+      .forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
+
+    document.getElementById("joinDate").value = new Date().toISOString().split("T")[0];
+    document.getElementById("joinMinPlayers").value = "4";
+    document.getElementById("joinMaxPlayers").value = "4";
+
+    alert("📣 모집글 올렸어!");
+  } catch(error) {
+    alert("모집글 등록 실패");
+    setError(error);
+  }
+});
+
+async function joinPost(postId) {
+  if (!isApproved()) return;
+
+  const ref = doc(db, "joinPosts", postId);
+  const me = ownMemberId();
+
+  try {
+    await runTransaction(db, async transaction => {
+      const snap = await transaction.get(ref);
+      if (!snap.exists()) throw new Error("모집글이 없어졌어.");
+
+      const data = snap.data();
+      if (data.status !== "open") throw new Error("이미 종료된 모집이야.");
+
+      const ids = Array.isArray(data.participantIds) ? [...data.participantIds] : [];
+      if (ids.includes(me)) return;
+
+      const maxPlayers = Number(data.maxPlayers || 4);
+      if (ids.length >= maxPlayers) throw new Error("이미 최대 인원이 꽉 찼어.");
+
+      ids.push(me);
+      transaction.update(ref, {
+        participantIds: ids,
+        updatedAt: Date.now()
+      });
+    });
+  } catch(error) {
+    alert(error?.message || "참가 처리 실패");
+  }
+}
+
+async function leaveJoinPost(postId) {
+  if (!isApproved()) return;
+
+  const ref = doc(db, "joinPosts", postId);
+  const me = ownMemberId();
+
+  try {
+    await runTransaction(db, async transaction => {
+      const snap = await transaction.get(ref);
+      if (!snap.exists()) throw new Error("모집글이 없어졌어.");
+
+      const data = snap.data();
+      if (data.status !== "open") throw new Error("이미 종료된 모집이야.");
+      if (data.creatorMemberId === me) throw new Error("글 작성자는 참가 취소 대신 모집 취소를 사용해줘.");
+
+      const ids = (Array.isArray(data.participantIds) ? data.participantIds : [])
+        .filter(id => id !== me);
+
+      transaction.update(ref, {
+        participantIds: ids,
+        updatedAt: Date.now()
+      });
+    });
+  } catch(error) {
+    alert(error?.message || "참가 취소 실패");
+  }
+}
+
+async function cancelJoinPost(postId) {
+  const post = joinPosts.find(item => item.id === postId);
+  if (!post || post.creatorMemberId !== ownMemberId()) return;
+  if (!confirm("이 모집을 취소할까?")) return;
+
+  try {
+    await updateDoc(doc(db, "joinPosts", postId), {
+      status: "cancelled",
+      cancelledAt: Date.now()
+    });
+  } catch(error) {
+    alert("모집 취소 실패");
+    setError(error);
+  }
+}
+
+async function confirmJoinPost(postId) {
+  const me = ownMemberId();
+  const postRef = doc(db, "joinPosts", postId);
+  const roundRef = doc(collection(db, "rounds"));
+
+  try {
+    await runTransaction(db, async transaction => {
+      const snap = await transaction.get(postRef);
+      if (!snap.exists()) throw new Error("모집글이 없어졌어.");
+
+      const post = snap.data();
+
+      if (post.creatorMemberId !== me) throw new Error("글 작성자만 확정할 수 있어.");
+      if (post.status !== "open") throw new Error("이미 종료된 모집이야.");
+
+      const participantIds = Array.isArray(post.participantIds)
+        ? [...new Set(post.participantIds)]
+        : [me];
+
+      const minPlayers = Number(post.minPlayers || 2);
+      const maxPlayers = Number(post.maxPlayers || 4);
+
+      if (participantIds.length < minPlayers) {
+        throw new Error(`최소 ${minPlayers}명이 모여야 확정할 수 있어.`);
+      }
+      if (participantIds.length > maxPlayers) {
+        throw new Error("최대 인원을 초과해서 확정할 수 없어.");
+      }
+
+      transaction.set(roundRef, {
+        date: post.date,
+        time: post.time || "",
+        course: post.course,
+        roundType: "일반 18홀",
+        tourStartDate: "",
+        tourEndDate: "",
+        greenFee: Number(post.greenFee || 0),
+        caddieFee: Number(post.caddieFee || 0),
+        cartFee: Number(post.cartFee || 0),
+        memo: post.memo
+          ? `🤝 조인 확정 · ${post.memo}`
+          : "🤝 조인에서 확정된 라운딩",
+        attendeeIds: participantIds,
+        teams: [],
+        createdAt: Date.now(),
+        sourceJoinPostId: postId
+      });
+
+      transaction.update(postRef, {
+        status: "confirmed",
+        confirmedAt: Date.now(),
+        confirmedRoundId: roundRef.id
+      });
+    });
+
+    alert("✅ 확정 완료! 예정 라운딩에 자동 등록했어.");
+  } catch(error) {
+    alert(error?.message || "확정 실패");
+  }
+}
+
+function renderJoinPosts() {
+  const list = document.getElementById("joinPostList");
+  if (!list) return;
+
+  if (joinPosts.length === 0) {
+    list.innerHTML = `<div class="small">아직 모집글이 없습니다. 먼저 한 번 올려보세요.</div>`;
+    return;
+  }
+
+  const nowText = new Date().toISOString().split("T")[0];
+  const visible = joinPosts.filter(post =>
+    post.status !== "cancelled" &&
+    (post.status === "open" || post.status === "confirmed") &&
+    (!post.date || post.date >= nowText || post.status === "confirmed")
+  );
+
+  if (visible.length === 0) {
+    list.innerHTML = `<div class="small">현재 진행 중인 모집이 없습니다.</div>`;
+    return;
+  }
+
+  list.innerHTML = visible.map(post => {
+    const ids = Array.isArray(post.participantIds) ? post.participantIds : [];
+    const count = ids.length;
+    const minPlayers = Number(post.minPlayers || 2);
+    const maxPlayers = Number(post.maxPlayers || 4);
+    const full = count >= maxPlayers;
+    const confirmed = post.status === "confirmed";
+    const isCreator = post.creatorMemberId === ownMemberId();
+    const joined = ids.includes(ownMemberId());
+    const canConfirm = isCreator && !confirmed && count >= minPlayers;
+    const pct = Math.min(100, Math.round((count / maxPlayers) * 100));
+
+    let statusText = confirmed ? "확정" : full ? "정원 마감" : "모집중";
+    let statusClass = confirmed ? "confirmed" : full ? "full" : "open";
+
+    const feeParts = [
+      post.greenFee ? `그린피 ${formatWon(post.greenFee)}` : "",
+      post.caddieFee ? `캐디피 ${formatWon(post.caddieFee)}` : "",
+      post.cartFee ? `카트비 ${formatWon(post.cartFee)}` : ""
+    ].filter(Boolean);
+
+    let actions = "";
+
+    if (!confirmed) {
+      if (isCreator) {
+        actions = `
+          <div class="join-actions">
+            <button class="join-btn confirm" data-confirm-join="${post.id}" ${canConfirm ? "" : "disabled"}>
+              ${canConfirm ? "✅ 이 인원으로 확정" : `최소 ${minPlayers}명 필요`}
+            </button>
+            <button class="join-btn cancel" data-cancel-join="${post.id}">모집 취소</button>
+          </div>`;
+      } else if (joined) {
+        actions = `
+          <div class="join-actions one">
+            <button class="join-btn leave" data-leave-join="${post.id}">참가 취소</button>
+          </div>`;
+      } else {
+        actions = `
+          <div class="join-actions one">
+            <button class="join-btn join" data-join-post="${post.id}" ${full ? "disabled" : ""}>
+              ${full ? "정원 마감" : "🙋 참가하기"}
+            </button>
+          </div>`;
+      }
+    }
+
+    return `
+      <div class="join-post ${full ? "full" : ""} ${confirmed ? "closed" : ""}">
+        <div class="join-post-head">
+          <div>
+            <div class="join-post-course">⛳ ${escapeHtml(post.course || "")}</div>
+            <div class="small">
+              ${escapeHtml(post.date || "")}${post.time ? " · " + escapeHtml(post.time) : ""}
+              · 작성 ${escapeHtml(post.creatorName || getMemberName(post.creatorMemberId))}
+            </div>
+          </div>
+          <span class="join-status-badge ${statusClass}">${statusText}</span>
+        </div>
+
+        ${feeParts.length ? `<div class="small" style="margin-top:7px;">💳 ${feeParts.map(escapeHtml).join(" · ")}</div>` : ""}
+        ${post.memo ? `<div class="small" style="margin-top:5px;">📝 ${escapeHtml(post.memo)}</div>` : ""}
+
+        <div class="join-count">👥 ${count}명 / 최대 ${maxPlayers}명 <span class="small">· 최소 ${minPlayers}명</span></div>
+        <div class="join-progress"><span style="width:${pct}%"></span></div>
+        <div class="join-members">참가: ${getJoinMemberNames(ids).map(escapeHtml).join(" · ") || "없음"}</div>
+        ${actions}
+      </div>
+    `;
+  }).join("");
+
+  document.querySelectorAll("[data-join-post]").forEach(btn =>
+    btn.addEventListener("click", () => joinPost(btn.dataset.joinPost))
+  );
+  document.querySelectorAll("[data-leave-join]").forEach(btn =>
+    btn.addEventListener("click", () => leaveJoinPost(btn.dataset.leaveJoin))
+  );
+  document.querySelectorAll("[data-cancel-join]").forEach(btn =>
+    btn.addEventListener("click", () => cancelJoinPost(btn.dataset.cancelJoin))
+  );
+  document.querySelectorAll("[data-confirm-join]").forEach(btn =>
+    btn.addEventListener("click", () => confirmJoinPost(btn.dataset.confirmJoin))
+  );
+}
+
+
 document.getElementById("addMoneyBtn").addEventListener("click", async () => {
   if (!isAdmin()) {
     alert("회비 입력은 관리자만 가능해.");
@@ -3949,12 +4569,76 @@ function renderMoney() {
 }
 
 
+function openScheduleDetail(roundId) {
+  const round = rounds.find(item => item.id === roundId);
+  if (!round) return;
+
+  const content = document.getElementById("scheduleDetailContent");
+  const modal = document.getElementById("scheduleDetailModal");
+  if (!content || !modal) return;
+
+  const attendeeIds = getAttendeeIds(round);
+  const attendeeNames = attendeeIds.map(getMemberName);
+  const feeText = getRoundFeeText(round);
+
+  content.innerHTML = `
+    <div class="schedule-popup-title">⛳ ${escapeHtml(round.course || "")}</div>
+
+    <div class="schedule-popup-row">
+      <span class="schedule-popup-label">일정</span>
+      ${escapeHtml(getRoundDateText(round))}
+    </div>
+
+    <div class="schedule-popup-row">
+      <span class="schedule-popup-label">구분</span>
+      ${escapeHtml(round.roundType || "일반 18홀")}
+    </div>
+
+    ${feeText ? `
+      <div class="schedule-popup-row">
+        <span class="schedule-popup-label">비용</span>
+        ${escapeHtml(feeText)}
+      </div>` : ""}
+
+    <div class="schedule-popup-row">
+      <span class="schedule-popup-label">참석자 ${attendeeIds.length}명</span>
+      ${attendeeNames.length ? attendeeNames.map(escapeHtml).join(" · ") : "아직 없음"}
+    </div>
+
+    ${round.memo ? `
+      <div class="schedule-popup-row">
+        <span class="schedule-popup-label">메모</span>
+        ${escapeHtml(round.memo)}
+      </div>` : ""}
+  `;
+
+  modal.classList.add("show");
+}
+
+function closeScheduleDetail() {
+  document.getElementById("scheduleDetailModal")?.classList.remove("show");
+}
+
+document.getElementById("closeScheduleDetailBtn")
+  ?.addEventListener("click", closeScheduleDetail);
+
+document.getElementById("scheduleDetailModal")
+  ?.addEventListener("click", event => {
+    if (event.target.id === "scheduleDetailModal") closeScheduleDetail();
+  });
+
 function renderHomeScheduleBox(elementId, round, emptyText) {
   const box = document.getElementById(elementId);
   if (!box) return;
 
+  const parent = box.closest(".home-schedule-box");
+
   if (!round) {
     box.innerHTML = `<div class="home-schedule-empty">${escapeHtml(emptyText)}</div>`;
+    if (parent) {
+      parent.classList.remove("has-schedule");
+      parent.onclick = null;
+    }
     return;
   }
 
@@ -3964,8 +4648,13 @@ function renderHomeScheduleBox(elementId, round, emptyText) {
   box.innerHTML = `
     <div class="home-schedule-main">${escapeHtml(round.course || "")}</div>
     <div class="home-schedule-date">${escapeHtml(dateText)}</div>
-    ${attendeeIds.length ? `<div class="home-schedule-more">참석 ${attendeeIds.length}명</div>` : ""}
+    ${attendeeIds.length ? `<div class="home-schedule-more">참석 ${attendeeIds.length}명 · 눌러서 보기</div>` : `<div class="home-schedule-more">눌러서 자세히 보기</div>`}
   `;
+
+  if (parent) {
+    parent.classList.add("has-schedule");
+    parent.onclick = () => openScheduleDetail(round.id);
+  }
 }
 
 function renderNextRound() {
@@ -3999,26 +4688,74 @@ function renderStats() {
 }
 
 
+function safeRender(name, fn) {
+  try {
+    fn();
+    return true;
+  } catch (error) {
+    console.error(`[${name}] 화면 렌더 오류`, error);
+
+    const detail = document.getElementById("appErrorDetail");
+    if (detail && isAdmin()) {
+      detail.textContent = `화면 오류(${name}): ${error?.message || error}`;
+      detail.classList.remove("hidden");
+    }
+
+    return false;
+  }
+}
+
 function renderAll() {
-  renderJoinMemberOptions();
-  buildGolfAutocomplete();
-  renderGolfCourses();
-  renderMembers();
-  renderNewAttendance();
-  renderRounds();
-  renderTeamRoundSelect();
-  renderScores();
-  renderRanking();
-  renderMoney();
-  renderNextRound();
-  renderStats();
+  // 숫자/메인 일정은 다른 화면 오류와 상관없이 제일 먼저 표시
+  safeRender("통계", renderStats);
+  safeRender("다음 일정", renderNextRound);
+
+  safeRender("가입 이름목록", renderJoinMemberOptions);
+  safeRender("골프장 자동완성", buildGolfAutocomplete);
+  safeRender("골프장 목록", renderGolfCourses);
+  safeRender("멤버", renderMembers);
+  safeRender("참석자", renderNewAttendance);
+  safeRender("라운딩", renderRounds);
+  safeRender("조편성", renderTeamRoundSelect);
+  safeRender("스코어", renderScores);
+  safeRender("랭킹", renderRanking);
+  safeRender("조인", renderJoinPosts);
+  safeRender("회비(숨김)", renderMoney);
 }
 
 
 const todayString = new Date().toISOString().split("T")[0];
 document.getElementById("roundDate").value = todayString;
 document.getElementById("scoreDate").value = todayString;
+if (document.getElementById("joinDate")) document.getElementById("joinDate").value = todayString;
 updateTourDateFields();
+
+
+window.addEventListener("error", event => {
+  const detail = document.getElementById("appErrorDetail");
+  if (detail) {
+    detail.textContent = `스크립트 오류: ${event.message || "알 수 없는 오류"}`;
+    detail.classList.remove("hidden");
+  }
+  console.error("window error", event.error || event.message);
+});
+
+window.addEventListener("unhandledrejection", event => {
+  const reason = event.reason;
+  const detail = document.getElementById("appErrorDetail");
+  if (detail) {
+    detail.textContent = `비동기 오류: ${reason?.message || reason || "알 수 없는 오류"}`;
+    detail.classList.remove("hidden");
+  }
+  console.error("unhandled rejection", reason);
+});
+
+// 라운딩 시간이 지나면 Firebase 변경이 없어도 홈/지난 라운딩 표시를 자동 갱신
+setInterval(() => {
+  if (!isApproved()) return;
+  safeRender("다음 일정 자동갱신", renderNextRound);
+  safeRender("라운딩 자동갱신", renderRounds);
+}, 60 * 1000);
 
 
 async function startApp() {
