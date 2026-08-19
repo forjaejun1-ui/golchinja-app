@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -472,6 +472,165 @@
 
     .loading { text-align: center; padding: 20px; color: #6b7280; }
 
+    /* 라운딩 종류 */
+    .round-type-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin: 4px 0 8px;
+    }
+
+    .round-type-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .round-type-btn {
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+      min-height: 48px;
+      padding: 10px 6px;
+      font-size: 13px;
+    }
+
+    .round-type-btn.active {
+      background: #111827;
+      color: white;
+      border-color: #111827;
+      box-shadow: 0 2px 7px rgba(17,24,39,.14);
+    }
+
+    /* 라운딩 비용 입력기 */
+    .fee-entry-wrap {
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      border-radius: 14px;
+      padding: 11px;
+      margin: 5px 0 12px;
+    }
+
+    .fee-entry-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 9px;
+    }
+
+    .fee-entry-layout {
+      display: grid;
+      grid-template-columns: minmax(112px, .85fr) minmax(190px, 1.65fr);
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .fee-tabs {
+      display: grid;
+      grid-template-rows: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .fee-tab {
+      background: white;
+      color: #374151;
+      border: 1px solid #d1d5db;
+      padding: 9px 7px;
+      min-height: 62px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 5px;
+      text-align: left;
+    }
+
+    .fee-tab strong {
+      font-size: 14px;
+    }
+
+    .fee-tab span {
+      width: 100%;
+      font-size: 12px;
+      color: #6b7280;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .fee-tab.active {
+      background: #ecfdf5;
+      border: 2px solid #16a34a;
+      color: #166534;
+    }
+
+    .fee-tab.active span { color: #166534; font-weight: bold; }
+
+    .fee-calculator {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 9px;
+    }
+
+    .fee-display {
+      min-height: 49px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 8px 11px;
+      margin-bottom: 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #111827;
+      color: white;
+      font-size: 21px;
+      font-weight: bold;
+      letter-spacing: .2px;
+    }
+
+    .fee-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .fee-keypad button {
+      min-height: 43px;
+      padding: 7px;
+      background: #f3f4f6;
+      color: #111827;
+      border: 1px solid #e5e7eb;
+      font-size: 18px;
+    }
+
+    .fee-keypad button:active { background: #e5e7eb; }
+    .fee-keypad .fee-clear { color: #b91c1c; background: #fef2f2; }
+    .fee-keypad .fee-back { color: #92400e; background: #fffbeb; }
+
+    .round-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 7px;
+    }
+
+    .round-type-badge {
+      display: inline-block;
+      background: #e0f2fe;
+      color: #075985;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .round-fee-line {
+      margin-top: 7px;
+      font-size: 12px;
+      color: #4b5563;
+      line-height: 1.55;
+    }
+
     .page { display: none; }
     .page.active { display: block; }
 
@@ -533,8 +692,127 @@
 
     .nav-icon { display: block; font-size: 19px; margin-bottom: 2px; }
 
+
+
+    /* =========================
+       초보 회원용 사용법
+    ========================= */
+    .login-guide {
+      margin: 14px 0 4px;
+      padding: 14px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      text-align: left;
+    }
+    .login-guide-title {
+      font-weight: 800;
+      color: #166534;
+      margin-bottom: 9px;
+      font-size: 15px;
+    }
+    .login-step {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      margin: 8px 0;
+      font-size: 13px;
+      line-height: 1.55;
+      color: #374151;
+    }
+    .login-step-num {
+      flex: 0 0 25px;
+      height: 25px;
+      border-radius: 999px;
+      background: #16a34a;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 12px;
+    }
+    .home-guide-btn {
+      margin-top: 4px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      font-size: 16px;
+      padding: 14px;
+    }
+    .guide-intro {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 12px;
+      padding: 14px;
+      line-height: 1.65;
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+    .guide-quick {
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .guide-quick div {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 11px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .guide-section {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      background: white;
+    }
+    .guide-section summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 15px 14px;
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: #f9fafb;
+    }
+    .guide-section summary::-webkit-details-marker { display:none; }
+    .guide-section summary::after { content: '▼'; font-size: 11px; color:#6b7280; }
+    .guide-section[open] summary::after { content: '▲'; }
+    .guide-body { padding: 14px; font-size: 14px; line-height: 1.7; }
+    .guide-body ol { padding-left: 22px; margin: 8px 0 12px; }
+    .guide-body li { margin: 7px 0; }
+    .guide-tip {
+      background: #f0fdf4;
+      border-left: 4px solid #16a34a;
+      padding: 10px 11px;
+      border-radius: 7px;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    .guide-warn {
+      background: #fff7ed;
+      border-left: 4px solid #f97316;
+      padding: 10px 11px;
+      border-radius: 7px;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
     @media(max-width:600px) {
       .attendance-grid { grid-template-columns: repeat(2,1fr); }
+      .round-type-grid { grid-template-columns: repeat(2,1fr); }
+      .round-type-btn { min-height: 52px; font-size: 14px; }
+      .fee-entry-layout { grid-template-columns: 112px 1fr; gap: 8px; }
+      .fee-tab { min-height: 64px; padding: 8px 6px; }
+      .fee-display { min-height: 48px; font-size: 19px; }
+      .fee-keypad button { min-height: 46px; font-size: 19px; }
     }
 
     @media(max-width:450px) {
@@ -542,6 +820,442 @@
       .container { padding: 10px; }
       .member-grid { grid-template-columns: repeat(2,1fr); }
     }
+
+
+    /* =========================================================
+       V10 MOBILE POLISH · Galaxy S / Galaxy Fold 우선
+       - 55세 이상 사용자를 고려한 글자/터치 영역
+       - PC에서도 휴대폰 앱처럼 중앙 정렬
+    ========================================================= */
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      background: #f3f4f6;
+    }
+
+    body {
+      font-size: 16px;
+      line-height: 1.55;
+      padding-bottom: calc(82px + env(safe-area-inset-bottom));
+      overflow-x: hidden;
+    }
+
+    header {
+      padding: 18px 14px 15px;
+    }
+
+    header h1 {
+      font-size: clamp(21px, 5.8vw, 25px);
+      line-height: 1.25;
+      margin-bottom: 5px;
+      letter-spacing: -0.35px;
+    }
+
+    header p {
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .status {
+      font-size: 11.5px;
+      padding: 5px 10px;
+      margin-top: 8px;
+    }
+
+    .userbar {
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 620px;
+      padding: 12px;
+    }
+
+    .card {
+      border-radius: 15px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.055);
+    }
+
+    .card h2 {
+      font-size: 19px;
+      line-height: 1.35;
+      margin-bottom: 14px;
+      letter-spacing: -0.25px;
+    }
+
+    .small,
+    .readonly-hint {
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    input,
+    select,
+    textarea {
+      min-height: 50px;
+      padding: 12px 13px;
+      margin-top: 6px;
+      margin-bottom: 10px;
+      border-radius: 11px;
+      font-size: 16px; /* 모바일 브라우저 자동 확대 방지 */
+      line-height: 1.35;
+    }
+
+    textarea {
+      min-height: 88px;
+    }
+
+    button {
+      min-height: 48px;
+      padding: 11px 12px;
+      border-radius: 11px;
+      font-size: 15px;
+      line-height: 1.25;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .mini-btn,
+    .delete-btn,
+    .edit-btn,
+    .team-btn {
+      min-height: 40px;
+      font-size: 12.5px;
+      padding: 8px 10px;
+    }
+
+    .stats {
+      gap: 7px;
+    }
+
+    .stat {
+      padding: 12px 5px;
+      border-radius: 11px;
+    }
+
+    .stat strong {
+      font-size: 21px;
+      line-height: 1.2;
+    }
+
+    .stat span {
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .attendance-box,
+    .team,
+    .golf-card {
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .attendance-head {
+      gap: 8px;
+      align-items: center;
+    }
+
+    .attendance-grid {
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 8px;
+    }
+
+    .attendance-item {
+      min-height: 46px;
+      padding: 9px 10px;
+      font-size: 13.5px;
+    }
+
+    .attendance-count {
+      font-size: 13.5px;
+    }
+
+    .member-grid {
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 8px;
+    }
+
+    .member {
+      padding: 11px;
+      border-radius: 11px;
+      font-size: 14px;
+    }
+
+    .golf-card-head strong {
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .golf-actions {
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .golf-link {
+      min-height: 44px;
+      padding: 9px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .round-type-title,
+    .fee-entry-title {
+      font-size: 15px;
+      margin-bottom: 9px;
+    }
+
+    .round-type-grid {
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 8px;
+    }
+
+    .round-type-btn {
+      min-height: 52px;
+      padding: 10px 7px;
+      font-size: 14.5px;
+      border-radius: 11px;
+    }
+
+    .fee-entry-wrap {
+      padding: 12px;
+      border-radius: 13px;
+    }
+
+    .fee-entry-layout {
+      grid-template-columns: minmax(100px, 31%) 1fr;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .fee-tabs {
+      gap: 7px;
+    }
+
+    .fee-tab {
+      min-height: 62px;
+      padding: 8px 6px;
+      border-radius: 10px;
+    }
+
+    .fee-tab strong {
+      font-size: 14px;
+    }
+
+    .fee-tab span {
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .fee-calculator {
+      padding: 9px;
+      border-radius: 11px;
+    }
+
+    .fee-display {
+      min-height: 49px;
+      padding: 9px 10px;
+      font-size: 20px;
+      border-radius: 9px;
+    }
+
+    .fee-keypad {
+      gap: 6px;
+      margin-top: 7px;
+    }
+
+    .fee-keypad button {
+      min-height: 48px;
+      padding: 6px;
+      border-radius: 9px;
+      font-size: 20px;
+    }
+
+    .round-type-badge {
+      font-size: 11px;
+      padding: 4px 8px;
+    }
+
+    .round-fee-line {
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .home-guide-btn {
+      min-height: 50px;
+      font-size: 15px;
+      border-radius: 12px;
+    }
+
+    .guide-intro {
+      font-size: 14.5px;
+      line-height: 1.7;
+      padding: 13px;
+      border-radius: 12px;
+    }
+
+    .guide-quick {
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 8px;
+    }
+
+    .guide-quick div {
+      min-height: 56px;
+      padding: 10px 8px;
+      font-size: 13px;
+      line-height: 1.4;
+      border-radius: 11px;
+    }
+
+    .guide-section {
+      border-radius: 12px;
+      margin-bottom: 9px;
+    }
+
+    .guide-section summary {
+      min-height: 54px;
+      padding: 13px 14px;
+      font-size: 15.5px;
+      line-height: 1.4;
+    }
+
+    .guide-body {
+      padding: 13px 14px 15px;
+      font-size: 14.5px;
+      line-height: 1.75;
+    }
+
+    .guide-body li {
+      margin: 8px 0;
+    }
+
+    .guide-tip,
+    .guide-warn {
+      padding: 11px 12px;
+      font-size: 13.5px;
+      line-height: 1.6;
+      border-radius: 10px;
+    }
+
+    .auth-screen {
+      padding: 16px 12px calc(16px + env(safe-area-inset-bottom));
+      align-items: center;
+    }
+
+    .auth-card {
+      max-width: 440px;
+      padding: 20px 16px;
+      border-radius: 18px;
+    }
+
+    .auth-logo {
+      font-size: 42px;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .auth-card h1 {
+      font-size: 23px;
+      line-height: 1.3;
+    }
+
+    .auth-card p {
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .login-guide-title {
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .auth-note {
+      font-size: 13px;
+      line-height: 1.65;
+      padding: 12px;
+    }
+
+    .modal {
+      padding: 12px;
+      align-items: flex-end;
+    }
+
+    .modal-card {
+      max-width: 620px;
+      max-height: 88vh;
+      border-radius: 18px 18px 12px 12px;
+      padding: 16px;
+    }
+
+    .modal-actions {
+      gap: 8px;
+    }
+
+    nav {
+      height: calc(74px + env(safe-area-inset-bottom));
+      padding-bottom: env(safe-area-inset-bottom);
+      box-shadow: 0 -3px 12px rgba(0,0,0,.06);
+    }
+
+    nav button {
+      min-width: 0;
+      min-height: 74px;
+      padding: 7px 2px 5px;
+      font-size: 10.5px;
+      line-height: 1.15;
+      white-space: nowrap;
+    }
+
+    .nav-icon {
+      font-size: 21px;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    nav button.active {
+      background: #f0fdf4;
+    }
+
+    @media (max-width: 370px) {
+      .container { padding: 9px; }
+      .card { padding: 14px; }
+      .card h2 { font-size: 18px; }
+      header { padding-left: 10px; padding-right: 10px; }
+      nav button { font-size: 9.5px; padding-left: 1px; padding-right: 1px; }
+      .nav-icon { font-size: 20px; }
+      .fee-entry-layout { grid-template-columns: 98px 1fr; gap: 6px; }
+      .fee-tab { min-height: 60px; }
+      .fee-keypad button { min-height: 46px; }
+      .golf-actions { grid-template-columns: 1fr; }
+      .golf-link { font-size: 13px; }
+    }
+
+    @media (min-width: 621px) {
+      body { background: #e5e7eb; }
+      #appShell {
+        width: 100%;
+        max-width: 720px;
+        margin: 0 auto;
+        background: #f3f4f6;
+        min-height: 100vh;
+        box-shadow: 0 0 24px rgba(0,0,0,.08);
+      }
+      nav {
+        left: 50%;
+        right: auto;
+        width: min(720px, 100%);
+        transform: translateX(-50%);
+      }
+      .container { max-width: 680px; }
+    }
+
   </style>
 </head>
 
@@ -562,18 +1276,31 @@
       <div class="auth-logo">🏌️</div>
       <h1>처음 오셨나요?</h1>
       <p>
-        아래에서 <strong>본인 이름</strong>을 선택하고 승인 요청만 보내면 돼.<br>
-        아이디나 비밀번호는 필요 없어.
+        처음 한 번만 본인 확인을 하면 돼.<br>
+        <strong>아이디·비밀번호 없이</strong> 이 휴대폰으로 자동 로그인돼.
       </p>
 
+      <div class="login-guide">
+        <div class="login-guide-title">📱 처음 로그인하는 방법</div>
+        <div class="login-step"><span class="login-step-num">1</span><div>아래 칸을 눌러 <strong>내 이름</strong>을 고릅니다.</div></div>
+        <div class="login-step"><span class="login-step-num">2</span><div><strong>관리자에게 승인 요청</strong> 버튼을 누릅니다.</div></div>
+        <div class="login-step"><span class="login-step-num">3</span><div>관리자가 확인해서 승인할 때까지 기다립니다.</div></div>
+        <div class="login-step"><span class="login-step-num">4</span><div>승인되면 자동으로 앱이 열립니다. 다음부터는 같은 휴대폰에서 바로 들어옵니다.</div></div>
+      </div>
+
       <select id="joinMemberSelect"></select>
+
+      <div class="auth-note" style="margin-top:8px;background:#fff7ed;border-color:#fdba74;color:#9a3412;font-size:14px;font-weight:700;line-height:1.6;">
+        ⚠️ 본인 이름이 목록에 없으면 임의로 다른 이름을 선택하지 말고,
+        <strong>재준에게 카카오톡으로 연락해 주세요.</strong>
+      </div>
 
       <button id="sendJoinRequestBtn" class="green">
         관리자에게 승인 요청
       </button>
 
       <div class="auth-note">
-        재준 관리자가 실제 회원인지 확인한 뒤 승인하면 이 휴대폰은 자동으로 본인 계정에 연결돼.
+        ✅ 본인 이름만 정확히 고르면 됩니다. 승인 후에는 같은 휴대폰에서 다시 신청할 필요가 없습니다.
       </div>
     </div>
 
@@ -632,6 +1359,12 @@
       <h2>⛳ 다음 라운딩</h2>
       <div id="nextRound">불러오는 중...</div>
     </div>
+
+    <div class="card">
+      <h2>📘 처음 쓰시나요?</h2>
+      <p class="small" style="margin-bottom:10px;">버튼이 헷갈리면 여기만 보시면 됩니다. 메뉴별로 아주 쉽게 설명해놨어요.</p>
+      <button type="button" class="home-guide-btn" data-open-guide>📖 앱 사용법 보기</button>
+    </div>
   </section>
 
 
@@ -644,6 +1377,55 @@
       <input id="roundCourse" type="text" list="golfCourseList" autocomplete="off" placeholder="골프장 검색 예) 레이크, 선산, 안성">
       <datalist id="golfCourseList"></datalist>
       <div class="small" style="margin-top:-5px;margin-bottom:10px;">전국 영업중 골프장 551개 자동완성 + 목록에 없어도 직접 입력 가능</div>
+
+      <div class="round-type-title">🏷️ 라운딩 종류</div>
+      <div class="round-type-grid" id="roundTypeGrid">
+        <button type="button" class="round-type-btn active" data-round-type="일반 18홀">일반 18홀</button>
+        <button type="button" class="round-type-btn" data-round-type="라운딩 9홀">라운딩 9홀</button>
+        <button type="button" class="round-type-btn" data-round-type="국내투어">국내투어</button>
+        <button type="button" class="round-type-btn" data-round-type="해외투어">해외투어</button>
+      </div>
+      <input id="roundType" type="hidden" value="일반 18홀">
+
+      <div class="fee-entry-wrap">
+        <div class="fee-entry-title">💳 라운딩 비용 입력</div>
+        <div class="fee-entry-layout">
+          <div class="fee-tabs">
+            <button type="button" class="fee-tab active" data-fee-field="greenFee">
+              <strong>그린피</strong><span id="greenFeeMini">미입력</span>
+            </button>
+            <button type="button" class="fee-tab" data-fee-field="caddieFee">
+              <strong>캐디피</strong><span id="caddieFeeMini">미입력</span>
+            </button>
+            <button type="button" class="fee-tab" data-fee-field="cartFee">
+              <strong>카트비</strong><span id="cartFeeMini">미입력</span>
+            </button>
+          </div>
+
+          <div class="fee-calculator">
+            <div id="feeDisplay" class="fee-display">0원</div>
+            <div class="fee-keypad">
+              <button type="button" data-fee-key="1">1</button>
+              <button type="button" data-fee-key="2">2</button>
+              <button type="button" data-fee-key="3">3</button>
+              <button type="button" data-fee-key="4">4</button>
+              <button type="button" data-fee-key="5">5</button>
+              <button type="button" data-fee-key="6">6</button>
+              <button type="button" data-fee-key="7">7</button>
+              <button type="button" data-fee-key="8">8</button>
+              <button type="button" data-fee-key="9">9</button>
+              <button type="button" class="fee-clear" data-fee-action="clear">C</button>
+              <button type="button" data-fee-key="0">0</button>
+              <button type="button" class="fee-back" data-fee-action="back">⌫</button>
+            </div>
+          </div>
+        </div>
+        <input id="greenFee" type="hidden" value="">
+        <input id="caddieFee" type="hidden" value="">
+        <input id="cartFee" type="hidden" value="">
+        <div class="small" style="margin-top:9px;">원하는 항목만 입력해도 돼. 합계는 따로 계산하지 않아.</div>
+      </div>
+
       <textarea id="roundMemo" placeholder="메모 / 회비 / 집결시간 등"></textarea>
 
       <div class="attendance-box">
@@ -804,6 +1586,131 @@
     </div>
   </section>
 
+
+  <section id="guide" class="page">
+    <div class="card">
+      <h2>📖 앱 사용법</h2>
+      <div class="guide-intro">
+        <strong>어렵게 생각하지 마세요.</strong><br>
+        아래에서 궁금한 메뉴를 한 번 누르면 설명이 펼쳐집니다.
+        대부분은 <strong>입력 → 저장 버튼</strong>만 누르면 끝입니다.
+      </div>
+
+      <div class="guide-quick">
+        <div>🏠 <strong>홈</strong><br>모임 현황·랭킹·다음 라운딩 보기</div>
+        <div>⛳ <strong>라운딩</strong><br>일정 확인·참석 체크</div>
+        <div>📊 <strong>스코어</strong><br>내 타수와 기록 입력</div>
+        <div>🗺️ <strong>골프장</strong><br>골프장 검색·길찾기</div>
+        <div>👥 <strong>멤버</strong><br>회원 이름 확인</div>
+        <div>💰 <strong>회비</strong><br>회비·벌금·찬조 내역 확인</div>
+      </div>
+
+      <details class="guide-section" open>
+        <summary>🏠 홈 화면</summary>
+        <div class="guide-body">
+          앱을 열면 가장 먼저 보이는 화면입니다.
+          <ol>
+            <li><strong>시즌 현황</strong>에서 회원 수, 라운딩 수, 스코어 기록 수를 봅니다.</li>
+            <li><strong>시즌 랭킹</strong>에서 현재 순위를 확인합니다.</li>
+            <li><strong>다음 라운딩</strong>에서 가장 가까운 모임 날짜와 골프장을 확인합니다.</li>
+          </ol>
+          <div class="guide-tip">💡 그냥 구경만 할 때는 홈 화면에서 아무것도 누르지 않아도 됩니다.</div>
+        </div>
+      </details>
+
+      <details class="guide-section">
+        <summary>⛳ 라운딩 메뉴</summary>
+        <div class="guide-body">
+          예정된 라운딩을 확인하거나 새 라운딩 정보를 볼 때 사용하는 메뉴입니다.
+          <ol>
+            <li>화면 아래 <strong>⛳ 라운딩</strong>을 누릅니다.</li>
+            <li>등록할 때는 날짜, 시간, 골프장을 차례로 고릅니다.</li>
+            <li><strong>일반 18홀 / 라운딩 9홀 / 국내투어 / 해외투어</strong> 중 하나를 고릅니다.</li>
+            <li>그린피·캐디피·카트비는 필요한 항목만 눌러 숫자판으로 입력합니다.</li>
+            <li><strong>참석자 선택</strong>에서 참석할 사람만 체크합니다.</li>
+            <li>마지막에 <strong>라운딩 저장</strong>을 누르면 끝입니다.</li>
+          </ol>
+          <div class="guide-tip">💡 비용은 세 가지를 전부 넣을 필요 없습니다. 아는 금액만 입력하면 됩니다.</div>
+          <div class="guide-warn">⚠️ 날짜·골프장·참석자는 저장 전에 한 번만 다시 확인해 주세요.</div>
+        </div>
+      </details>
+
+      <details class="guide-section">
+        <summary>📊 스코어 메뉴</summary>
+        <div class="guide-body">
+          라운딩이 끝난 뒤 <strong>내 스코어</strong>를 적는 곳입니다.
+          <ol>
+            <li>아래 <strong>📊 스코어</strong>를 누릅니다.</li>
+            <li>내 이름은 로그인한 회원 기준으로 자동 선택됩니다.</li>
+            <li>날짜와 골프장을 입력합니다.</li>
+            <li><strong>타수</strong>를 입력합니다. 예: 98타면 숫자 98.</li>
+            <li>버디가 있으면 개수를 넣고, 니어·롱기를 했으면 해당 항목을 선택합니다.</li>
+            <li><strong>기록 저장</strong>을 누릅니다.</li>
+          </ol>
+          <div class="guide-tip">💡 잘못 저장한 내 기록은 아래 스코어 기록에서 삭제 후 다시 입력할 수 있습니다.</div>
+        </div>
+      </details>
+
+      <details class="guide-section">
+        <summary>🗺️ 골프장 메뉴</summary>
+        <div class="guide-body">
+          골프장 위치나 홈페이지를 찾을 때 쓰면 됩니다.
+          <ol>
+            <li>아래 <strong>🗺️ 골프장</strong>을 누릅니다.</li>
+            <li>검색칸에 골프장 이름 일부만 적습니다. 예: <strong>선산</strong>, <strong>레이크</strong>.</li>
+            <li>원하는 골프장이 나오면 <strong>네이버 지도</strong>, <strong>공식 사이트 찾기</strong>, <strong>카카오 길찾기</strong> 중 필요한 버튼을 누릅니다.</li>
+            <li>자주 가는 곳은 별표 <strong>☆</strong>를 누르면 즐겨찾기가 됩니다.</li>
+          </ol>
+          <div class="guide-tip">💡 이름을 정확히 몰라도 두세 글자만 입력해 보세요.</div>
+        </div>
+      </details>
+
+      <details class="guide-section">
+        <summary>👥 멤버 메뉴</summary>
+        <div class="guide-body">
+          우리 모임 회원을 확인하는 메뉴입니다.
+          <ol>
+            <li>아래 <strong>👥 멤버</strong>를 누릅니다.</li>
+            <li>내 이름 옆에는 <strong>👤 표시</strong>가 보입니다.</li>
+            <li>일반 회원은 다른 사람 정보는 조회만 합니다.</li>
+            <li>내 이름이 잘못되어 있으면 <strong>이름 수정</strong>을 눌러 고칠 수 있습니다.</li>
+          </ol>
+          <div class="guide-warn">⚠️ 다른 사람 이름은 건드릴 필요 없습니다. 내 이름만 확인하면 됩니다.</div>
+        </div>
+      </details>
+
+      <details class="guide-section">
+        <summary>💰 회비 메뉴</summary>
+        <div class="guide-body">
+          회비·벌금·찬조 기록과 모임 정산을 보는 메뉴입니다.
+          <ol>
+            <li>아래 <strong>💰 회비</strong>를 누릅니다.</li>
+            <li>내역을 입력할 때는 이름을 고르고 <strong>회비 / 벌금 / 찬조</strong> 중 하나를 선택합니다.</li>
+            <li>금액을 숫자로 입력합니다.</li>
+            <li>필요하면 메모를 적고 <strong>정산 저장</strong>을 누릅니다.</li>
+            <li>아래에서 총 정산과 기존 정산 내역을 확인합니다.</li>
+          </ol>
+          <div class="guide-tip">💡 금액은 쉼표 없이 숫자만 적어도 됩니다. 예: 50000.</div>
+        </div>
+      </details>
+
+      <details class="guide-section">
+        <summary>🔐 로그인 / 승인</summary>
+        <div class="guide-body">
+          처음 사용하는 휴대폰에서만 하면 됩니다.
+          <ol>
+            <li>앱을 열고 목록에서 <strong>내 이름</strong>을 선택합니다.</li>
+            <li><strong>관리자에게 승인 요청</strong>을 누릅니다.</li>
+            <li>승인될 때까지 기다립니다.</li>
+            <li>승인되면 자동으로 앱이 열립니다.</li>
+            <li>그 다음부터는 같은 휴대폰에서 아이디나 비밀번호 없이 자동으로 들어옵니다.</li>
+          </ol>
+          <div class="guide-warn">⚠️ 휴대폰을 바꾸거나 브라우저 데이터를 전부 지우면 다시 승인 요청이 필요할 수 있습니다.</div>
+        </div>
+      </details>
+    </div>
+  </section>
+
 </div>
 
 
@@ -836,6 +1743,7 @@
   <button data-page="golf"><span class="nav-icon">🗺️</span>골프장</button>
   <button data-page="member"><span class="nav-icon">👥</span>멤버</button>
   <button data-page="money"><span class="nav-icon">💰</span>회비</button>
+  <button data-page="guide"><span class="nav-icon">📖</span>사용법</button>
 </nav>
 </div>
 
@@ -1397,6 +2305,19 @@ document.querySelectorAll("nav button").forEach(button => {
 });
 
 
+// 홈의 "앱 사용법 보기" 버튼
+document.querySelectorAll("[data-open-guide]").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+    document.querySelectorAll("nav button").forEach(btn => btn.classList.remove("active"));
+
+    document.getElementById("guide")?.classList.add("active");
+    document.querySelector('nav button[data-page="guide"]')?.classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+});
+
+
 function escapeHtml(value) {
   return String(value ?? "")
     .replaceAll("&","&amp;")
@@ -1883,6 +2804,89 @@ document.getElementById("toggleNewAttendanceBtn")
   });
 
 
+let activeFeeField = "greenFee";
+
+function formatWon(value) {
+  const number = Number(value || 0);
+  return number > 0 ? `${number.toLocaleString("ko-KR")}원` : "미입력";
+}
+
+function updateFeeInputUI() {
+  const input = document.getElementById(activeFeeField);
+  const value = input?.value || "";
+
+  document.getElementById("feeDisplay").textContent =
+    value ? `${Number(value).toLocaleString("ko-KR")}원` : "0원";
+
+  ["greenFee", "caddieFee", "cartFee"].forEach(field => {
+    const fieldInput = document.getElementById(field);
+    const mini = document.getElementById(`${field}Mini`);
+    if (mini && fieldInput) mini.textContent = formatWon(fieldInput.value);
+  });
+}
+
+function resetRoundCostInputs() {
+  ["greenFee", "caddieFee", "cartFee"].forEach(field => {
+    document.getElementById(field).value = "";
+  });
+
+  activeFeeField = "greenFee";
+  document.querySelectorAll(".fee-tab").forEach(button => {
+    button.classList.toggle("active", button.dataset.feeField === activeFeeField);
+  });
+
+  document.getElementById("roundType").value = "일반 18홀";
+  document.querySelectorAll(".round-type-btn").forEach(button => {
+    button.classList.toggle("active", button.dataset.roundType === "일반 18홀");
+  });
+
+  updateFeeInputUI();
+}
+
+document.querySelectorAll(".round-type-btn").forEach(button => {
+  button.addEventListener("click", () => {
+    document.getElementById("roundType").value = button.dataset.roundType;
+    document.querySelectorAll(".round-type-btn").forEach(item => {
+      item.classList.toggle("active", item === button);
+    });
+  });
+});
+
+document.querySelectorAll(".fee-tab").forEach(button => {
+  button.addEventListener("click", () => {
+    activeFeeField = button.dataset.feeField;
+    document.querySelectorAll(".fee-tab").forEach(item => {
+      item.classList.toggle("active", item === button);
+    });
+    updateFeeInputUI();
+  });
+});
+
+document.querySelectorAll("[data-fee-key]").forEach(button => {
+  button.addEventListener("click", () => {
+    const input = document.getElementById(activeFeeField);
+    let value = String(input.value || "").replace(/\D/g, "");
+    if (value.length >= 8) return;
+    value = (value + button.dataset.feeKey).replace(/^0+(?=\d)/, "");
+    input.value = value;
+    updateFeeInputUI();
+  });
+});
+
+document.querySelector('[data-fee-action="clear"]').addEventListener("click", () => {
+  document.getElementById(activeFeeField).value = "";
+  updateFeeInputUI();
+});
+
+document.querySelector('[data-fee-action="back"]').addEventListener("click", () => {
+  const input = document.getElementById(activeFeeField);
+  input.value = String(input.value || "").slice(0, -1);
+  updateFeeInputUI();
+});
+
+updateFeeInputUI();
+
+
 document.getElementById("addRoundBtn").addEventListener("click", async () => {
   if (!isAdmin()) {
     alert("라운딩 등록은 관리자만 가능해.");
@@ -1892,6 +2896,10 @@ document.getElementById("addRoundBtn").addEventListener("click", async () => {
   const date = document.getElementById("roundDate").value;
   const time = document.getElementById("roundTime").value;
   const course = document.getElementById("roundCourse").value.trim();
+  const roundType = document.getElementById("roundType").value;
+  const greenFee = Number(document.getElementById("greenFee").value || 0);
+  const caddieFee = Number(document.getElementById("caddieFee").value || 0);
+  const cartFee = Number(document.getElementById("cartFee").value || 0);
   const memo = document.getElementById("roundMemo").value.trim();
 
   const attendeeIds = [...document.querySelectorAll(".new-attendee-check:checked")]
@@ -1912,6 +2920,10 @@ document.getElementById("addRoundBtn").addEventListener("click", async () => {
       date,
       time,
       course,
+      roundType,
+      greenFee,
+      caddieFee,
+      cartFee,
       memo,
       attendeeIds,
       teams: [],
@@ -1920,6 +2932,7 @@ document.getElementById("addRoundBtn").addEventListener("click", async () => {
 
     document.getElementById("roundCourse").value = "";
     document.getElementById("roundMemo").value = "";
+    resetRoundCostInputs();
 
     document.querySelectorAll(".new-attendee-check")
       .forEach(check => check.checked = false);
@@ -1932,6 +2945,15 @@ document.getElementById("addRoundBtn").addEventListener("click", async () => {
     setError(error);
   }
 });
+
+
+function getRoundFeeText(round) {
+  const parts = [];
+  if (Number(round.greenFee) > 0) parts.push(`그린피 ${Number(round.greenFee).toLocaleString("ko-KR")}원`);
+  if (Number(round.caddieFee) > 0) parts.push(`캐디피 ${Number(round.caddieFee).toLocaleString("ko-KR")}원`);
+  if (Number(round.cartFee) > 0) parts.push(`카트비 ${Number(round.cartFee).toLocaleString("ko-KR")}원`);
+  return parts.join(" · ");
+}
 
 
 function renderRounds() {
@@ -1975,6 +2997,10 @@ function renderRounds() {
         ${escapeHtml(round.date || "")}
         ${escapeHtml(round.time || "")}
       </div>
+
+      ${round.roundType ? `<div class="round-meta-row"><span class="round-type-badge">${escapeHtml(round.roundType)}</span></div>` : ""}
+
+      ${getRoundFeeText(round) ? `<div class="round-fee-line">💳 ${escapeHtml(getRoundFeeText(round))}</div>` : ""}
 
       <div class="small">
         ${escapeHtml(round.memo || "")}
@@ -2677,6 +3703,10 @@ function renderNextRound() {
       ${escapeHtml(round.date || "")}
       ${escapeHtml(round.time || "")}
     </div>
+
+    ${round.roundType ? `<div class="round-meta-row"><span class="round-type-badge">${escapeHtml(round.roundType)}</span></div>` : ""}
+
+    ${getRoundFeeText(round) ? `<div class="round-fee-line">💳 ${escapeHtml(getRoundFeeText(round))}</div>` : ""}
 
     <div style="margin-top:8px;">
       ${escapeHtml(round.memo || "")}
