@@ -349,6 +349,127 @@
       border: 1px solid #e5e7eb;
     }
 
+
+    .auth-screen {
+      min-height: 100vh;
+      background: #111827;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 460px;
+      background: white;
+      color: #111827;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+    }
+
+    .auth-logo {
+      text-align: center;
+      font-size: 42px;
+      margin-bottom: 8px;
+    }
+
+    .auth-card h1 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .auth-card p {
+      text-align: center;
+      color: #6b7280;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .auth-note {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12px;
+      color: #4b5563;
+      line-height: 1.55;
+      margin: 12px 0;
+    }
+
+    .auth-uid {
+      word-break: break-all;
+      font-family: monospace;
+      font-size: 11px;
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .userbar {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #d1d5db;
+    }
+
+    .admin-box {
+      border: 1px solid #f59e0b;
+      background: #fffbeb;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .admin-box h3 {
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .request-item {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+
+    .request-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 9px;
+    }
+
+    .approve-btn {
+      background: #16a34a;
+      color: white;
+    }
+
+    .reject-btn {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .member-self {
+      border-color: #16a34a;
+      background: #f0fdf4;
+    }
+
+    .readonly-hint {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 7px;
+    }
+
     .loading { text-align: center; padding: 20px; color: #6b7280; }
 
     .page { display: none; }
@@ -426,10 +547,68 @@
 
 <body>
 
+
+<div id="authScreen" class="auth-screen">
+  <div class="auth-card">
+
+    <div id="authLoading">
+      <div class="auth-logo">⛳</div>
+      <h1>골친자들 골치아픔</h1>
+      <p>회원 확인 중이야. 잠깐만 기다려줘.</p>
+      <div class="loading">🔄 기기 인증 중...</div>
+    </div>
+
+    <div id="authRequest" class="hidden">
+      <div class="auth-logo">🏌️</div>
+      <h1>처음 오셨나요?</h1>
+      <p>
+        아래에서 <strong>본인 이름</strong>을 선택하고 승인 요청만 보내면 돼.<br>
+        아이디나 비밀번호는 필요 없어.
+      </p>
+
+      <select id="joinMemberSelect"></select>
+
+      <button id="sendJoinRequestBtn" class="green">
+        관리자에게 승인 요청
+      </button>
+
+      <div class="auth-note">
+        재준 관리자가 실제 회원인지 확인한 뒤 승인하면 이 휴대폰은 자동으로 본인 계정에 연결돼.
+      </div>
+    </div>
+
+    <div id="authPending" class="hidden">
+      <div class="auth-logo">⏳</div>
+      <h1>승인 대기중</h1>
+      <p id="pendingText">관리자에게 승인 요청을 보냈어.</p>
+
+      <div class="auth-note">
+        관리자가 승인하면 이 화면이 자동으로 앱으로 바뀌어. 앱을 닫았다 다시 열어도 괜찮아.
+        <div id="pendingUid" class="auth-uid"></div>
+      </div>
+
+      <button id="cancelJoinRequestBtn" class="primary">
+        승인 요청 취소
+      </button>
+    </div>
+
+    <div id="authRejected" class="hidden">
+      <div class="auth-logo">❌</div>
+      <h1>승인이 거절됐어</h1>
+      <p>이름을 잘못 선택했다면 다시 신청하면 돼.</p>
+      <button id="retryJoinRequestBtn" class="green">다시 신청</button>
+    </div>
+
+  </div>
+</div>
+
+<div id="appShell" class="hidden">
+
 <header>
   <h1>골친자들 골치아픔 ⛳</h1>
   <p>15명 전용 골프모임 · 시즌 2026</p>
   <div id="connectionStatus" class="status">🔄 Firebase 연결 중...</div>
+  <div id="currentUserBar" class="userbar"></div>
 </header>
 
 <div class="container">
@@ -457,7 +636,7 @@
 
 
   <section id="round" class="page">
-    <div class="card">
+    <div id="roundCreateCard" class="card">
       <h2>📅 라운딩 등록</h2>
 
       <input id="roundDate" type="date">
@@ -483,7 +662,7 @@
     </div>
 
 
-    <div class="card">
+    <div id="teamMakerCard" class="card">
       <h2>🎲 참석자 자동 조편성</h2>
 
       <select id="teamRoundSelect">
@@ -580,6 +759,14 @@
 
 
   <section id="member" class="page">
+
+    <div id="adminPanel" class="admin-box hidden">
+      <h3>🔔 관리자 승인 요청</h3>
+      <div id="adminRequestList">
+        <div class="small">승인 요청을 불러오는 중...</div>
+      </div>
+    </div>
+
     <div class="card">
       <h2>👥 우리 멤버</h2>
       <p class="small" style="margin-bottom:15px;">이름 수정 시 모든 회원 화면에 같이 반영됩니다.</p>
@@ -589,7 +776,7 @@
 
 
   <section id="money" class="page">
-    <div class="card">
+    <div id="moneyCreateCard" class="card">
       <h2>💰 회비 · 벌금 · 찬조</h2>
 
       <select id="moneyMember"></select>
@@ -650,12 +837,20 @@
   <button data-page="member"><span class="nav-icon">👥</span>멤버</button>
   <button data-page="money"><span class="nav-icon">💰</span>회비</button>
 </nav>
+</div>
 
 
 <script type="module">
 
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+import {
+  getAuth,
+  signInAnonymously,
+  onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 import {
   getFirestore,
@@ -666,7 +861,9 @@ import {
   updateDoc,
   deleteDoc,
   getDocs,
-  onSnapshot
+  getDoc,
+  onSnapshot,
+  runTransaction
 }
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
@@ -682,6 +879,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 
 let members = [];
@@ -694,6 +892,28 @@ let favoriteGolfCourses =
 
 let editingRoundId = null;
 
+let currentAuthUser = null;
+let currentProfile = null;
+let currentJoinRequest = null;
+let joinRequestUnsubscribe = null;
+let profileUnsubscribe = null;
+let adminRequestsUnsubscribe = null;
+
+function isAdmin() {
+  return currentProfile?.role === "admin" &&
+         currentProfile?.status === "approved";
+}
+
+function isApproved() {
+  return currentProfile?.status === "approved" &&
+         !!currentProfile?.memberId;
+}
+
+function ownMemberId() {
+  return currentProfile?.memberId || "";
+}
+
+
 
 const defaultMembers = [
   "재준","멤버2","멤버3","멤버4","멤버5",
@@ -705,6 +925,355 @@ const defaultMembers = [
 const golfCourses = [{"name":"(주) 파주컨트리클럽","region":"경기","address":"경기도 파주시 법원읍 화합로 306","phone":"319599999.0","lat":37.8436975,"lon":126.9039017},{"name":"(주)관악 리베라컨트리클럽","region":"경기","address":"경기도 화성시 동탄구 중리길 183, 리베라CC클럽하우스 (청계동)","phone":"313766711.0","lat":37.1909718,"lon":127.1119998},{"name":"(주)그랜드부민 꿈드림목장 (비회원제 9홀)","region":"제주","address":"제주특별자치도 제주시 516로 2596-117 (용강동)","phone":"","lat":33.4396592,"lon":126.602137},{"name":"(주)금강레저","region":"경기","address":"경기도 여주시 가남읍 여주남로 541 (주)케이씨씨여주공장","phone":"","lat":37.2442227,"lon":127.5940044},{"name":"(주)도고칸트리구락부","region":"충남","address":"충청남도 아산시 선장면 삼봉산길 188","phone":"","lat":36.7779436,"lon":126.8904786},{"name":"(주)동광주택 제주부영CC (대중형 27홀)","region":"제주","address":"제주특별자치도 서귀포시 남원읍 남조로 960","phone":"","lat":33.3589916,"lon":126.7119413},{"name":"(주)라비돌 라비돌컨트리클럽","region":"경기","address":"경기도 화성시 효행구 정남면 세자로 286","phone":"313527150.0","lat":37.190427,"lon":126.9833335},{"name":"(주)무주덕유산CC","region":"전북","address":"전북특별자치도 무주군 설천면 만선로 185","phone":"","lat":35.8940416,"lon":127.7345477},{"name":"(주)밀양컨트리클럽","region":"경남","address":"경상남도 밀양시 부북면 사포산단1길 157","phone":"","lat":35.4587091,"lon":128.7350875},{"name":"(주)베스트밸리골프클럽","region":"경기","address":"경기도 파주시 광탄면 장지산로200번길 32-41","phone":"319507700.0","lat":37.7567592,"lon":126.8836236},{"name":"(주)볼카노골프앤리조트","region":"제주","address":"제주특별자치도 서귀포시 산록남로 1391 (중문동)","phone":"","lat":33.3018453,"lon":126.4357495},{"name":"(주)블랙스톤에듀팜리조트 골프장","region":"충북","address":"충청북도 증평군 도안면 벨포레길 346, 클럽하우스","phone":"","lat":36.8452607,"lon":127.5837054},{"name":"(주)송도골프","region":"인천","address":"인천광역시 연수구 능허대로 236 (동춘동)","phone":"","lat":37.4128205,"lon":126.6508929},{"name":"(주)송산골프랜드","region":"전북","address":"전북특별자치도 익산시 석암로 207  (석암동)","phone":"","lat":35.9412652,"lon":127.0133336},{"name":"(주)시그너스컨트리클럽","region":"충북","address":"충청북도 충주시 앙성면 중방곡길 57-44","phone":"","lat":37.1765232,"lon":127.7393353},{"name":"(주)에스엘세레스 올데이리조트","region":"충북","address":"충청북도 충주시 앙성면 비내길 189-0","phone":"","lat":37.108467,"lon":127.7873051},{"name":"(주)여수관광레저","region":"전남","address":"전남광주통합특별시 여수시 좌수영로 641 (주)여수관광레저 (둔덕동)","phone":"618088011.0","lat":34.779045,"lon":127.6923608},{"name":"(주)일신레져(신원cc)","region":"경기","address":"경기도 용인시 처인구 이동읍 이원로 225","phone":"","lat":37.1823951,"lon":127.251456},{"name":"(주)캐슬렉스서울 캐슬렉스골프클럽","region":"경기","address":"경기도 하남시 감이로 317 (감이동)","phone":"24805660.0","lat":37.498047,"lon":127.1670607},{"name":"(주)티에스개발 송추컨트리클럽","region":"경기","address":"경기도 양주시 광적면 쇠장이길 435","phone":"","lat":37.7966474,"lon":126.9110934},{"name":"(주)한길 파미힐스 컨트리클럽","region":"경북","address":"경상북도 칠곡군 왜관읍 봉계로 263","phone":"","lat":36.0012552,"lon":128.4441551},{"name":"(주)한원컨트리클럽","region":"경기","address":"경기도 용인시 처인구 남사읍 전나무골길2번길 94, 한원C.C","phone":"","lat":37.1574366,"lon":127.1306533},{"name":"(주)호텔롯데 스카이힐 부여 CC","region":"충남","address":"충청남도 부여군 규암면 백제문로 400","phone":"419391170.0","lat":36.303972,"lon":126.9007293},{"name":"1.2.3","region":"경기","address":"경기도 고양시 덕양구 통일로 43-168  (동산동)","phone":"23590123.0","lat":37.6408826,"lon":126.9061128},{"name":"360도 컨트리클럽","region":"경기","address":"경기도 여주시 강천면 부평로 609","phone":"","lat":37.2970636,"lon":127.7365125},{"name":"88","region":"경기","address":"경기도 용인시 기흥구 석성로521번길 169 (청덕동)","phone":"","lat":37.3022759,"lon":127.1665879},{"name":"CLUBD 금강","region":"전북","address":"전북특별자치도 익산시 웅포면 강변로 130-0 (클럽디금강,클럽디금강CC)","phone":"","lat":36.0712629,"lon":126.8839417},{"name":"COVE Swing","region":"경기","address":"경기도 포천시 삼육사로 1982 (설운동)","phone":"315380333.0","lat":null,"lon":null},{"name":"IMG National 컨트리클럽","region":"충남","address":"충청남도 연기군 전의면 운주산로 1510","phone":"","lat":null,"lon":null},{"name":"ROUTE 52CC","region":"경기","address":"경기도 여주시 북내면 중암1길 36","phone":"","lat":37.3500601,"lon":127.7195343},{"name":"YJC골프클럽","region":"경기","address":"경기도 여주시 월평로 78 (월송동)","phone":"","lat":37.2798288,"lon":127.6057355},{"name":"가산컨트리클럽","region":"경북","address":"경상북도 칠곡군 가산면 학하2길 54-171","phone":"549779412.0","lat":36.0816853,"lon":128.4718422},{"name":"가야 CC","region":"경남","address":"경상남도 김해시 인제로 495 (삼방동)","phone":"","lat":35.2748948,"lon":128.8925259},{"name":"가평리조트 골프장","region":"경기","address":"경기도 가평군 조종면 운악청계로 702-24, 리앤리컨트리클럽","phone":"315809000.0","lat":null,"lon":null},{"name":"가평베네스트G.C","region":"경기","address":"경기도 가평군 상면 둔덕말길 232","phone":"15779727.0","lat":37.7978741,"lon":127.3034468},{"name":"감곡CC[램코(주)]","region":"충북","address":"충청북도 음성군 감곡면 오갑길 195-0","phone":"","lat":37.1320687,"lon":127.695309},{"name":"강남300 컨트리클럽","region":"경기","address":"경기도 광주시 새말길 353 (목동)","phone":"","lat":37.3859436,"lon":127.181682},{"name":"강원랜드골프클럽","region":"강원","address":"강원특별자치도 정선군 고한읍 고한리 산 1-166","phone":"","lat":37.1765242,"lon":128.841423},{"name":"강촌리조트 대중골프장(폐업)","region":"강원","address":"강원특별자치도 춘천시 남산면 북한강변길 688","phone":"","lat":37.8171711,"lon":127.5868747},{"name":"거제 드비치 골프클럽","region":"경남","address":"경상남도 거제시 장목면 거제북로 1573","phone":"","lat":35.0171371,"lon":128.6782059},{"name":"거제뷰컨트리클럽","region":"경남","address":"경상남도 거제시 거제면 두동로 259-80","phone":"","lat":34.8753031,"lon":128.5956503},{"name":"건설공제조합 세종필드골프클럽","region":"세종","address":"세종특별자치시 정안세종로 1569, 건설공제조합 세종필드골프클럽","phone":"","lat":36.5356764,"lon":127.256604},{"name":"경원건설(주)","region":"경기","address":"경기도 성남시 분당구 안양판교로1201번길 1201 (판교동)","phone":"","lat":37.3802747,"lon":127.082213},{"name":"경주 보문컨트리(대중제)","region":"경북","address":"경상북도 경주시 신평동 375","phone":"547451680.0","lat":35.8428467,"lon":129.2858379},{"name":"경주레전드골프클럽","region":"경북","address":"경상북도 경주시 안강읍 낙산길 85","phone":"","lat":35.9963529,"lon":129.1642798},{"name":"경주신라컨트리클럽","region":"경북","address":"경상북도 경주시 보문로 319 (신평동)","phone":"","lat":35.8501607,"lon":129.2853154},{"name":"경주컨트리클럽","region":"경북","address":"경상북도 경주시 보문로 182-98 (북군동)","phone":"547488100.0","lat":35.863579,"lon":129.2618597},{"name":"계룡산골프장","region":"충남","address":"충청남도 공주시 계룡면 내흥리 28번지 1호","phone":"","lat":null,"lon":null},{"name":"고령 마스터피스C.C","region":"경북","address":"경상북도 고령군 쌍림면 월막리 산 40번지 2호","phone":"","lat":35.7065648,"lon":128.2078964},{"name":"고령 유니벨리CC","region":"경북","address":"경상북도 고령군 고령읍 일량로 588","phone":"","lat":35.6820425,"lon":128.2937719},{"name":"고성Nobel컨트리클럽","region":"경남","address":"경상남도 고성군 회화면 영회로 2770","phone":"","lat":null,"lon":null},{"name":"고성컨트리클럽","region":"경남","address":"경상남도 고성군 고성읍 월평로 6","phone":"","lat":null,"lon":null},{"name":"고양컨트리클럽","region":"경기","address":"경기도 고양시 덕양구 흥도로 304-23  (도내동)","phone":"319648868.0","lat":37.6348614,"lon":126.8584109},{"name":"고창CC","region":"전북","address":"전북특별자치도 고창군 심원면 애향갯벌로 70-0, 1동 (고창컨트리클럽)","phone":"","lat":35.5161692,"lon":126.501847},{"name":"고흥골프장","region":"전남","address":"전남광주통합특별시 고흥군 두원면 동신마전길 70, 골프연습장","phone":"","lat":34.6330344,"lon":127.2906257},{"name":"곤지암GC","region":"경기","address":"경기도 광주시 도척면 도척윗로 280","phone":"317603421.0","lat":37.3336578,"lon":127.2968186},{"name":"골드나인CC(대중제)","region":"충북","address":"충청북도 청원군 낭성면 산성로 1520-71","phone":"","lat":null,"lon":null},{"name":"골드레이크컨트리클럽(대중)","region":"전남","address":"전남광주통합특별시 나주시 남평읍 나주호로 442-129","phone":"","lat":null,"lon":null},{"name":"골드리버cc","region":"충남","address":"충청남도 공주시 의당면 신성말길 67-38","phone":"418567100.0","lat":null,"lon":null},{"name":"골드컨트리클럽","region":"경기","address":"경기도 용인시 기흥구 기흥단지로 406 (고매동, 골드훼미리콘도)","phone":"312868111.0","lat":37.2201551,"lon":127.1382373},{"name":"골든베이골프&리조트","region":"충남","address":"충청남도 태안군 근흥면 정산포로 217","phone":"416718000.0","lat":36.7109078,"lon":126.1721291},{"name":"골프존카운티 감포","region":"경북","address":"경상북도 경주시 감포읍 동해안로 1819-59","phone":"","lat":35.7740854,"lon":129.483251},{"name":"골프존카운티 더골프","region":"울산","address":"울산광역시 울주군 서생면 용연길 206-52","phone":"","lat":35.3629124,"lon":129.3112429},{"name":"골프존카운티 드래곤","region":"전북","address":"전북특별자치도 남원시 대산면 대사로 500-0, 1동 0층 0호 (드라곤레이크컨트리클럽)","phone":"","lat":35.438309,"lon":127.342028},{"name":"골프존카운티 순천","region":"전남","address":"전남광주통합특별시 순천시 주암면 행정1길 77","phone":"","lat":35.0516203,"lon":127.3145768},{"name":"골프존카운티 안성H","region":"경기","address":"경기도 안성시 보개면 보삼로 302","phone":"7080560700.0","lat":37.0956768,"lon":127.3337728},{"name":"골프존카운티 안성W","region":"경기","address":"경기도 안성시 양성면 교동길 19-70","phone":"316740139.0","lat":37.0751102,"lon":127.1928888},{"name":"골프존카운티 영암(대중형골프장)","region":"전남","address":"전남광주통합특별시 영암군 삼호읍 에프원로 121-1","phone":"","lat":34.7410714,"lon":126.4221297},{"name":"골프존카운티 오라 (회원제)","region":"제주","address":"제주특별자치도 제주시 오라남로 130-16 (오라이동)","phone":"","lat":33.4514666,"lon":126.5148035},{"name":"골프존카운티 천안","region":"충남","address":"충청남도 천안시 동남구 병천면 매성2길 103","phone":"","lat":36.8026915,"lon":127.3129884},{"name":"골프존카운티 화랑((주)지씨진천)-(대중제18)","region":"충북","address":"충청북도 진천군 문백면 농다리로 809","phone":"","lat":36.8202404,"lon":127.4700205},{"name":"골프존카운티구미","region":"경북","address":"경상북도 구미시 산동면 강동로 953-73","phone":"","lat":null,"lon":null},{"name":"골프존카운티사천","region":"경남","address":"경상남도 사천시 서포면 구송로 151","phone":"","lat":35.0001687,"lon":127.9661277},{"name":"골프존카운티선산","region":"경북","address":"경상북도 구미시 산동면 강동로 953-73","phone":"","lat":null,"lon":null},{"name":"골프존카운티선운","region":"전북","address":"전북특별자치도 고창군 아산면 운곡로 418","phone":"","lat":35.4921933,"lon":126.6466122},{"name":"골프존카운티진천(대중제)","region":"충북","address":"충청북도 진천군 진천읍 송강로 783-51","phone":"","lat":36.8169829,"lon":127.4008882},{"name":"골프클럽  Q","region":"경기","address":"경기도 안성시 죽산면 장계길 20-229","phone":"","lat":37.0486553,"lon":127.3958927},{"name":"광릉레져개발(주)  광릉CC","region":"경기","address":"경기도 남양주시 진접읍 팔야로 280","phone":"315287001.0","lat":37.7625754,"lon":127.2441467},{"name":"광산 친환경대중골프장","region":"전남","address":"전남광주통합특별시 광산구 연산동 산 118번지","phone":"","lat":null,"lon":null},{"name":"광양컨트리클럽","region":"전남","address":"전남광주통합특별시 광양시 가야로 223 (마동)","phone":"","lat":null,"lon":null},{"name":"광주컨트리클럽","region":"전남","address":"전남광주통합특별시 곡성군 옥과면 합강길 410","phone":"","lat":35.3106776,"lon":127.1725007},{"name":"구니컨트리클럽","region":"대구","address":"대구광역시 군위군 군위읍 도군로 2450","phone":"","lat":36.2534378,"lon":128.5474908},{"name":"구미컨트리클럽(대중제18홀)","region":"경북","address":"경상북도 구미시 장천면 송백로 229","phone":"","lat":36.1717814,"lon":128.4859024},{"name":"군산CC","region":"전북","address":"전북특별자치도 군산시 옥서면 남군산로 1911-7","phone":"","lat":35.8936632,"lon":126.6497724},{"name":"군위 오펠골프클럽","region":"대구","address":"대구광역시 군위군 산성면 부흥로 227","phone":"","lat":null,"lon":null},{"name":"그랜드CC(회원제)","region":"충북","address":"충청북도 청주시 청원구 오창읍 꽃화산길 14-0","phone":"","lat":36.7188818,"lon":127.390572},{"name":"그레이스컨트리클럽","region":"경북","address":"경상북도 청도군 이서면 서녁길 91","phone":"","lat":35.6647079,"lon":128.6453898},{"name":"그린필드 컨트리클럽","region":"제주","address":"제주특별자치도 제주시 조천읍 번영로 1040-70","phone":"","lat":33.463218,"lon":126.6475378},{"name":"그린힐 컨트리클럽","region":"경기","address":"경기도 광주시 곤지암읍 내선길 176","phone":"317623114.0","lat":null,"lon":null},{"name":"근영농산(주)양주컨트리클럽","region":"경기","address":"경기도 남양주시 화도읍 북한강로 1525-52","phone":"","lat":37.6433452,"lon":127.3535051},{"name":"글렌로스골프클럽","region":"경기","address":"경기도 용인시 처인구 포곡읍 에버랜드로 199, 삼성에버랜드","phone":"313208344.0","lat":37.2899141,"lon":127.2166212},{"name":"금과간이골프장","region":"전북","address":"전북특별자치도 순창군 금과면 방축리 111-2","phone":"636524828.0","lat":35.354208,"lon":127.0837722},{"name":"기장동원로얄골프장","region":"부산","address":"부산광역시 기장군 기장읍 반송로 1345-52","phone":"516304134.0","lat":null,"lon":null},{"name":"김제스파힐스컨트리클럽","region":"전북","address":"전북특별자치도 김제시 온천길 37 (흥사동)","phone":"","lat":null,"lon":null},{"name":"김제아네스빌C.C","region":"전북","address":"전북특별자치도 김제시 황산면 서옥길 71 (김제아네스빌C.C)","phone":"","lat":35.7867952,"lon":126.9616164},{"name":"김포 SEASIDE 컨트리클럽","region":"경기","address":"경기도 김포시 월곶면 김포대로2801번길 219","phone":"319879992.0","lat":37.7071975,"lon":126.5372677},{"name":"김해 정산 CC","region":"경남","address":"경상남도 김해시 주촌면 서부로1637번길 299-194","phone":"","lat":35.2564096,"lon":128.8075041},{"name":"나령대중골프장","region":"충남","address":"충청남도 부여군 은산면 충절로 3734-82","phone":"","lat":null,"lon":null},{"name":"나인브릿지 퍼블릭(대중형6홀)","region":"제주","address":"제주특별자치도 서귀포시 안덕면 광평로 34-156","phone":"","lat":33.3416422,"lon":126.4028477},{"name":"나인브릿지골프클럽(회원제)","region":"제주","address":"제주특별자치도 서귀포시 안덕면 광평로 34-156","phone":"","lat":33.3416422,"lon":126.4028477},{"name":"나주혁신도시 부영CC","region":"전남","address":"전남광주통합특별시 나주시 혁신로 200 (빛가람동)","phone":"","lat":35.0168855,"lon":126.8036891},{"name":"나주힐스CC","region":"전남","address":"전남광주통합특별시 나주시 공산면 상방신포길 160-27","phone":"","lat":null,"lon":null},{"name":"남부","region":"경기","address":"경기도 용인시 기흥구 사은로 163 (보라동)","phone":"","lat":37.2642353,"lon":127.1256647},{"name":"남안동컨트리클럽","region":"경북","address":"경상북도 안동시 풍천면 풍일로 1887","phone":"","lat":36.4703763,"lon":128.6047598},{"name":"남여주대중골프장","region":"경기","address":"경기도 여주시 가여로 532 (하거동)","phone":"318806700.0","lat":37.2184965,"lon":127.6258577},{"name":"남원상록골프장","region":"전북","address":"전북특별자치도 남원시 대산면 월계길 11","phone":"","lat":35.4135492,"lon":127.2952766},{"name":"남촌컨트리클럽","region":"경기","address":"경기도 광주시 곤지암읍 부항길 135-38","phone":"","lat":37.349954,"lon":127.4180391},{"name":"남춘천CC","region":"강원","address":"강원특별자치도 춘천시 신동면 오봉길 156","phone":"332612999.0","lat":37.7863118,"lon":127.6972865},{"name":"남한강에스파크 컨트리클럽","region":"강원","address":"강원특별자치도 원주시 부론면 법천리 32번지 0호","phone":"","lat":37.2013477,"lon":127.7827471},{"name":"남해 선베이컨트리클럽","region":"경남","address":"경상남도 남해군 남면 남서대로1179번길 40-109","phone":"","lat":34.7796178,"lon":127.8514686},{"name":"내장산골프&리조트","region":"전북","address":"전북특별자치도 정읍시 첨단과학로 476-0 (신정동)","phone":"","lat":35.502585,"lon":126.8665571},{"name":"내포골프클럽","region":"충남","address":"충청남도 예산군 삽교읍 산수길 242-0","phone":"","lat":null,"lon":null},{"name":"냉천개발(주) 윤상락","region":"대구","address":"대구광역시 달성군 가창면 가창로 1037-9","phone":"","lat":35.7941214,"lon":128.6238172},{"name":"노블레스CC&리조트","region":"경북","address":"경상북도 칠곡군 북삼읍 칠곡대로 96-57","phone":"","lat":null,"lon":null},{"name":"노스팜 컨트리클럽","region":"경기","address":"경기도 파주시 광탄면 쇠장이길 265, 노스팜 컨트리클럽","phone":"319414277.0","lat":37.7879307,"lon":126.9075335},{"name":"뉴서울컨트리클럽","region":"경기","address":"경기도 광주시 삼지곡길 95 (삼동)","phone":"","lat":37.4203821,"lon":127.2109194},{"name":"뉴스프링빌2","region":"경북","address":"경상북도 상주시 모서면 백화로 40","phone":"","lat":36.28341,"lon":127.8712411},{"name":"뉴스프링빌골프장","region":"경기","address":"경기도 이천시 모가면 사실로527번길 158, 뉴스프링빌C.C.","phone":"316307500.0","lat":37.1544342,"lon":127.4315301},{"name":"뉴코리아 컨트리클럽","region":"경기","address":"경기도 고양시 덕양구 신원2로 57, 뉴코리아컨트리클럽 (신원동)","phone":"23530091.0","lat":37.6650921,"lon":126.877947},{"name":"다산 샤인힐 컨트리클럽","region":"경북","address":"경상북도 고령군 다산면 벌지로 175-115, 1동 (다산샤인힐컨트리클럽)","phone":"","lat":35.818564,"lon":128.4036018},{"name":"다산베아채 골프&리조트","region":"전남","address":"전남광주통합특별시 강진군 도암면 학장용산길 101-0, 1동 1층 1호 (다산베아채골프&리조트클럽하우수)","phone":"","lat":null,"lon":null},{"name":"다이아몬드 컨트리클럽","region":"경남","address":"경상남도 양산시 상북면 공원로 305-391","phone":"","lat":35.4289125,"lon":129.0328236},{"name":"담양 죽향컨트리클럽","region":"전남","address":"전남광주통합특별시 담양군 창평면 창평로 159","phone":"","lat":null,"lon":null},{"name":"담양다이너스티컨트리클럽","region":"전남","address":"전남광주통합특별시 담양군 금성면 깊은실길 169","phone":"","lat":35.3031591,"lon":127.0238304},{"name":"담양레이나컨트리클럽","region":"전남","address":"전남광주통합특별시 담양군 금성면 깊은실길 169","phone":"","lat":35.3031591,"lon":127.0238304},{"name":"대가야컨트리클럽","region":"경북","address":"경상북도 고령군 대가야읍 대가야로 1103-0 (가야대학교)","phone":"549505300.0","lat":35.7279172,"lon":128.2592253},{"name":"대구컨트리클럽","region":"경북","address":"경상북도 경산시 진량읍 일연로 718-42","phone":"","lat":35.8708138,"lon":128.808701},{"name":"대덕복지센터","region":"대전","address":"대전광역시 유성구 유성대로1689번길 69-0, 1층 (전민동,연구단지체육공원)","phone":"","lat":36.4040218,"lon":127.3940526},{"name":"대명설악컨트리클럽","region":"강원","address":"강원특별자치도 고성군 토성면 미시령옛길 1153","phone":"","lat":38.2100921,"lon":128.4978163},{"name":"대영베이스컨트리클럽","region":"충북","address":"충청북도 충주시 대소원면 성종두담길 113","phone":"438508600.0","lat":36.9483268,"lon":127.8400186},{"name":"대영힐스CC","region":"충북","address":"충청북도 충주시 대소원면 성종두담길 114","phone":"","lat":36.9543085,"lon":127.8546146},{"name":"대중제 골프장(9홀)","region":"경기","address":"경기도 이천시 장호원읍 풍계리 산 52","phone":"316432000.0","lat":null,"lon":null},{"name":"대호관광개발(주)","region":"전남","address":"전남광주통합특별시 영광군 백수읍 해안로 1362-70","phone":"","lat":35.3561959,"lon":126.4120898},{"name":"대호단양CC(대중제)","region":"충북","address":"충청북도 단양군 매포읍 고양5길 43","phone":"","lat":37.0920326,"lon":128.2758935},{"name":"더 스타 휴 컨트리클럽","region":"경기","address":"경기도 양평군 양동면 양동로 756","phone":"317709975.0","lat":null,"lon":null},{"name":"더 시에나 서울 컨트리클럽","region":"경기","address":"경기도 광주시 곤지암읍 경충대로 451, 제 16동 1호(중부씨씨)","phone":"","lat":37.3361252,"lon":127.3552649},{"name":"더나인골프클럽","region":"전북","address":"전북특별자치도 김제시 금구면 대화1길 8-75","phone":"","lat":35.797243,"lon":127.0295386},{"name":"더반 골프클럽(대중형)","region":"경기","address":"경기도 이천시 대월면 대월로 627-141","phone":"","lat":37.2070673,"lon":127.4905431},{"name":"더시에나CC(대중형 18홀)","region":"제주","address":"제주특별자치도 제주시 516로 2695 (영평동)","phone":"","lat":33.4279484,"lon":126.5766087},{"name":"더시에나벨루토 컨트리클럽","region":"경기","address":"경기도 여주시 여양로 530 (오금동)","phone":"","lat":37.3270916,"lon":127.6555373},{"name":"더크로스비골프클럽(대중형)","region":"경기","address":"경기도 이천시 호법면 중부대로798번길 177, 클럽하우스","phone":"316388374.0","lat":null,"lon":null},{"name":"더클래식CC (대중형 18홀)","region":"제주","address":"제주특별자치도 서귀포시 남원읍 남조로 1105-0 (더클래식골프리조트)","phone":"","lat":33.3696388,"lon":126.6823305},{"name":"더플레이어스골프클럽","region":"강원","address":"강원특별자치도 춘천시 동산면 새술막길 438","phone":"","lat":37.7756391,"lon":127.7477259},{"name":"더헤븐 컨트리클럽","region":"경기","address":"경기도 안산시 단원구 대선로 466, ㈜더헤븐리조트 (대부남동)","phone":"328841004.0","lat":37.2325114,"lon":126.5629004},{"name":"더힐컨트리클럽","region":"충남","address":"충청남도 논산시 상월면 선비로 1079","phone":"417362580.0","lat":36.2760458,"lon":127.1693005},{"name":"도고컨트리구락부","region":"충남","address":"충청남도 아산시 선장면 삼봉산길 188","phone":"","lat":36.7779436,"lon":126.8904786},{"name":"동강시스타 골프장","region":"강원","address":"강원특별자치도 영월군 영월읍 사지막길 160-0 (동강시스타)","phone":"339052030.0","lat":37.2177373,"lon":128.5187824},{"name":"동래베네스트골프클럽","region":"부산","address":"부산광역시 금정구 하정로 66 (선동)","phone":"","lat":35.2636135,"lon":129.1031824},{"name":"동부산 CC","region":"경남","address":"경상남도 양산시 매곡외산로 282 (매곡동)","phone":"","lat":35.3623716,"lon":129.1818386},{"name":"동서울레스피아","region":"강원","address":"강원특별자치도 원주시 지정면 신평석화로 236","phone":"","lat":37.4009331,"lon":127.8794002},{"name":"동서울레스피아대중골프장","region":"강원","address":"강원특별자치도 원주시 지정면 신평석화로 236","phone":"","lat":null,"lon":null},{"name":"동원썬밸리 컨트리클럽","region":"강원","address":"강원특별자치도 횡성군 서원면 서원서로339번길 90","phone":"","lat":37.4824856,"lon":127.793066},{"name":"동촌GC","region":"충북","address":"충청북도 충주시 노은면 감노로 1327","phone":"","lat":37.0514912,"lon":127.7415936},{"name":"드림아일랜드골프장","region":"인천","address":"인천광역시 영종구 은하수로29번길 36-0 (중산동)","phone":"","lat":37.4902591,"lon":126.5814646},{"name":"디아너스컨트리클럽","region":"경북","address":"경상북도 경주시 보불로 391-0 (천군동,블루원보문컨트리클럽)","phone":"","lat":35.8287893,"lon":129.2928704},{"name":"디케이레저","region":"전북","address":"전북특별자치도 순창군 순창읍 금산로 152","phone":"","lat":35.3894237,"lon":127.1243252},{"name":"떼제베CC(대중제)","region":"충북","address":"충청북도 청원군 옥산면 동림2길 149","phone":"","lat":null,"lon":null},{"name":"라데나 골프클럽","region":"강원","address":"강원특별자치도 춘천시 신동면 칠전동길 72","phone":"","lat":37.8449895,"lon":127.7202853},{"name":"라미드관광주식회사","region":"경기","address":"경기도 남양주시 오남읍 진건오남로 516-31, 남양주cc","phone":"","lat":37.6788819,"lon":127.2162343},{"name":"라비에벨CC","region":"강원","address":"강원특별자치도 춘천시 동산면 종자리로 436-0, 1동 1층 1호 (라비에벨컨트리클럽)","phone":"","lat":37.7413433,"lon":127.7586786},{"name":"라싸골프클럽","region":"경기","address":"경기도 포천시 이동면 제비울2길 161","phone":"315380613.0","lat":38.0009467,"lon":127.3798238},{"name":"라온골프클럽 (대중형 27홀)","region":"제주","address":"제주특별자치도 제주시 한경면 용금로 998","phone":"","lat":33.3399145,"lon":126.2752603},{"name":"라헨느","region":"제주","address":"제주특별자치도 제주시 명림로 384 (봉개동)","phone":"","lat":33.4600748,"lon":126.6106877},{"name":"레이크사이드대중","region":"경기","address":"경기도 용인시 처인구 모현읍 능원로 181","phone":"","lat":null,"lon":null},{"name":"레이크사이드회원","region":"경기","address":"경기도 용인시 처인구 모현읍 능원로 181","phone":"","lat":null,"lon":null},{"name":"레이크힐속리산골프장","region":"충북","address":"충청북도 보은군 보은읍 중초리 산 1번지 2호","phone":"","lat":36.5039414,"lon":127.690352},{"name":"레이크힐스 경남C.C","region":"경남","address":"경상남도 함안군 칠원면 운무로 470","phone":"","lat":35.3094508,"lon":128.5734709},{"name":"레익스빌골프장","region":"강원","address":"강원특별자치도 속초시 영랑호반길 140 (금호동)","phone":"25342283.0","lat":38.2142346,"lon":128.580764},{"name":"레인보우힐스CC(회원제)","region":"충북","address":"충청북도 음성군 생극면 차생로 168","phone":"","lat":37.0275477,"lon":127.6475139},{"name":"렉스필드 컨트리클럽","region":"경기","address":"경기도 여주시 산북면 광여로 1115","phone":"","lat":37.3988686,"lon":127.4215076},{"name":"로드힐스 골프클럽","region":"강원","address":"강원특별자치도 춘천시 동산면 종자리로 148-16","phone":"","lat":37.7381434,"lon":127.7279812},{"name":"로얄개발(주) 레이크우드 골프장","region":"경기","address":"경기도 양주시 만송로 244 (만송동)","phone":"318201515.0","lat":37.7843512,"lon":127.0878873},{"name":"로얄링스CC1","region":"충남","address":"충청남도 태안군 태안읍 기업도시1길 45-20","phone":"416743090.0","lat":36.7361864,"lon":126.3381239},{"name":"로얄링스CC2","region":"충남","address":"충청남도 태안군 태안읍 기업도시6길 43","phone":"","lat":36.7204848,"lon":126.3379408},{"name":"로얄포레CC","region":"충북","address":"충청북도 충주시 신니면 화치3길 35","phone":"","lat":36.9907385,"lon":127.6813193},{"name":"로제비앙GC","region":"경기","address":"경기도 광주시 곤지암읍 오향길 180","phone":"","lat":37.3784051,"lon":127.3720713},{"name":"록인 컨트리클럽","region":"경기","address":"경기도 남양주시 화도읍 재재기로190번길 26","phone":"","lat":37.6132059,"lon":127.2978188},{"name":"롯데스카이힐김해 컨트리클럽","region":"경남","address":"경상남도 김해시 진례면 고모로134번길 54-49","phone":"","lat":35.2427563,"lon":128.7857736},{"name":"롯데스카이힐성주컨트리클럽","region":"경북","address":"경상북도 성주군 초전면 소성2길 129","phone":"","lat":36.0447109,"lon":128.2275067},{"name":"롯데스카이힐제주CC(회원제 18홀)","region":"제주","address":"제주특별자치도 서귀포시 상예로 530 (색달동)","phone":"","lat":33.2849201,"lon":126.4053749},{"name":"루트52CC","region":"경기","address":"경기도 여주시 북내면 중암리 110번지 0호","phone":"","lat":37.3515476,"lon":127.7208829},{"name":"르오네뜨CC","region":"전남","address":"전남광주통합특별시 곡성군 오산면 오산로 819-126","phone":"","lat":null,"lon":null},{"name":"리더스컨트리클럽","region":"경남","address":"경상남도 밀양시 활성로 455 (활성동)","phone":"","lat":35.4723752,"lon":128.8076164},{"name":"링크나인골프클럽","region":"경기","address":"경기도 화성시 만세구 마도면 해운로630번길 49, LINK LINE G.C 클럽하우스","phone":"","lat":37.1713311,"lon":126.7542724},{"name":"마론컨트리클럽","region":"충남","address":"충청남도 천안시 동남구 북면 납안5길 74, 클럽하우스","phone":"416235524.0","lat":36.8677016,"lon":127.2580476},{"name":"마에스트로 CC","region":"경기","address":"경기도 안성시 양성면 안성맞춤대로 2134-36","phone":"316764555.0","lat":null,"lon":null},{"name":"마우나오션 블루","region":"경북","address":"경상북도 경주시 양남면 동남로 982-0, 1동 (마우나오션블루)","phone":"","lat":35.6880751,"lon":129.3729827},{"name":"마우나오션컨트리클럽","region":"경북","address":"경상북도 경주시 양남면 동남로 981","phone":"","lat":35.6880751,"lon":129.3729827},{"name":"마이다스 레이크 이천 골프& 리조트","region":"경기","address":"경기도 이천시 설성면 설가로 602","phone":"","lat":null,"lon":null},{"name":"마이다스밸리 청평 골프 클럽","region":"경기","address":"경기도 가평군 설악면 다락재로 73-111 (청평마이다스골프클럽)","phone":"315899000.0","lat":37.6636472,"lon":127.4562813},{"name":"메이플비치 골프&리조트","region":"강원","address":"강원특별자치도 강릉시 강동면 새목이길 110","phone":"","lat":37.7437041,"lon":128.9655839},{"name":"모나크cc","region":"충북","address":"충청북도 음성군 금왕읍 대금로1851번길 3-14","phone":"","lat":null,"lon":null},{"name":"모카CC","region":"충북","address":"충청북도 충주시 신니면 동락길 207","phone":"","lat":37.0191135,"lon":127.6733475},{"name":"몽베르컨트리클럽","region":"경기","address":"경기도 포천시 영북면 산정호수로 359-12","phone":"315313841.0","lat":38.0743983,"lon":127.3087883},{"name":"무등산컨트리클럽","region":"전남","address":"전남광주통합특별시 화순군 화순읍 오성로 292-90","phone":"","lat":35.0423614,"lon":126.9457234},{"name":"무안컨트리클럽","region":"전남","address":"전남광주통합특별시 무안군 청계면 서호로 162","phone":"","lat":34.9589076,"lon":126.3992715},{"name":"무안클린밸리CC","region":"전남","address":"전남광주통합특별시 무안군 청계면 태봉길 33-100","phone":"614528100.0","lat":null,"lon":null},{"name":"무주안성CC","region":"전북","address":"전북특별자치도 무주군 안성면 공진리 산 53번지 1호","phone":"","lat":null,"lon":null},{"name":"문경레저타운골프장","region":"경북","address":"경상북도 문경시 마성면 문경골프장길 240","phone":"","lat":36.7133165,"lon":128.1568899},{"name":"미사용","region":"강원","address":"강원특별자치도 원주시 소초면 바우실길 281","phone":"","lat":37.3917562,"lon":128.0152616},{"name":"밀양 노벨컨트리클럽","region":"경남","address":"경상남도 밀양시 단장면 안법1길 88-0","phone":"","lat":35.4870579,"lon":128.8576804},{"name":"백암비스타골프장","region":"경기","address":"경기도 이천시 모가면 어농리 산 86","phone":"","lat":null,"lon":null},{"name":"백양우리컨트리클럽","region":"전남","address":"전남광주통합특별시 장성군 북이면 봉암로 1574","phone":"","lat":35.4231416,"lon":126.8084302},{"name":"백제컨트리클럽","region":"충남","address":"충청남도 부여군 은산면 충절로 3734-82","phone":"","lat":null,"lon":null},{"name":"버드우드골프클럽","region":"충남","address":"충청남도 천안시 동남구 병천면 매성2길 103, 버드우드골프클럽","phone":"","lat":36.8026915,"lon":127.3129884},{"name":"베네치아컨트리클럽","region":"경북","address":"경상북도 김천시 구성면 남김천대로 2532","phone":"544200201.0","lat":36.0423575,"lon":128.0579284},{"name":"베뉴지CC","region":"경기","address":"경기도 가평군 가평읍 용추로171번길 100, 가평베뉴지골프장","phone":"315825999.0","lat":37.8474361,"lon":127.4717733},{"name":"베르힐cc 영종","region":"인천","address":"인천광역시 영종구 한상중앙로 66-0 (중산동)","phone":"221907696.0","lat":null,"lon":null},{"name":"베르힐컨트리클럽","region":"전남","address":"전남광주통합특별시 함평군 대동면 대동길 408-0 (함평베르힐CC)","phone":"","lat":null,"lon":null},{"name":"베어즈베스트청라골프클럽","region":"인천","address":"인천광역시 서해구 청라대로316번길 45-0 (청라동)","phone":"","lat":37.545824,"lon":126.6383581},{"name":"베어크리크 춘천","region":"강원","address":"강원특별자치도 춘천시 신동면 김유정로 730-0","phone":"","lat":37.7691226,"lon":127.7201112},{"name":"베어크리크골프클럽","region":"경기","address":"경기도 포천시 화현면 달인동로 35","phone":"","lat":37.9039415,"lon":127.2807671},{"name":"베어포트리조트(대중18홀)","region":"전북","address":"전북특별자치도 익산시 웅포면 강변로 130","phone":"637207000.0","lat":36.0712629,"lon":126.8839417},{"name":"베이사이드골프클럽","region":"부산","address":"부산광역시 기장군 일광면 이천8길 100","phone":"516425100.0","lat":35.2762679,"lon":129.2418636},{"name":"벨라45 마스터스 컨트리클럽","region":"강원","address":"강원특별자치도 횡성군 서원면 서원남로 80-0","phone":"","lat":null,"lon":null},{"name":"벨라45 오너스 컨트리클럽","region":"강원","address":"강원특별자치도 횡성군 서원면 서원남로 80-0","phone":"","lat":null,"lon":null},{"name":"벨라스톤 컨트리클럽","region":"강원","address":"강원특별자치도 횡성군 서원면 옥계9길 124","phone":"","lat":null,"lon":null},{"name":"보라컨트리클럽","region":"울산","address":"울산광역시 울주군 삼동면 삼동로 404","phone":"","lat":35.4932548,"lon":129.1336028},{"name":"보령베이스컨트리클럽","region":"충남","address":"충청남도 보령시 옥마벚길 64 (명천동)","phone":"419393700.0","lat":null,"lon":null},{"name":"보문골프클럽","region":"경북","address":"경상북도 경주시 보문로 182-14, 1동 1층 1호 (북군동,보문컨트리클럽)","phone":"","lat":35.8597267,"lon":129.2748845},{"name":"보성 에덴 컨트리클럽","region":"전남","address":"전남광주통합특별시 보성군 보성읍 쾌상리 1364번지 0호","phone":"","lat":null,"lon":null},{"name":"보성컨트리클럽","region":"전남","address":"전남광주통합특별시 보성군 조성면 조성3길 338","phone":"618041000.0","lat":34.8200881,"lon":127.2187819},{"name":"부곡 CC","region":"경남","address":"경상남도 창녕군 부곡면 온천로 445","phone":"","lat":35.4470091,"lon":128.5750301},{"name":"부산칸트리클럽","region":"부산","address":"부산광역시 금정구 중앙대로2327번길 112  (노포동)","phone":"","lat":35.2982671,"lon":129.0935815},{"name":"블랙밸리 컨트리클럽","region":"강원","address":"강원특별자치도 삼척시 도계읍 도상로 307-84, 1동 (블랙밸리골프장)","phone":"","lat":null,"lon":null},{"name":"블랙스톤골프장(대중형)","region":"경기","address":"경기도 이천시 장호원읍 장여로 459-160","phone":"316300815.0","lat":37.1616657,"lon":127.6167279},{"name":"블랙스톤제주CC(대중형 18홀)","region":"제주","address":"제주특별자치도 제주시 한림읍 한창로 925-122","phone":"","lat":33.3355194,"lon":126.3240672},{"name":"블루원보문컨트리클럽","region":"경북","address":"경상북도 경주시 보불로 391 (천군동)","phone":"","lat":35.8238979,"lon":129.2975291},{"name":"블루원상주골프리조트","region":"경북","address":"경상북도 상주시 모서면 화현3길 127","phone":"","lat":36.3388801,"lon":127.9283981},{"name":"블루원용인CC","region":"경기","address":"경기도 용인시 처인구 원삼면 보개원삼로1534번길 40","phone":"","lat":37.1296185,"lon":127.3145847},{"name":"블루헤런G.C","region":"경기","address":"경기도 여주시 대신면 고달사로 67","phone":"318840701.0","lat":37.3871987,"lon":127.6484951},{"name":"비에이비스타 골프장(회원제)","region":"경기","address":"경기도 이천시 모가면 어농로 272","phone":"","lat":37.1820436,"lon":127.4177477},{"name":"비전힐스CC","region":"경기","address":"경기도 남양주시 화도읍 마치로 226-220","phone":"","lat":37.6413505,"lon":127.2674188},{"name":"비콘힐스 골프클럽","region":"강원","address":"강원특별자치도 홍천군 홍천읍 높은터로 533","phone":"","lat":37.6236468,"lon":127.8682828},{"name":"빅토리아일반대중골프장","region":"경기","address":"경기도 여주시 가남읍 송삼로 191","phone":"","lat":37.1791932,"lon":127.6301464},{"name":"빛고을실버타운 cc","region":"전남","address":"전남광주통합특별시 남구 효우로 153 (노대동)","phone":"","lat":35.0980378,"lon":126.8992839},{"name":"빛고을컨트리클럽","region":"전남","address":"전남광주통합특별시 남구 효우로 153 (노대동)","phone":"","lat":null,"lon":null},{"name":"사우스스프링스C.C(대중형)","region":"경기","address":"경기도 이천시 모가면 공원로 64","phone":"316307014.0","lat":37.1802755,"lon":127.4479129},{"name":"사우스케이프오너스클럽","region":"경남","address":"경상남도 남해군 창선면 흥선로1505번길 95","phone":"","lat":null,"lon":null},{"name":"사이프러스","region":"제주","address":"제주특별자치도 서귀포시 표선면 번영로 2300","phone":"","lat":33.4085442,"lon":126.7436822},{"name":"사천 타니컨트리클럽(회원27홀)","region":"경남","address":"경상남도 사천시 곤양면 흥신로 210","phone":"","lat":35.0993246,"lon":128.0208634},{"name":"산타크로스골프장","region":"대구","address":"대구광역시 군위군 소보면 서금로 342-0","phone":"","lat":36.2110557,"lon":128.5226833},{"name":"삼남개발(주) 기흥컨트리클럽","region":"경기","address":"경기도 화성시 동탄구 풀무골로106번길 244 (신동)","phone":"313764001.0","lat":37.1911216,"lon":127.1457227},{"name":"삼남대중골프장","region":"울산","address":"울산광역시 울주군 삼남면 방기가천로 179","phone":"","lat":35.5075365,"lon":129.0741928},{"name":"삼삼컨트리클럽","region":"경남","address":"경상남도 사천시 축동면 화당산로 224","phone":"","lat":35.1076044,"lon":128.0508706},{"name":"삼성물산(주)안양컨트리클럽","region":"경기","address":"경기도 군포시 군포로 364 (부곡동)","phone":"","lat":37.3360308,"lon":126.943806},{"name":"상떼힐익산간이골프장","region":"전북","address":"전북특별자치도 익산시 무왕로38길 111 (덕기동)","phone":"","lat":35.961535,"lon":127.0261904},{"name":"샌드파인 골프클럽","region":"강원","address":"강원특별자치도 강릉시 저동등길 53 (저동)","phone":"","lat":37.8026653,"lon":128.8857756},{"name":"샤인데일 골프&리조트","region":"강원","address":"강원특별자치도 홍천군 서면 동막리 산 77번지","phone":"","lat":null,"lon":null},{"name":"샤인빌파크CC(대중형 18홀)","region":"제주","address":"제주특별자치도 서귀포시 표선면 가시로 384-0 (샤인빌골프장)","phone":"","lat":33.345609,"lon":126.7882},{"name":"샴발라 컨트리클럽","region":"경기","address":"경기도 포천시 군내면 청군로 2856-93","phone":"","lat":37.873845,"lon":127.2615546},{"name":"서라벌골프클럽(9홀)","region":"경북","address":"경상북도 경주시 외동읍 내외로 577-189 (서라벌골프클럽)","phone":"","lat":35.6864969,"lon":129.3106665},{"name":"서산수골프앤리조트","region":"충남","address":"충청남도 서산시 대산읍 삼길포7로 6","phone":"","lat":36.9906803,"lon":126.4454606},{"name":"서원밸리 대중골프장","region":"경기","address":"경기도 파주시 광탄면 서원길 333","phone":"","lat":37.8218987,"lon":126.8977165},{"name":"서원밸리골프클럽","region":"경기","address":"경기도 파주시 광탄면 서원길 333, 서원밸리G.C클럽","phone":"","lat":37.8218987,"lon":126.8977165},{"name":"석정힐CC","region":"전북","address":"전북특별자치도 고창군 고창읍 석정2로 192","phone":"","lat":null,"lon":null},{"name":"석천씨씨","region":"경기","address":"경기도 용인시 처인구 백암면 석천리 744-1","phone":"","lat":37.1143696,"lon":127.3461664},{"name":"선리치골프클럽","region":"경북","address":"경상북도 경주시 안강읍 검단장골길 181-17","phone":"","lat":35.9485542,"lon":129.2078447},{"name":"설악썬밸리 컨트리클럽","region":"강원","address":"강원특별자치도 고성군 죽왕면 순포로 188","phone":"","lat":38.3133834,"lon":128.5022047},{"name":"설악프라자 컨트리클럽","region":"강원","address":"강원특별자치도 속초시 미시령로2983번길 56-20 (장사동)","phone":"","lat":38.20926,"lon":128.5364853},{"name":"설해원","region":"강원","address":"강원특별자치도 양양군 손양면 공항로 230","phone":"","lat":38.0459254,"lon":128.675126},{"name":"설해원 더 레전드 코스","region":"강원","address":"강원특별자치도 양양군 손양면 공항로 230-0 (설해원)","phone":"","lat":38.0533831,"lon":128.6632239},{"name":"성문안 컨트리클럽","region":"강원","address":"강원특별자치도 원주시 지정면 월송석화로 431-0 (성문안C.C)","phone":"","lat":37.3973218,"lon":127.8334348},{"name":"세레니티CC(회원제)","region":"충북","address":"충청북도 청원군 남이면 문곡구절골길 235","phone":"","lat":null,"lon":null},{"name":"세레티니 강촌C.C","region":"강원","address":"강원특별자치도 춘천시 남면 소주고개로 145-14, 1층 (파가니카CC클럽하우스)","phone":"","lat":null,"lon":null},{"name":"세븐밸리컨트리클럽","region":"경북","address":"경상북도 칠곡군 왜관읍 봉계3길 180","phone":"","lat":36.017216,"lon":128.4640768},{"name":"세이지우드 CC 홍천","region":"강원","address":"강원특별자치도 홍천군 두촌면 광석로 898-160","phone":"","lat":null,"lon":null},{"name":"세일골프장","region":"충북","address":"충청북도 충주시 신니면 동락길 207-0","phone":"","lat":37.0191135,"lon":127.6733475},{"name":"세종레이캐슬 골프&리조트","region":"세종","address":"세종특별자치시 전의면 의당전의로 252","phone":"","lat":36.617727,"lon":127.1897232},{"name":"세종에머슨 컨트리클럽","region":"세종","address":"세종특별자치시 전의면 운주산로 1510","phone":"448629715.0","lat":36.6951878,"lon":127.1790562},{"name":"세현CC","region":"경기","address":"경기도 용인시 처인구 이동읍 백자로 450","phone":"","lat":null,"lon":null},{"name":"센추리21 컨트리클럽2","region":"강원","address":"강원특별자치도 원주시 문막읍 궁말길 193","phone":"","lat":37.285759,"lon":127.8528185},{"name":"센추리21컨트리클럽","region":"강원","address":"강원특별자치도 원주시 문막읍 궁말길 193","phone":"","lat":37.2787548,"lon":127.8538843},{"name":"센테리움CC(회원제)","region":"충북","address":"충청북도 충주시 노은면 솔고개로 750","phone":"","lat":37.0369898,"lon":127.7813507},{"name":"소노펠리체 컨트리클럽 델피노","region":"강원","address":"강원특별자치도 고성군 토성면 미시령옛길 1153","phone":"","lat":38.2100921,"lon":128.4978163},{"name":"소노펠리체 컨트리클럽 비발디파크 마운틴","region":"강원","address":"강원특별자치도 홍천군 서면 한치골길 262","phone":"","lat":37.64427,"lon":127.6944221},{"name":"소노펠리체 컨트리클럽 비발디파크 웨스트","region":"강원","address":"강원특별자치도 홍천군 서면 한치골길 200","phone":"","lat":37.6389154,"lon":127.6742029},{"name":"소노펠리체 컨트리클럽 비발디파크 이스트","region":"강원","address":"강원특별자치도 홍천군 서면 한치골길 541-123","phone":"","lat":null,"lon":null},{"name":"소피아그린","region":"경기","address":"경기도 여주시 점동면 소피아그린길 84","phone":"","lat":37.1787499,"lon":127.705246},{"name":"속리산cc","region":"충북","address":"충청북도 보은군 보은읍 장속중초로 386-0, 0동 (클럽디보은)","phone":"","lat":36.5270748,"lon":127.6875335},{"name":"솔라고CC 라고","region":"충남","address":"충청남도 태안군 태안읍 기업도시9길 176","phone":"","lat":36.6903456,"lon":126.325897},{"name":"솔라고CC 솔","region":"충남","address":"충청남도 태안군 태안읍 기업도시16길 8","phone":"","lat":36.6992942,"lon":126.3187388},{"name":"솔라시도 컨트리클럽","region":"전남","address":"전남광주통합특별시 해남군 산이면 산이로 2247","phone":"615309500.0","lat":34.7066138,"lon":126.387766},{"name":"솔모로골프장","region":"경기","address":"경기도 여주시 가남읍 솔모로그린길 171","phone":"","lat":37.191227,"lon":127.5835638},{"name":"솔트베이(Salt Bay) 골프클럽","region":"경기","address":"경기도 시흥시 마유로 987 (장곡동)","phone":"","lat":37.3902287,"lon":126.7765787},{"name":"송라제니스컨트리클럽","region":"경북","address":"경상북도 포항시 북구 송라면 동해대로2751번길 126","phone":"","lat":null,"lon":null},{"name":"송산","region":"전북","address":"전북특별자치도 익산시 석암로 207  (석암동)","phone":"","lat":35.9412652,"lon":127.0133336},{"name":"수서컨트리클럽","region":"대구","address":"대구광역시 군위군 군위읍 장수길 99-15","phone":"","lat":36.2176146,"lon":128.557072},{"name":"수원CC","region":"경기","address":"경기도 용인시 기흥구 중부대로 495, 수원컨트리클럽 (구갈동)","phone":"","lat":37.277007,"lon":127.1232952},{"name":"순천컨트리클럽","region":"전남","address":"전남광주통합특별시 순천시 별량면 동화사길 85","phone":"","lat":34.86861,"lon":127.4012662},{"name":"스마트KU 골프 파빌리온","region":"경기","address":"경기도 파주시 법원읍 보광로 1616","phone":"319585961.0","lat":37.8240541,"lon":126.877184},{"name":"스카이밸리골프장","region":"경기","address":"경기도 여주시 북내면 운촌길 254","phone":"","lat":37.343188,"lon":127.7345399},{"name":"스타CC(회원제)","region":"충북","address":"충청북도 충주시 앙성면 상대촌1길 198","phone":"","lat":null,"lon":null},{"name":"스톤게이트C.C","region":"부산","address":"부산광역시 기장군 일광면 곡천길 317-0","phone":"517229840.0","lat":35.2822037,"lon":129.2012114},{"name":"스톤비치 컨트리클럽","region":"충남","address":"충청남도 태안군 근흥면 갈음이길 77","phone":"","lat":36.6910758,"lon":126.1615884},{"name":"스프링데일 골프&리조트 (대중형 18홀)","region":"제주","address":"제주특별자치도 서귀포시 남원읍 서성로 459","phone":"","lat":33.3302657,"lon":126.6360085},{"name":"스프링베일리조트","region":"강원","address":"강원특별자치도 춘천시 동면 금베이길 93-27","phone":"","lat":null,"lon":null},{"name":"신라컨트리클럽","region":"경기","address":"경기도 여주시 북내면 신라그린길 84","phone":"","lat":37.365368,"lon":127.7045014},{"name":"신안 퍼블릭 CC","region":"경기","address":"경기도 안성시 고삼면 개울말길 149","phone":"","lat":37.0984643,"lon":127.2493065},{"name":"신안컨트리클럽","region":"경기","address":"경기도 안성시 고삼면 개울말길 149","phone":"","lat":37.0984643,"lon":127.2493065},{"name":"신창기업(주)발리오스컨트리클럽(비회원제골프장업)","region":"경기","address":"경기도 화성시 만세구 팔탄면 3.1만세로 641-28","phone":"313525061.0","lat":null,"lon":null},{"name":"써미트CC","region":"전북","address":"전북특별자치도 진안군 부귀면 봉암리 산 80-1번지","phone":"","lat":null,"lon":null},{"name":"써미트컨트리큽럽","region":"전북","address":"전북특별자치도 진안군 부귀면 부귀로 72-161","phone":"","lat":null,"lon":null},{"name":"썬밸리CC","region":"충북","address":"충청북도 음성군 삼성면 범말길 49","phone":"","lat":37.0375027,"lon":127.4654865},{"name":"썬힐G.C","region":"경기","address":"경기도 가평군 조종면 운악청계로 809 (썬힐골프클럽)","phone":"","lat":37.8776769,"lon":127.3536218},{"name":"아난티 중앙골프클럽(회원제)","region":"충북","address":"충청북도 진천군 백곡면 배티로 818-105","phone":"","lat":36.9377281,"lon":127.3390361},{"name":"아난티남해골프클럽","region":"경남","address":"경상남도 남해군 남면 남서대로1179번길 40-109","phone":"","lat":34.7729263,"lon":127.8545215},{"name":"아난티클럽서울(주)","region":"경기","address":"경기도 가평군 설악면 유명로 961-34","phone":"315893000.0","lat":37.6203321,"lon":127.4810302},{"name":"아난티클럽제주CC(대중형 27홀)","region":"제주","address":"제주특별자치도 제주시 구좌읍 선유로 445-55","phone":"","lat":33.5207649,"lon":126.7366596},{"name":"아덴힐(대중형 18홀)","region":"제주","address":"제주특별자치도 제주시 한림읍 화전길 32","phone":"","lat":null,"lon":null},{"name":"아델스코트 컨트리클럽","region":"경남","address":"경상남도 합천군 가야면 가조가야로 1916-35","phone":"","lat":35.7052111,"lon":128.0880758},{"name":"아리솔cc","region":"충북","address":"충청북도 보은군 탄부면 평각상장로 230","phone":"435449500.0","lat":36.4471214,"lon":127.7822845},{"name":"아리스타 컨트리클럽","region":"충남","address":"충청남도 논산시 연무읍 연무로 810-0","phone":"27870270.0","lat":36.0856638,"lon":127.1179261},{"name":"아리지 골프장","region":"경기","address":"경기도 여주시 가남읍 아리지그린길 68","phone":"318829202.0","lat":37.2139408,"lon":127.595419},{"name":"아세코밸리 골프클럽","region":"경기","address":"경기도 시흥시 마전로 307 (거모동, 시흥아세코밸리골프장)","phone":"","lat":null,"lon":null},{"name":"아시아나CC","region":"경기","address":"경기도 용인시 처인구 양지면 양대로 290","phone":"","lat":37.2540551,"lon":127.2896037},{"name":"아시아드컨트리클럽","region":"부산","address":"부산광역시 기장군 일광면 차양길 26","phone":"","lat":35.2844747,"lon":129.2415654},{"name":"아일랜드컨트리클럽","region":"경기","address":"경기도 안산시 단원구 대부남동 1111","phone":"328851004.0","lat":37.2332535,"lon":126.5646395},{"name":"아크로컨트리클럽","region":"전남","address":"전남광주통합특별시 영암군 금정면 안적동길 403","phone":"","lat":null,"lon":null},{"name":"안동레이크골프클럽","region":"경북","address":"경상북도 안동시 관광단지로 316 (성곡동)","phone":"","lat":36.5640826,"lon":128.7749274},{"name":"안동리버힐 컨트리클럽","region":"경북","address":"경상북도 안동시 풍천면 풍일로 1572-0","phone":"","lat":36.488873,"lon":128.5731093},{"name":"안성 아덴힐 C.C (변경 후 안성 루나힐스)","region":"경기","address":"경기도 안성시 양성면 약산길 67-6 (안성아덴힐CC)","phone":"","lat":37.119391,"lon":127.2684489},{"name":"안성베네스트G.C","region":"경기","address":"경기도 안성시 금광면 삼흥로 660","phone":"","lat":37.0283803,"lon":127.3792686},{"name":"안성베네스트골프클럽 일반대중홀","region":"경기","address":"경기도 안성시 금광면 삼흥로 660","phone":"316700703.0","lat":37.0283803,"lon":127.3792686},{"name":"안성컨트리클럽","region":"경기","address":"경기도 안성시 죽산면 장계길 134","phone":"316749111.0","lat":37.0447535,"lon":127.4057442},{"name":"알펜시아 700 골프클럽","region":"강원","address":"강원특별자치도 평창군 대관령면 솔봉로 325","phone":"","lat":37.6623952,"lon":128.6909622},{"name":"알펜시아 컨트리클럽","region":"강원","address":"강원특별자치도 평창군 대관령면 솔봉로 325","phone":"","lat":37.6541478,"lon":128.652815},{"name":"알프스대영컨트리클럽","region":"강원","address":"강원특별자치도 횡성군 우천면 한우로 1295","phone":"","lat":37.463209,"lon":128.0766269},{"name":"알프스퍼블릭","region":"강원","address":"강원특별자치도 고성군 간성읍 흘리령길 52","phone":"","lat":38.2631299,"lon":128.3786102},{"name":"애플밸리 cc","region":"경북","address":"경상북도 김천시 어모면 능치리 산 37번지","phone":"","lat":36.2286066,"lon":128.0658887},{"name":"양산 동원로얄컨트리클럽","region":"경남","address":"경상남도 양산시 어곡동 산 283번지 6호","phone":"","lat":null,"lon":null},{"name":"양산컨트리클럽","region":"경남","address":"경상남도 양산시 상북면 충렬로 687","phone":"","lat":35.4008528,"lon":129.0426143},{"name":"양주CC","region":"경기","address":"경기도 남양주시 화도읍 금남리 300번지","phone":"","lat":37.6433452,"lon":127.3535051},{"name":"양평TPC GC","region":"경기","address":"경기도 양평군 지평면 대평평장길 113-8 (양평TPC골프클럽)","phone":"317723000.0","lat":37.4156654,"lon":127.6535662},{"name":"어등산CC","region":"전남","address":"전남광주통합특별시 광산구 무진대로 31 (운수동)","phone":"","lat":null,"lon":null},{"name":"에덴밸리 컨트리클럽","region":"경남","address":"경상남도 양산시 어실로 910 (어곡동)","phone":"","lat":35.4248247,"lon":128.9934366},{"name":"에덴블루 컨트리클럽","region":"경기","address":"경기도 안성시 죽산면 녹배길 175","phone":"","lat":37.0578784,"lon":127.385394},{"name":"에딘버러 컨트리클럽","region":"충남","address":"충청남도 금산군 진산면 살구정길 167","phone":"","lat":36.154171,"lon":127.325793},{"name":"에버리스컨트리클럽","region":"제주","address":"제주특별자치도 제주시 애월읍 평화로 1693-75","phone":"","lat":33.3777076,"lon":126.360351},{"name":"에스앤골프리조트","region":"충남","address":"충청남도 보령시 남포면 개목수리섬길 196","phone":"419340100.0","lat":36.2871433,"lon":126.552142},{"name":"에스지아름다운골프앤리조트","region":"충남","address":"충청남도 아산시 염치읍 영인산로 440","phone":"","lat":null,"lon":null},{"name":"에스페란사골프클럽","region":"전북","address":"전북특별자치도 김제시 금구면 낙산로 120","phone":"","lat":35.8064264,"lon":127.0063462},{"name":"에이원 CC","region":"경남","address":"경상남도 양산시 덕명로 190 (매곡동)","phone":"","lat":35.3770313,"lon":129.1758431},{"name":"에이치원 클럽(H1 CLUB)","region":"경기","address":"경기도 이천시 호법면 장자터로 115","phone":"","lat":37.1884314,"lon":127.4023346},{"name":"에코랜드(대중형 27홀)","region":"제주","address":"제주특별자치도 제주시 조천읍 번영로 1278-169","phone":"","lat":33.4617083,"lon":126.6703843},{"name":"에코리안영광골프장","region":"전남","address":"전남광주통합특별시 영광군 영광읍 월현로1길 40","phone":"","lat":null,"lon":null},{"name":"에콜리안영광골프장","region":"전남","address":"전남광주통합특별시 영광군 영광읍 월현로1길 40-0","phone":"","lat":null,"lon":null},{"name":"에콜리안정선골프장","region":"강원","address":"강원특별자치도 정선군 신동읍 새골길 112-49","phone":"","lat":37.2226428,"lon":128.6834306},{"name":"엘리시안 강촌 컨트리클럽","region":"강원","address":"강원특별자치도 춘천시 남산면 북한강변길 688","phone":"","lat":37.826659,"lon":127.5803149},{"name":"엘리시안제주CC(대중형 18홀)","region":"제주","address":"제주특별자치도 제주시 애월읍 어음리 3914번지 1호","phone":"","lat":33.3756759,"lon":126.3723501},{"name":"엘리시안컨트리클럽","region":"제주","address":"제주특별자치도 제주시 애월읍 평화로 1738-116","phone":"","lat":33.3702697,"lon":126.3753522},{"name":"엘리체컨트리클럽","region":"전남","address":"전남광주통합특별시 화순군 춘양면 장곡길 55","phone":"","lat":34.9537793,"lon":126.9252262},{"name":"엠스클럽의성","region":"경북","address":"경상북도 의성군 봉양면 농공마전길 1","phone":"","lat":36.2818261,"lon":128.5601484},{"name":"여수경도골프앤리조트","region":"전남","address":"전남광주통합특별시 여수시 대경도길 8-8 (경호동)","phone":"","lat":null,"lon":null},{"name":"여수아일랜드 골프&리조트 골프장","region":"전남","address":"전남광주통합특별시 여수시 대경도길 8-8 (경호동)","phone":"","lat":null,"lon":null},{"name":"여주썬밸리 컨트리클럽","region":"경기","address":"경기도 여주시 강천면 강문로 872","phone":"","lat":37.2690267,"lon":127.7372154},{"name":"영동 일라이트CC","region":"충북","address":"충청북도 영동군 영동읍 영동힐링로 117-0","phone":"","lat":36.1566688,"lon":127.7871854},{"name":"영랑호컨트리클럽","region":"강원","address":"강원특별자치도 속초시 영랑호반길 170-0 (금호동)","phone":"","lat":38.2133457,"lon":128.5774482},{"name":"영천 시엘골프클럽","region":"경북","address":"경상북도 영천시 청통면 청통로 334-41","phone":"5433367200.0","lat":35.9923073,"lon":128.8571247},{"name":"영천CC","region":"경북","address":"경상북도 영천시 임고면 방목길 34-2","phone":"","lat":36.0473169,"lon":129.0103927},{"name":"예미지CC","region":"충남","address":"충청남도 청양군 대치면 주정리 44번지 1호","phone":"","lat":36.458508,"lon":126.8424294},{"name":"오너스골프클럽","region":"강원","address":"강원특별자치도 춘천시 남산면 동촌로 667","phone":"","lat":null,"lon":null},{"name":"오렌지듄스 영종 골프클럽","region":"인천","address":"인천광역시 영종구 운서동 2850번지 43호","phone":"","lat":null,"lon":null},{"name":"오로라 골프 앤 리조트","region":"강원","address":"강원특별자치도 원주시 신림면 구학산로 1520-0","phone":"","lat":null,"lon":null},{"name":"오르비스 골프클럽","region":"울산","address":"울산광역시 울주군 온양읍 남창로 813-70","phone":"","lat":null,"lon":null},{"name":"오션뷰 컨트리클럽(정규대중제27홀)","region":"경북","address":"경상북도 영덕군 강구면 삼사1길 2","phone":"547309090.0","lat":36.3429274,"lon":129.3805873},{"name":"오션비치CC","region":"경북","address":"경상북도 영덕군 강구면 삼사1길 2","phone":"","lat":36.3429274,"lon":129.3805873},{"name":"오션힐스청도골프클럽","region":"경북","address":"경상북도 청도군 매전면 곰티로 370-204","phone":"","lat":35.6749107,"lon":128.8125926},{"name":"오션힐스포항CC(대중형18홀)","region":"경북","address":"경상북도 포항시 북구 송라면 대전길 7","phone":"","lat":null,"lon":null},{"name":"오시아노골프클럽","region":"전남","address":"전남광주통합특별시 해남군 화원면 시아로 224","phone":"","lat":null,"lon":null},{"name":"오창에딘버러 CC(대중제)","region":"충북","address":"충청북도 청원군 오창읍 두릉유리로 846","phone":"","lat":null,"lon":null},{"name":"오크밸리 회원제골프장","region":"강원","address":"강원특별자치도 원주시 지정면 월송석화로 950-0 (오크밸리회원제골프장)","phone":"","lat":37.437111,"lon":127.8163766},{"name":"오크밸리골프장","region":"강원","address":"강원특별자치도 원주시 지정면 월송리 산 171","phone":"","lat":null,"lon":null},{"name":"오크밸리대중골프장","region":"강원","address":"강원특별자치도 원주시 지정면 월송리 산 171","phone":"","lat":null,"lon":null},{"name":"오크힐스 컨트리클럽","region":"강원","address":"강원특별자치도 원주시 지정면 오크밸리2길 58-0 (오크힐스클럽하우스)","phone":"","lat":37.4174469,"lon":127.8297987},{"name":"오투리조트 C.C","region":"강원","address":"강원특별자치도 태백시 서학로 861 (황지동, 오투리조트)","phone":"","lat":null,"lon":null},{"name":"오투리조트 골프(대중제 18홀)","region":"강원","address":"강원특별자치도 태백시 서학로 861 (황지동, 오투리조트)","phone":"","lat":null,"lon":null},{"name":"오펠골프클럽","region":"경북","address":"경상북도 영천시 고경면 호국로 1221-24","phone":"","lat":null,"lon":null},{"name":"옥과골프장","region":"전남","address":"전남광주통합특별시 곡성군 옥과면 소룡길 427-2","phone":"","lat":35.2894139,"lon":127.1633672},{"name":"올데이 옥스필드","region":"강원","address":"강원특별자치도 횡성군 서원면 경강로유현6길 28","phone":"","lat":37.515908,"lon":127.8425548},{"name":"올데이 청주떼제베CC(대중형 골프장-36홀)","region":"충북","address":"충청북도 청원군 옥산면 동림2길 149","phone":"","lat":null,"lon":null},{"name":"올림픽 골프장","region":"경기","address":"경기도 고양시 덕양구 혜음로 301  (벽제동)","phone":"319620101.0","lat":37.7213142,"lon":126.8961666},{"name":"용원 CC","region":"경남","address":"경상남도 창원시 진해구 가주로 133 (용원동)","phone":"","lat":35.1108209,"lon":128.823051},{"name":"용인씨씨","region":"경기","address":"경기도 용인시 처인구 백암면 황새울로 255","phone":"","lat":37.1123186,"lon":127.3427316},{"name":"용평 버치힐골프클럽","region":"강원","address":"강원특별자치도 평창군 대관령면 올림픽로 715","phone":"","lat":37.6509148,"lon":128.7094113},{"name":"용평대중골프장","region":"강원","address":"강원특별자치도 평창군 대관령면 용산리 2-4","phone":"333355757.0","lat":37.6465436,"lon":128.6843301},{"name":"용평리조트 골프클럽","region":"강원","address":"강원특별자치도 평창군 대관령면 올림픽로 715","phone":"","lat":37.6457256,"lon":128.6806392},{"name":"용평리조트 대중골프장","region":"강원","address":"강원특별자치도 평창군 대관령면 용산리 2번지 4호","phone":"","lat":null,"lon":null},{"name":"우리골프장","region":"경북","address":"경상북도 경주시 양남면 동남로 972","phone":"","lat":35.678748,"lon":129.3745869},{"name":"우리들리조트제주(대중형 18홀)","region":"제주","address":"제주특별자치도 서귀포시 산록남로 2914 (상효동)","phone":"","lat":33.3102957,"lon":126.5896131},{"name":"우정힐스컨트리클럽","region":"충남","address":"충청남도 천안시 동남구 목천읍 충절로 1048-68","phone":"","lat":36.7667419,"lon":127.2246585},{"name":"운선컨트리클럽","region":"전북","address":"전북특별자치도 완주군 운주면 산북신복길 166","phone":"","lat":36.0776758,"lon":127.3537243},{"name":"울산컨트리클럽","region":"울산","address":"울산광역시 울주군 웅촌면 웅촌로 1","phone":"","lat":35.4394267,"lon":129.1849719},{"name":"웅포컨트리클럽","region":"전북","address":"전북특별자치도 익산시 웅포면 강변로 130","phone":"637207000.0","lat":36.0712629,"lon":126.8839417},{"name":"월송리 컨트리클럽","region":"강원","address":"강원특별자치도 원주시 지정면 오크밸리2길 250-0 (퍼블릭클럽하우스)","phone":"","lat":37.4139392,"lon":127.8221423},{"name":"웰리힐리 컨트리클럽","region":"강원","address":"강원특별자치도 횡성군 둔내면 고원로 451","phone":"","lat":37.4748857,"lon":128.2343562},{"name":"웰링턴컨트리클럽","region":"경기","address":"경기도 이천시 모가면 사실로725번길 119-73","phone":"","lat":37.1678084,"lon":127.4233651},{"name":"윈체스트 골프클럽 대중","region":"경기","address":"경기도 안성시 서운면 오촌길 97-31","phone":"","lat":36.9608201,"lon":127.2896836},{"name":"윈체스트컨트리클럽 서산","region":"충남","address":"충청남도 서산시 대산읍 삼길포7로 6","phone":"","lat":36.9906803,"lon":126.4454606},{"name":"유성컨트리클럽","region":"대전","address":"대전광역시 유성구 현충원로 200 (덕명동)","phone":"","lat":36.3546954,"lon":127.290866},{"name":"은화삼","region":"경기","address":"경기도 용인시 처인구 백옥대로 860-38 (호동, 은화삼C.C)","phone":"","lat":37.2151864,"lon":127.2201586},{"name":"음성 힐데스하임CC","region":"충북","address":"충청북도 음성군 소이면 후삼로158번길 101-0, 0동 (클럽하우스)","phone":"","lat":null,"lon":null},{"name":"이글몬트cc","region":"경기","address":"경기도 안성시 보개면 보삼로 106","phone":"312880982.0","lat":37.0902245,"lon":127.3343407},{"name":"이븐데일 CC(대중제)","region":"충북","address":"충청북도 청원군 미원면 대신2길 31","phone":"","lat":null,"lon":null},{"name":"이스트밸리컨트리클럽","region":"경기","address":"경기도 광주시 곤지암읍 건업길 195","phone":"317603806.0","lat":37.4052081,"lon":127.385915},{"name":"이스트힐골프장","region":"경북","address":"경상북도 경주시 양남면 외남로 1377","phone":"","lat":35.7301814,"lon":129.372748},{"name":"이지스카이컨트리클럽","region":"대구","address":"대구광역시 군위군 군위읍 대흥1길 48-100, 1동 (이지스카이컨트리클럽)","phone":"","lat":36.2827014,"lon":128.5425026},{"name":"이천마이다스골프앤리조트(대중형)","region":"경기","address":"경기도 이천시 설성면 설가로 602","phone":"","lat":null,"lon":null},{"name":"이천실크밸리골프클럽(대중형)","region":"경기","address":"경기도 이천시 율면 임오산로 296","phone":"","lat":null,"lon":null},{"name":"이포골프장","region":"경기","address":"경기도 여주시 금사면 장흥로 416","phone":"","lat":37.3878988,"lon":127.4953518},{"name":"익산컨트리클럽","region":"전북","address":"전북특별자치도 익산시 무왕로38길 111 (덕기동)","phone":"","lat":35.961535,"lon":127.0261904},{"name":"인서울27골프클럽","region":"서울","address":"서울특별시 강서구 오정로 443-198, 인서울27골프클럽 (오곡동)","phone":"263958714.0","lat":37.5465695,"lon":126.7935084},{"name":"인천국제공항스카이칠십이골프장","region":"인천","address":"인천광역시 영종구 공항동로 392 (운서동)","phone":"","lat":37.4858775,"lon":126.4664688},{"name":"인천국제컨트리클럽","region":"인천","address":"인천광역시 서해구 도요지로 37 (경서동)","phone":"","lat":37.5624663,"lon":126.6530553},{"name":"인천그랜드컨트리클럽","region":"인천","address":"인천광역시 서해구 원석로 195 (원창동)","phone":"","lat":37.5118965,"lon":126.6380358},{"name":"인터불고원주 GC","region":"강원","address":"강원특별자치도 원주시 동부순환로 200 (반곡동)","phone":"","lat":37.3324345,"lon":127.9742537},{"name":"일동레이크 골프클럽","region":"경기","address":"경기도 포천시 일동면 화동로 738","phone":"315395900.0","lat":37.9313647,"lon":127.3167792},{"name":"일동레이크대중제골프장","region":"경기","address":"경기도 포천시 일동면 화동로 738","phone":"315395932.0","lat":37.9313647,"lon":127.3167792},{"name":"일레븐CC","region":"충북","address":"충청북도 충주시 앙성면 본평리 43번지 32호","phone":"","lat":null,"lon":null},{"name":"일산스프링힐스 컨트리클럽","region":"경기","address":"경기도 고양시 일산동구 산황동 산 54 일원","phone":"319692000.0","lat":null,"lon":null},{"name":"임페리얼CC(대중제)","region":"충북","address":"충청북도 충주시 금가면 다래울길 52","phone":"","lat":37.0285482,"lon":127.8664564},{"name":"자유로컨트리클럽","region":"경기","address":"경기도 연천군 백학면 노아로297번길 179-55","phone":"318327022.0","lat":37.9983622,"lon":126.9489583},{"name":"자유컨트리클럽","region":"경기","address":"경기도 여주시 가남읍 자유그린길 69","phone":"318848400.0","lat":37.2092542,"lon":127.5682989},{"name":"장수골프리조트","region":"전북","address":"전북특별자치도 장수군 계남면 장안산로 303","phone":"","lat":35.6781661,"lon":127.6001633},{"name":"잭 니클라우스 골프클럽 코리아","region":"인천","address":"인천광역시 연수구 아카데미로 209 (송도동)","phone":"","lat":37.3835806,"lon":126.6217922},{"name":"전주샹그릴라CC","region":"전북","address":"전북특별자치도 임실군 신덕면 지장리 산 1번지","phone":"636431000.0","lat":35.7132334,"lon":127.2055919},{"name":"정남진골프리조트","region":"전남","address":"전남광주통합특별시 장흥군 장평면 제산기동로 326","phone":"","lat":null,"lon":null},{"name":"제이드팰리스 골프클럽","region":"강원","address":"강원특별자치도 춘천시 남산면 경춘로 212-30","phone":"","lat":37.8333143,"lon":127.5491441},{"name":"제이드팰리스솔프클럽","region":"강원","address":"강원특별자치도 춘천시 남산면 서천리 산 35","phone":"","lat":null,"lon":null},{"name":"제이레저(주) 티클라우드컨트리클럽","region":"경기","address":"경기도 동두천시 평화로 3202 (하봉암동)","phone":"","lat":37.965897,"lon":127.087792},{"name":"제이스C.C 시사이드","region":"경북","address":"경상북도 경주시 감포읍 나정리 산 47","phone":"547779000.0","lat":null,"lon":null},{"name":"제일C.C","region":"경기","address":"경기도 안산시 상록구 태마당로 28 (부곡동)","phone":"","lat":37.3263202,"lon":126.8677364},{"name":"제천친환경(에콜리안제천골프장(대중제))","region":"충북","address":"충청북도 제천시 의림대로 580 (고암동)","phone":"","lat":37.1779344,"lon":128.210254},{"name":"제천친환경대중골프장","region":"충북","address":"충청북도 제천시 의림대로 580 (고암동)","phone":"","lat":37.1779344,"lon":128.210254},{"name":"젠스필드CC(대중제)","region":"충북","address":"충청북도 음성군 삼성면 덕호로 382","phone":"","lat":null,"lon":null},{"name":"조아밸리골프장","region":"전남","address":"전남광주통합특별시 화순군 도곡면 고인돌2로 450","phone":"","lat":34.9867293,"lon":126.939148},{"name":"죽향컨트리클럽","region":"전남","address":"전남광주통합특별시 담양군 창평면 창평로 159-0, 1동 (주식회사진홍개발)","phone":"","lat":null,"lon":null},{"name":"중문골프클럽(대중형 18홀)","region":"제주","address":"제주특별자치도 서귀포시 중문관광로72번길 60 (색달동)","phone":"","lat":33.2498598,"lon":126.4049975},{"name":"중앙컨트리클럽","region":"충북","address":"충청북도 진천군 백곡면 배티로 818-105","phone":"","lat":36.9377281,"lon":127.3390361},{"name":"중원CC(대중제)","region":"충북","address":"충청북도 충주시 산척면 인등로 392","phone":"","lat":37.0693363,"lon":127.9926885},{"name":"지산 퍼블릭","region":"경기","address":"경기도 용인시 처인구 원삼면 죽양대로2000번길 60, 지산C.C","phone":"","lat":37.2160926,"lon":127.3365708},{"name":"지산골프장","region":"경기","address":"경기도 용인시 처인구 원삼면 죽양대로2000번길 60, 지산C.C","phone":"","lat":37.2160926,"lon":127.3365708},{"name":"진양벨리 CC(대중제)","region":"충북","address":"충청북도 음성군 삼성면 금일로 1195","phone":"","lat":37.0304166,"lon":127.4650851},{"name":"진주 CC","region":"경남","address":"경상남도 진주시 진성면 진성로464번길 82","phone":"","lat":35.1787992,"lon":128.2332291},{"name":"창원 CC","region":"경남","address":"경상남도 창원시 의창구 대봉로 103 (봉림동)","phone":"","lat":35.2589732,"lon":128.6652085},{"name":"천룡CC(회원제)","region":"충북","address":"충청북도 진천군 이월면 진안로 347-123","phone":"","lat":null,"lon":null},{"name":"천안상록골프장","region":"충남","address":"충청남도 천안시 동남구 수신면 수신로 576","phone":"","lat":36.7407812,"lon":127.2884717},{"name":"청통골프장","region":"경북","address":"경상북도 영천시 청통면 송천리 661번지 1호 청통골프장","phone":"7086603956.0","lat":35.9868462,"lon":128.8100743},{"name":"청하이스턴CC","region":"경북","address":"경상북도 포항시 북구 청하면 용산길 94","phone":"","lat":36.1625897,"lon":129.3631319},{"name":"칠곡아이위시컨트리클럽","region":"경북","address":"경상북도 칠곡군 기산면 노석1길 49-112","phone":"","lat":null,"lon":null},{"name":"카스카디아 골프클럽","region":"강원","address":"강원특별자치도 홍천군 북방면 팔봉산로 1759-0","phone":"","lat":37.7207119,"lon":127.7593054},{"name":"캐슬렉스제주(대중형 9홀)","region":"제주","address":"제주특별자치도 서귀포시 안덕면 평화로 1241-0","phone":"","lat":33.3373968,"lon":126.3832737},{"name":"캐슬파인리조트주식회사","region":"경기","address":"경기도 여주시 강천면 부평로 580","phone":"318808656.0","lat":37.3073401,"lon":127.7420581},{"name":"케이밸리컨트리클럽","region":"전북","address":"전북특별자치도 완주군 운주면 대둔산로 1580-101","phone":"","lat":36.0950991,"lon":127.2967869},{"name":"케이지써닝라이프(주)","region":"경기","address":"경기도 용인시 처인구 백암면 고안로51번길 205, 퓨쳐리더십센타","phone":"313290754.0","lat":37.143167,"lon":127.420083},{"name":"코리아대중CC","region":"경기","address":"경기도 용인시 기흥구 기흥단지로 224 (고매동)","phone":"","lat":37.2237345,"lon":127.1185961},{"name":"코리아컨트리클럽(회원제)","region":"경기","address":"경기도 용인시 처인구 이동읍 기흥단지로 579, 코리아CC","phone":"313347111.0","lat":37.2193665,"lon":127.1513674},{"name":"코스카cc","region":"충북","address":"충청북도 음성군 음성읍 동음로 318","phone":"","lat":36.9318648,"lon":127.6211265},{"name":"코오롱가든골프장","region":"경북","address":"경상북도 경주시 마동 111-1","phone":"","lat":35.7878206,"lon":129.3217302},{"name":"코오롱호텔 가든골프장","region":"경북","address":"경상북도 경주시 불국로 289-17 (마동)","phone":"","lat":35.7878206,"lon":129.3217302},{"name":"크라운컨트리클럽(대중형 27홀)","region":"제주","address":"제주특별자치도 제주시 조천읍 북선로 125","phone":"","lat":33.5286649,"lon":126.6961024},{"name":"크리스밸리CC","region":"경기","address":"경기도 안성시 일죽면 일생로 212-41","phone":"316716633.0","lat":37.0698883,"lon":127.4887858},{"name":"크리스탈밸리C.C","region":"경기","address":"경기도 가평군 상면 대보간선로 602-111 (크리스탈밸리)","phone":"315895000.0","lat":37.7909583,"lon":127.3902098},{"name":"클럽디보은CC","region":"충북","address":"충청북도 보은군 보은읍 장속중초로 386-0 (클럽디보은)","phone":"435430537.0","lat":36.510017,"lon":127.6913264},{"name":"클럽모우 골프＆라이프 스타일","region":"강원","address":"강원특별자치도 홍천군 서면 장락동길 111-0","phone":"","lat":37.6929193,"lon":127.5647461},{"name":"킹스데일 골프클럽","region":"충북","address":"충청북도 충주시 주덕읍 기업도시3로 2","phone":"438508800.0","lat":37.0181253,"lon":127.8130257},{"name":"타미우스 컨트리클럽","region":"제주","address":"제주특별자치도 제주시 애월읍 화전길 201","phone":"","lat":33.3511928,"lon":126.388156},{"name":"타이거CC 골프장","region":"경기","address":"경기도 파주시 법원읍 술이홀로 1803","phone":"","lat":null,"lon":null},{"name":"태광컨트리클럽","region":"경기","address":"경기도 용인시 기흥구 흥덕4로 77 (영덕동)","phone":"","lat":37.2849766,"lon":127.0847718},{"name":"태안비치컨트리클럽","region":"충남","address":"충청남도 태안군 근흥면 갈음이길 77","phone":"","lat":36.6910758,"lon":126.1615884},{"name":"태인컨트리클럽","region":"전북","address":"전북특별자치도 정읍시 태인면 태인동서로 395-0 (태인C.C퍼블릭)","phone":"","lat":35.675114,"lon":126.9574447},{"name":"테디벨리","region":"제주","address":"제주특별자치도 서귀포시 안덕면 한창로 365","phone":"","lat":33.291372,"lon":126.3482019},{"name":"통도 파인이스트 컨트리클럽","region":"경남","address":"경상남도 양산시 하북면 신평남부길 29-12","phone":"","lat":35.4810106,"lon":129.0889787},{"name":"통도c.c","region":"경남","address":"경상남도 양산시 하북면 신평남부길 29-12","phone":"","lat":35.4810106,"lon":129.0889787},{"name":"통영 동원로얄컨트리클럽","region":"경남","address":"경상남도 통영시 산양읍 담안길 240","phone":"","lat":34.811713,"lon":128.4277295},{"name":"파나시아골프클럽","region":"충남","address":"충청남도 당진시 신평면 계명길 33","phone":"","lat":36.886114,"lon":126.7909574},{"name":"파라다이스골프장","region":"제주","address":"제주특별자치도 서귀포시 안덕면 광평리 산 125","phone":"","lat":null,"lon":null},{"name":"파라지오 컨트리클럽","region":"경북","address":"경상북도 의성군 봉양면 농공마전길 167-0, 1동 1층 1호 (파라지오컨트리클럽)","phone":"","lat":36.2919357,"lon":128.5488212},{"name":"파미힐스 컨트리클럽","region":"경북","address":"경상북도 칠곡군 왜관읍 봉계로 263","phone":"","lat":36.0012552,"lon":128.4441551},{"name":"파인리조트","region":"경기","address":"경기도 용인시 처인구 양지면 남평로 112","phone":"","lat":37.2143322,"lon":127.2900673},{"name":"파인리즈 컨트리클럽","region":"강원","address":"강원특별자치도 고성군 토성면 잼버리동로 267","phone":"","lat":38.2495862,"lon":128.5383076},{"name":"파인밸리 컨트리클럽","region":"강원","address":"강원특별자치도 삼척시 근덕면 미근로 1629","phone":"","lat":37.3779396,"lon":129.204753},{"name":"파인비치골프링크스","region":"전남","address":"전남광주통합특별시 해남군 화원면 시아로 224","phone":"","lat":34.6948702,"lon":126.2630305},{"name":"파인스톤컨트리클럽","region":"충남","address":"충청남도 당진시 송산면 무수들길 90","phone":"","lat":36.9613425,"lon":126.6672702},{"name":"파인크리크C.C","region":"경기","address":"경기도 안성시 양성면 안성맞춤대로 2417-13","phone":"316720071.0","lat":37.1034866,"lon":127.2340978},{"name":"파인힐스컨트리클럽","region":"전남","address":"전남광주통합특별시 순천시 주암면 송광사길 99","phone":"","lat":35.0375616,"lon":127.2706592},{"name":"파주 J-Public 골프장","region":"경기","address":"경기도 파주시 조리읍 장곡로 100","phone":"","lat":37.7498585,"lon":126.8465066},{"name":"파크밸리 골프클럽","region":"강원","address":"강원특별자치도 원주시 소초면 바우실길 281","phone":"","lat":37.3917562,"lon":128.0152616},{"name":"파크밸리대중골프장","region":"강원","address":"강원특별자치도 원주시 소초면 수암리 산 24","phone":"","lat":37.3917562,"lon":128.0152616},{"name":"팔공컨트리클럽","region":"대구","address":"대구광역시 동구 팔공산로237길 186 (도학동)","phone":"","lat":35.9972618,"lon":128.7223308},{"name":"페럼클럽","region":"경기","address":"경기도 여주시 점동면 점동로 181","phone":"","lat":37.2083786,"lon":127.6852357},{"name":"펜타뷰골프클럽","region":"경북","address":"경상북도 청도군 금천면 갈지리 산 204번지","phone":"","lat":35.7409023,"lon":128.8544601},{"name":"포도컨트리클럽","region":"경북","address":"경상북도 김천시 구성면 남김천대로 2532-0 (다옴컨트리클럽)","phone":"544200200.0","lat":36.0423575,"lon":128.0579284},{"name":"포라이즌","region":"전남","address":"전남광주통합특별시 순천시 별량면 오실길 333-0 (승주골프장)","phone":"","lat":null,"lon":null},{"name":"포레스트힐C.C","region":"경기","address":"경기도 포천시 화현면 봉화로 253","phone":"315308000.0","lat":37.8727713,"lon":127.2763668},{"name":"포웰CC 안성","region":"경기","address":"경기도 안성시 양성면 약산길 67-6","phone":"","lat":37.119391,"lon":127.2684489},{"name":"포천아도니스 C.C","region":"경기","address":"경기도 포천시 신북면 포천로 2499","phone":"","lat":37.9661863,"lon":127.1678931},{"name":"포천아도니스 대중골프장","region":"경기","address":"경기도 포천시 신북면 포천로 2499","phone":"","lat":37.9661863,"lon":127.1678931},{"name":"포천힐스컨트리클럽","region":"경기","address":"경기도 포천시 군내면 반월산성로375번길 34","phone":"","lat":37.8857875,"lon":127.2340932},{"name":"포항컨트리클럽","region":"경북","address":"경상북도 포항시 북구 송라면 대전길 7","phone":"","lat":null,"lon":null},{"name":"푸른솔 골프클럽 포천","region":"경기","address":"경기도 포천시 가산면 금우로 276","phone":"","lat":37.8402142,"lon":127.2355038},{"name":"푸른솔GC","region":"전남","address":"전남광주통합특별시 장성군 동화면 임정로 155-0","phone":"","lat":null,"lon":null},{"name":"프리스틴밸리G.C","region":"경기","address":"경기도 가평군 설악면 유명로 1243-199 (프리스틴밸리)","phone":"315892130.0","lat":37.6561403,"lon":127.4555756},{"name":"프린세스 골프클럽","region":"충남","address":"충청남도 공주시 정안면 방자들길 81-50","phone":"","lat":36.6498879,"lon":127.1153418},{"name":"플라밍고C.C","region":"충남","address":"충청남도 당진시 석문면 산단8로 299-0, 1동 1층 1호 (플라밍고CC)","phone":"","lat":37.008995,"lon":126.582523},{"name":"플라자C.C","region":"경기","address":"경기도 용인시 처인구 남사읍 봉무로153번길 79, 한화리조트","phone":"","lat":37.1289213,"lon":127.1374693},{"name":"핀크스 골프클럽","region":"제주","address":"제주특별자치도 서귀포시 안덕면 산록남로 863","phone":"647935007.0","lat":33.3157648,"lon":126.387327},{"name":"필로스골프클럽","region":"경기","address":"경기도 포천시 일동면 운악청계로 1507","phone":"315312003.0","lat":37.9418527,"lon":127.3313186},{"name":"하이스트컨트리클럽(JS강서)","region":"부산","address":"부산광역시 강서구 과학산단1로 172 (지사동)","phone":"519417791.0","lat":35.1377413,"lon":128.812227},{"name":"하이원 컨트리클럽","region":"강원","address":"강원특별자치도 정선군 고한읍 하이원길 265","phone":"","lat":37.1765242,"lon":128.841423},{"name":"한라산CC(대중형 18홀)","region":"제주","address":"제주특별자치도 제주시 선돌목동길 56-46 (오등동)","phone":"","lat":33.4418681,"lon":126.547199},{"name":"한림안성","region":"경기","address":"경기도 안성시 양성면 양성로 349-61","phone":"316748350.0","lat":37.0847058,"lon":127.2011933},{"name":"한림용인","region":"경기","address":"경기도 용인시 처인구 남사면 경기동로 628","phone":"","lat":37.1297194,"lon":127.1881031},{"name":"한맥CC & 노블리아","region":"경북","address":"경상북도 예천군 호명면 한맥골프장길 72","phone":"546507000.0","lat":36.6596117,"lon":128.5177473},{"name":"한맥컨트리클럽","region":"경북","address":"경상북도 예천군 호명읍 한맥골프장길 72-0","phone":"","lat":36.6596117,"lon":128.5177473},{"name":"한미르대덕밸리 컨트리클럽","region":"대전","address":"대전광역시 유성구 테크노중앙로 210-0, 1동 (용산동,한미르대덕밸리컨트리클럽)","phone":"","lat":36.4189045,"lon":127.4013919},{"name":"한성","region":"경기","address":"경기도 용인시 기흥구 구교동로 151 (마북동)","phone":"","lat":37.30605,"lon":127.1230291},{"name":"한양컨트리클럽","region":"경기","address":"경기도 고양시 덕양구 고양대로1643번길 164  (원당동)","phone":"319690810.0","lat":37.6566051,"lon":126.8545523},{"name":"한양파인컨트리클럽","region":"경기","address":"경기도 고양시 덕양구 고양대로 1591 (성사동)","phone":"","lat":37.6485102,"lon":126.8588079},{"name":"한일골프장","region":"경기","address":"경기도 여주군 가남면 양귀리 산 59","phone":"","lat":null,"lon":null},{"name":"한탄강 컨트리클럽","region":"강원","address":"강원특별자치도 철원군 갈말읍 순담길 59","phone":"","lat":38.1695292,"lon":127.2933804},{"name":"함양리조트 스카이뷰컨트리클럽","region":"경남","address":"경상남도 함양군 서상면 소로길 207","phone":"","lat":35.6864834,"lon":127.7138336},{"name":"함평엘리체CC","region":"전남","address":"전남광주통합특별시 함평군 학교면 서당매길 242","phone":"","lat":null,"lon":null},{"name":"함평천지컨트리클럽","region":"전남","address":"전남광주통합특별시 함평군 함평읍 함장로 889-11","phone":"","lat":35.0512934,"lon":126.500549},{"name":"해내다컨트리클럽㈜","region":"경북","address":"경상북도 경산시 삼성현로 614-26 (평산동)","phone":"","lat":35.7957224,"lon":128.7625611},{"name":"해라컨트리클럽","region":"부산","address":"부산광역시 강서구 과학산단로306번길 77 (지사동)","phone":"517123900.0","lat":35.1563172,"lon":128.8393598},{"name":"해비치 컨트리클럽","region":"경기","address":"경기도 남양주시 화도읍 재재기로190번길 26","phone":"","lat":37.6132059,"lon":127.2978188},{"name":"해비치호텔앤드리조트(주) 해비치컨트리클럽(대중형 18홀)","region":"제주","address":"제주특별자치도 서귀포시 남원읍 원님로399번길 319","phone":"","lat":33.3589919,"lon":126.7244127},{"name":"해솔리아컨트리클럽","region":"경기","address":"경기도 용인시 처인구 이동읍 백자로 369, 해솔리아컨트리클럽","phone":"","lat":37.2080463,"lon":127.183369},{"name":"해슬리나인브릿지 컨트리클럽","region":"경기","address":"경기도 여주시 명품1로 76 (연라동)","phone":"","lat":37.2502469,"lon":127.6188561},{"name":"해운대비치 골프앤리조트","region":"부산","address":"부산광역시 기장군 기장읍 대변로 74","phone":"","lat":null,"lon":null},{"name":"해운대컨트리클럽","region":"부산","address":"부산광역시 기장군 정관면 병산2로 265","phone":"","lat":35.3639591,"lon":129.2041906},{"name":"해피니스CC","region":"전남","address":"전남광주통합특별시 나주시 다도면 다도로 171-60","phone":"","lat":null,"lon":null},{"name":"헤븐랜드컨트리클럽","region":"경북","address":"경상북도 성주군 초전면 소성2길 129","phone":"","lat":36.0447109,"lon":128.2275067},{"name":"호반서서울 주식회사","region":"경기","address":"경기도 파주시 광탄면 혜음로 324","phone":"","lat":37.7334123,"lon":126.9019525},{"name":"화산CC","region":"경기","address":"경기도 용인시 처인구 이동읍 화산로 239","phone":"","lat":37.1545705,"lon":127.2334856},{"name":"화성 상록 G.C","region":"경기","address":"경기도 화성시 동탄구 풀무골로60번길 80 (중동)","phone":"","lat":null,"lon":null},{"name":"화성골프클럽","region":"경기","address":"경기도 화성시 만세구 남양읍 화성로 1393-27","phone":"313698921.0","lat":37.2261917,"lon":126.8363413},{"name":"화순 컨트리클럽","region":"전남","address":"전남광주통합특별시 화순군 도곡면 쌍옥리 산 178번지","phone":"","lat":null,"lon":null},{"name":"휘닉스 대중골프장","region":"강원","address":"강원특별자치도 평창군 봉평면 태기로 174","phone":"","lat":37.5812806,"lon":128.3273441},{"name":"휘닉스 컨트리클럽","region":"강원","address":"강원특별자치도 평창군 봉평면 태기로 227-84","phone":"","lat":37.5892191,"lon":128.335667},{"name":"휘닉스파크골프장(회원제)","region":"강원","address":"강원특별자치도 평창군 봉평면 면온리 산 249","phone":"","lat":null,"lon":null},{"name":"휘닉스파크대중골프장","region":"강원","address":"강원특별자치도 평창군 봉평면 무이리 산 268","phone":"","lat":null,"lon":null},{"name":"휘슬링 락 컨트리클럽","region":"강원","address":"강원특별자치도 춘천시 남산면 동촌로 501","phone":"","lat":37.7676858,"lon":127.6751312},{"name":"히든밸리CC","region":"충북","address":"충청북도 진천군 백곡면 소토골길 61","phone":"435397900.0","lat":null,"lon":null},{"name":"힐데스하임CC(대중제)-킹즈락cc","region":"충북","address":"충청북도 제천시 내토로7길 136 (천남동)","phone":"","lat":null,"lon":null},{"name":"힐데스하임cc(대중제)","region":"충북","address":"충청북도 제천시 내토로7길 136 (천남동)","phone":"","lat":null,"lon":null},{"name":"힐드로사이 컨트리클럽","region":"강원","address":"강원특별자치도 홍천군 남면 한서로 2840","phone":"","lat":37.5965113,"lon":127.7167326},{"name":"힐마루 골프앤리조트 포천","region":"경기","address":"경기도 포천시 영중면 금화봉4길 77","phone":"315380777.0","lat":37.9885904,"lon":127.2246872},{"name":"힐마루컨트리클럽창녕(대중제)","region":"경남","address":"경상남도 창녕군 장마면 영산계성로 469-195","phone":"","lat":35.4958069,"lon":128.4921008},{"name":"힐스카이컨트리클럽","region":"경북","address":"경상북도 경주시 천북면 천강로 412-299","phone":"","lat":35.9097468,"lon":129.3195817}];
 
 const statusBox = document.getElementById("connectionStatus");
+
+
+function showAuthPanel(panelId) {
+  ["authLoading","authRequest","authPending","authRejected"]
+    .forEach(id => document.getElementById(id)?.classList.add("hidden"));
+
+  document.getElementById(panelId)?.classList.remove("hidden");
+  document.getElementById("authScreen")?.classList.remove("hidden");
+  document.getElementById("appShell")?.classList.add("hidden");
+}
+
+
+function showApprovedApp() {
+  document.getElementById("authScreen")?.classList.add("hidden");
+  document.getElementById("appShell")?.classList.remove("hidden");
+
+  const name = getMemberName(ownMemberId());
+  document.getElementById("currentUserBar").textContent =
+    isAdmin()
+      ? `👑 ${name} · 관리자`
+      : `👤 ${name} · 회원`;
+
+  applyRoleUI();
+  renderAll();
+}
+
+
+function applyRoleUI() {
+  const admin = isAdmin();
+
+  document.getElementById("adminPanel")
+    ?.classList.toggle("hidden", !admin);
+
+  document.getElementById("roundCreateCard")
+    ?.classList.toggle("hidden", !admin);
+
+  document.getElementById("teamMakerCard")
+    ?.classList.toggle("hidden", !admin);
+
+  document.getElementById("moneyCreateCard")
+    ?.classList.toggle("hidden", !admin);
+
+  const scoreSelect = document.getElementById("scoreMember");
+  if (scoreSelect) {
+    scoreSelect.disabled = !admin;
+    if (!admin && ownMemberId()) {
+      scoreSelect.value = ownMemberId();
+    }
+  }
+
+  if (admin) {
+    startAdminRequestListener();
+  } else if (adminRequestsUnsubscribe) {
+    adminRequestsUnsubscribe();
+    adminRequestsUnsubscribe = null;
+  }
+}
+
+
+function getAvailableJoinMembers() {
+  return members.filter(member =>
+    !member.assignedUid ||
+    member.assignedUid === currentAuthUser?.uid
+  );
+}
+
+
+function renderJoinMemberOptions() {
+  const select = document.getElementById("joinMemberSelect");
+  if (!select) return;
+
+  const available = getAvailableJoinMembers();
+
+  select.innerHTML = "";
+
+  if (available.length === 0) {
+    select.innerHTML =
+      '<option value="">신청 가능한 이름이 없습니다</option>';
+    return;
+  }
+
+  select.innerHTML =
+    '<option value="">내 이름 선택</option>' +
+    available.map(member =>
+      `<option value="${member.id}">${escapeHtml(member.name)}</option>`
+    ).join("");
+}
+
+
+async function sendJoinRequest() {
+  const memberId = document.getElementById("joinMemberSelect")?.value;
+  const member = members.find(item => item.id === memberId);
+
+  if (!member) {
+    alert("본인 이름을 선택해줘!");
+    return;
+  }
+
+  try {
+    await setDoc(
+      doc(db, "approvalRequests", currentAuthUser.uid),
+      {
+        uid: currentAuthUser.uid,
+        memberId: member.id,
+        memberName: member.name,
+        status: "pending",
+        requestedAt: Date.now()
+      },
+      { merge: true }
+    );
+
+    showAuthPanel("authPending");
+  } catch (error) {
+    alert("승인 요청 전송 실패");
+    setError(error);
+  }
+}
+
+
+async function cancelJoinRequest() {
+  if (!currentAuthUser) return;
+
+  try {
+    await deleteDoc(
+      doc(db, "approvalRequests", currentAuthUser.uid)
+    );
+
+    currentJoinRequest = null;
+    renderJoinMemberOptions();
+    showAuthPanel("authRequest");
+  } catch (error) {
+    alert("요청 취소 실패");
+    setError(error);
+  }
+}
+
+
+function watchCurrentUser() {
+  if (!currentAuthUser) return;
+
+  if (profileUnsubscribe) profileUnsubscribe();
+
+  profileUnsubscribe = onSnapshot(
+    doc(db, "users", currentAuthUser.uid),
+    snapshot => {
+      currentProfile = snapshot.exists()
+        ? snapshot.data()
+        : null;
+
+      if (isApproved()) {
+        showApprovedApp();
+      } else {
+        watchJoinRequest();
+      }
+    },
+    error => setError(error)
+  );
+}
+
+
+function watchJoinRequest() {
+  if (!currentAuthUser) return;
+
+  if (joinRequestUnsubscribe) joinRequestUnsubscribe();
+
+  joinRequestUnsubscribe = onSnapshot(
+    doc(db, "approvalRequests", currentAuthUser.uid),
+    snapshot => {
+      currentJoinRequest = snapshot.exists()
+        ? snapshot.data()
+        : null;
+
+      if (isApproved()) return;
+
+      if (!currentJoinRequest) {
+        renderJoinMemberOptions();
+        showAuthPanel("authRequest");
+        return;
+      }
+
+      if (currentJoinRequest.status === "rejected") {
+        showAuthPanel("authRejected");
+        return;
+      }
+
+      document.getElementById("pendingText").textContent =
+        `${currentJoinRequest.memberName || "회원"} 이름으로 승인 요청을 보냈어.`;
+
+      document.getElementById("pendingUid").textContent =
+        `기기 UID: ${currentAuthUser.uid}`;
+
+      showAuthPanel("authPending");
+    },
+    error => setError(error)
+  );
+}
+
+
+async function approveJoinRequest(request) {
+  if (!isAdmin()) return;
+
+  try {
+    await runTransaction(db, async transaction => {
+      const memberRef = doc(db, "members", request.memberId);
+      const userRef = doc(db, "users", request.uid);
+      const requestRef = doc(db, "approvalRequests", request.uid);
+
+      const memberSnap = await transaction.get(memberRef);
+
+      if (!memberSnap.exists()) {
+        throw new Error("멤버 정보가 없습니다.");
+      }
+
+      const memberData = memberSnap.data();
+
+      if (memberData.assignedUid &&
+          memberData.assignedUid !== request.uid) {
+        throw new Error("이미 다른 기기에 연결된 멤버입니다.");
+      }
+
+      transaction.update(memberRef, {
+        assignedUid: request.uid,
+        approvedAt: Date.now()
+      });
+
+      transaction.set(userRef, {
+        uid: request.uid,
+        memberId: request.memberId,
+        status: "approved",
+        role: "member",
+        approvedAt: Date.now(),
+        approvedBy: currentAuthUser.uid
+      }, { merge: true });
+
+      transaction.set(requestRef, {
+        ...request,
+        status: "approved",
+        approvedAt: Date.now(),
+        approvedBy: currentAuthUser.uid
+      }, { merge: true });
+    });
+
+    alert(`✅ ${request.memberName} 승인 완료!`);
+  } catch (error) {
+    alert(error.message || "승인 실패");
+    setError(error);
+  }
+}
+
+
+async function rejectJoinRequest(request) {
+  if (!isAdmin()) return;
+
+  try {
+    await setDoc(
+      doc(db, "approvalRequests", request.uid),
+      {
+        ...request,
+        status: "rejected",
+        rejectedAt: Date.now(),
+        rejectedBy: currentAuthUser.uid
+      },
+      { merge: true }
+    );
+  } catch (error) {
+    alert("거절 실패");
+    setError(error);
+  }
+}
+
+
+function startAdminRequestListener() {
+  if (!isAdmin() || adminRequestsUnsubscribe) return;
+
+  adminRequestsUnsubscribe = onSnapshot(
+    collection(db, "approvalRequests"),
+    snapshot => {
+      const requests = snapshot.docs
+        .map(item => ({ id: item.id, ...item.data() }))
+        .filter(item => item.status === "pending")
+        .sort((a,b) => (a.requestedAt || 0) - (b.requestedAt || 0));
+
+      renderAdminRequests(requests);
+    },
+    error => setError(error)
+  );
+}
+
+
+function renderAdminRequests(requests) {
+  const box = document.getElementById("adminRequestList");
+  if (!box) return;
+
+  if (!requests.length) {
+    box.innerHTML = '<div class="small">현재 승인 대기 회원이 없어.</div>';
+    return;
+  }
+
+  box.innerHTML = "";
+
+  requests.forEach(request => {
+    const div = document.createElement("div");
+    div.className = "request-item";
+
+    div.innerHTML = `
+      <strong>🙋 ${escapeHtml(request.memberName || "회원")}</strong>
+      <div class="small">
+        승인 요청 · ${new Date(request.requestedAt || Date.now()).toLocaleString("ko-KR")}
+      </div>
+      <div class="request-actions">
+        <button type="button" class="approve-btn" data-approve-uid="${request.uid}">
+          승인
+        </button>
+        <button type="button" class="reject-btn" data-reject-uid="${request.uid}">
+          거절
+        </button>
+      </div>
+    `;
+
+    box.appendChild(div);
+  });
+
+  box.querySelectorAll("[data-approve-uid]").forEach(button => {
+    button.addEventListener("click", () => {
+      const request = requests.find(item => item.uid === button.dataset.approveUid);
+      if (request) approveJoinRequest(request);
+    });
+  });
+
+  box.querySelectorAll("[data-reject-uid]").forEach(button => {
+    button.addEventListener("click", () => {
+      const request = requests.find(item => item.uid === button.dataset.rejectUid);
+      if (request) rejectJoinRequest(request);
+    });
+  });
+}
+
+
+document.getElementById("sendJoinRequestBtn")
+  ?.addEventListener("click", sendJoinRequest);
+
+document.getElementById("cancelJoinRequestBtn")
+  ?.addEventListener("click", cancelJoinRequest);
+
+document.getElementById("retryJoinRequestBtn")
+  ?.addEventListener("click", async () => {
+    await cancelJoinRequest();
+  });
+
 
 function setConnected() {
   statusBox.textContent = "🟢 15명 실시간 연결";
@@ -1181,10 +1750,23 @@ function renderMembers() {
     const div = document.createElement("div");
     div.className = "member";
 
+    const canEditName =
+      isAdmin() || member.id === ownMemberId();
+
+    div.className =
+      "member" +
+      (member.id === ownMemberId() ? " member-self" : "");
+
     div.innerHTML = `
-      <strong>${index + 1}. ${escapeHtml(member.name)}</strong>
+      <strong>
+        ${index + 1}. ${escapeHtml(member.name)}
+        ${member.id === ownMemberId() ? " 👤" : ""}
+      </strong>
       <br>
-      <button class="edit-btn" data-member-id="${member.id}">이름 수정</button>
+      ${canEditName
+        ? `<button class="edit-btn" data-member-id="${member.id}">이름 수정</button>`
+        : `<div class="readonly-hint">조회만 가능</div>`
+      }
     `;
 
     grid.appendChild(div);
@@ -1198,7 +1780,14 @@ function renderMembers() {
     `;
   });
 
-  if (members.some(m => m.id === prevScoreMember)) scoreSelect.value = prevScoreMember;
+  if (isAdmin()) {
+    if (members.some(m => m.id === prevScoreMember)) {
+      scoreSelect.value = prevScoreMember;
+    }
+  } else if (ownMemberId()) {
+    scoreSelect.value = ownMemberId();
+    scoreSelect.disabled = true;
+  }
   if (members.some(m => m.id === prevMoneyMember)) moneySelect.value = prevMoneyMember;
 
   document.querySelectorAll("[data-member-id]").forEach(button => {
@@ -1210,6 +1799,11 @@ function renderMembers() {
       );
 
       if (!member) return;
+
+      if (!isAdmin() && member.id !== ownMemberId()) {
+        alert("본인 이름만 수정할 수 있어.");
+        return;
+      }
 
       const newName = prompt("새 이름 입력", member.name);
 
@@ -1290,6 +1884,10 @@ document.getElementById("toggleNewAttendanceBtn")
 
 
 document.getElementById("addRoundBtn").addEventListener("click", async () => {
+  if (!isAdmin()) {
+    alert("라운딩 등록은 관리자만 가능해.");
+    return;
+  }
 
   const date = document.getElementById("roundDate").value;
   const time = document.getElementById("roundTime").value;
@@ -1396,18 +1994,60 @@ function renderRounds() {
 
       ${savedTeams}
 
-      <button class="edit-btn" data-edit-memo="${round.id}">메모 수정</button>
-      <button class="edit-btn" data-edit-attendance="${round.id}">참석 수정</button>
-      <button class="team-btn" data-pick-team-round="${round.id}">이 라운딩 조편성</button>
-      <button class="delete-btn" data-delete-round="${round.id}">삭제</button>
+      ${isAdmin()
+        ? `
+          <button class="edit-btn" data-edit-memo="${round.id}">메모 수정</button>
+          <button class="edit-btn" data-edit-attendance="${round.id}">참석 수정</button>
+          <button class="team-btn" data-pick-team-round="${round.id}">이 라운딩 조편성</button>
+          <button class="delete-btn" data-delete-round="${round.id}">삭제</button>
+        `
+        : `
+          <button class="edit-btn" data-toggle-own-attendance="${round.id}">
+            ${attendeeIds.includes(ownMemberId()) ? "이번 라운딩 불참" : "이번 라운딩 참석"}
+          </button>
+        `
+      }
     `;
 
     list.appendChild(item);
   });
 
 
+
+  document.querySelectorAll("[data-toggle-own-attendance]").forEach(button => {
+    button.addEventListener("click", async () => {
+      if (!isApproved() || isAdmin()) return;
+
+      const round = rounds.find(item => item.id === button.dataset.toggleOwnAttendance);
+      if (!round) return;
+
+      const memberId = ownMemberId();
+      const attendeeIds = getAttendeeIds(round);
+      const attending = attendeeIds.includes(memberId);
+
+      const next = attending
+        ? attendeeIds.filter(id => id !== memberId)
+        : [...attendeeIds, memberId];
+
+      try {
+        await updateDoc(doc(db, "rounds", round.id), {
+          attendeeIds: next,
+          teams: [],
+          attendanceUpdatedAt: Date.now()
+        });
+
+        alert(attending ? "이번 라운딩 불참으로 바꿨어." : "이번 라운딩 참석으로 바꿨어.");
+      } catch (error) {
+        alert("참석 변경 실패");
+        setError(error);
+      }
+    });
+  });
+
   document.querySelectorAll("[data-delete-round]").forEach(button => {
     button.addEventListener("click", async () => {
+
+      if (!isAdmin()) return;
 
       if (!confirm("이 라운딩 삭제할까?")) return;
 
@@ -1424,6 +2064,8 @@ function renderRounds() {
 
   document.querySelectorAll("[data-edit-memo]").forEach(button => {
     button.addEventListener("click", async () => {
+      if (!isAdmin()) return;
+
       const round = rounds.find(item => item.id === button.dataset.editMemo);
       if (!round) return;
 
@@ -1521,6 +2163,11 @@ document.getElementById("teamRoundSelect")
 
 document.getElementById("makeTeamsBtn")
   .addEventListener("click", async () => {
+
+    if (!isAdmin()) {
+      alert("조편성은 관리자만 가능해.");
+      return;
+    }
 
     const roundId = document.getElementById("teamRoundSelect").value;
     const round = rounds.find(item => item.id === roundId);
@@ -1700,7 +2347,9 @@ document.getElementById("saveAttendanceBtn")
 
 document.getElementById("addScoreBtn").addEventListener("click", async () => {
 
-  const memberId = document.getElementById("scoreMember").value;
+  const memberId = isAdmin()
+    ? document.getElementById("scoreMember").value
+    : ownMemberId();
   const member = members.find(item => item.id === memberId);
 
   const date = document.getElementById("scoreDate").value;
@@ -1778,7 +2427,10 @@ function renderScores() {
         ${score.longest ? " &nbsp;💣 롱기" : ""}
       </div>
 
-      <button class="delete-btn" data-delete-score="${score.id}">삭제</button>
+      ${isAdmin() || score.memberId === ownMemberId()
+        ? `<button class="delete-btn" data-delete-score="${score.id}">삭제</button>`
+        : ""
+      }
     `;
 
     list.appendChild(item);
@@ -1787,6 +2439,13 @@ function renderScores() {
 
   document.querySelectorAll("[data-delete-score]").forEach(button => {
     button.addEventListener("click", async () => {
+
+      const target = scores.find(item => item.id === button.dataset.deleteScore);
+
+      if (!isAdmin() && target?.memberId !== ownMemberId()) {
+        alert("본인 스코어만 삭제할 수 있어.");
+        return;
+      }
 
       if (!confirm("스코어 기록 삭제할까?")) return;
 
@@ -1881,6 +2540,10 @@ function renderRanking() {
 
 
 document.getElementById("addMoneyBtn").addEventListener("click", async () => {
+  if (!isAdmin()) {
+    alert("회비 입력은 관리자만 가능해.");
+    return;
+  }
 
   const memberId = document.getElementById("moneyMember").value;
   const member = members.find(item => item.id === memberId);
@@ -1961,7 +2624,7 @@ function renderMoney() {
         ${item.memo ? " · " + escapeHtml(item.memo) : ""}
       </div>
 
-      <button class="delete-btn" data-delete-money="${item.id}">삭제</button>
+      ${isAdmin() ? `<button class="delete-btn" data-delete-money="${item.id}">삭제</button>` : ""}
     `;
 
     list.appendChild(div);
@@ -2041,6 +2704,7 @@ function renderStats() {
 
 
 function renderAll() {
+  renderJoinMemberOptions();
   buildGolfAutocomplete();
   renderGolfCourses();
   renderMembers();
@@ -2064,6 +2728,22 @@ async function startApp() {
   try {
     await seedMembers();
     startRealtimeListeners();
+
+    onAuthStateChanged(auth, async user => {
+      if (!user) {
+        try {
+          await signInAnonymously(auth);
+        } catch (error) {
+          showAuthPanel("authRequest");
+          setError(error);
+        }
+        return;
+      }
+
+      currentAuthUser = user;
+      watchCurrentUser();
+    });
+
   } catch(error) {
     setError(error);
   }
