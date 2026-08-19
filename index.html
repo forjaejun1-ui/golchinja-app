@@ -1256,6 +1256,153 @@
       .container { max-width: 680px; }
     }
 
+
+    /* ===== V11 일정 대시보드 / 투어기간 / 지난라운딩 ===== */
+    .home-schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .home-schedule-box {
+      min-width: 0;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      border-radius: 13px;
+      padding: 11px 9px;
+    }
+
+    .home-schedule-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 8px;
+      white-space: nowrap;
+    }
+
+    .home-schedule-main {
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+
+    .home-schedule-date {
+      margin-top: 5px;
+      font-size: 11px;
+      color: #6b7280;
+      line-height: 1.35;
+    }
+
+    .home-schedule-empty {
+      font-size: 12px;
+      color: #9ca3af;
+      line-height: 1.4;
+    }
+
+    .home-schedule-more {
+      margin-top: 6px;
+      font-size: 10.5px;
+      color: #6b7280;
+      line-height: 1.35;
+    }
+
+    .tour-date-fields {
+      margin: 10px 0 12px;
+      padding: 12px;
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      border-radius: 12px;
+    }
+
+    .tour-date-title {
+      font-size: 14px;
+      font-weight: 900;
+      margin-bottom: 9px;
+      color: #1e3a8a;
+    }
+
+    .tour-date-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .tour-date-grid label {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      color: #374151;
+      margin-bottom: 2px;
+    }
+
+    .tour-date-grid input {
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+
+    .round-history-title {
+      margin: 18px 0 7px;
+      padding-top: 13px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 13px;
+      font-weight: 900;
+      color: #6b7280;
+    }
+
+    .past-round-item {
+      padding: 9px 10px;
+      margin-bottom: 7px;
+      border-radius: 10px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      opacity: .88;
+    }
+
+    .past-round-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .past-round-course {
+      min-width: 0;
+      font-size: 13px;
+      font-weight: 800;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .past-round-date {
+      flex: 0 0 auto;
+      font-size: 10.5px;
+      color: #6b7280;
+    }
+
+    .past-round-meta {
+      margin-top: 3px;
+      font-size: 10.5px;
+      color: #6b7280;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 430px) {
+      .home-schedule-grid { gap: 6px; }
+      .home-schedule-box { padding: 10px 7px; border-radius: 11px; }
+      .home-schedule-title { font-size: 11.5px; }
+      .home-schedule-main { font-size: 12px; }
+      .home-schedule-date { font-size: 10px; }
+      .home-schedule-more { font-size: 9.5px; }
+    }
+
+    @media (max-width: 360px) {
+      .home-schedule-title { font-size: 10.5px; }
+      .home-schedule-main { font-size: 11px; }
+      .home-schedule-box { padding: 9px 6px; }
+    }
+
   </style>
 </head>
 
@@ -1355,9 +1502,22 @@
       <div id="ranking"><div class="loading">불러오는 중...</div></div>
     </div>
 
-    <div class="card">
-      <h2>⛳ 다음 라운딩</h2>
-      <div id="nextRound">불러오는 중...</div>
+    <div class="card home-schedule-card">
+      <h2>🗓️ 예정 일정</h2>
+      <div class="home-schedule-grid">
+        <div class="home-schedule-box">
+          <div class="home-schedule-title">⛳ 다음 라운딩</div>
+          <div id="nextRound">불러오는 중...</div>
+        </div>
+        <div class="home-schedule-box">
+          <div class="home-schedule-title">🇰🇷 국내투어</div>
+          <div id="nextDomesticTour">불러오는 중...</div>
+        </div>
+        <div class="home-schedule-box">
+          <div class="home-schedule-title">✈️ 해외투어</div>
+          <div id="nextOverseasTour">불러오는 중...</div>
+        </div>
+      </div>
     </div>
 
     <div class="card">
@@ -1386,6 +1546,21 @@
         <button type="button" class="round-type-btn" data-round-type="해외투어">해외투어</button>
       </div>
       <input id="roundType" type="hidden" value="일반 18홀">
+
+      <div id="tourDateFields" class="tour-date-fields hidden">
+        <div class="tour-date-title">📆 투어 기간</div>
+        <div class="tour-date-grid">
+          <div>
+            <label for="tourStartDate">시작일</label>
+            <input id="tourStartDate" type="date">
+          </div>
+          <div>
+            <label for="tourEndDate">끝일</label>
+            <input id="tourEndDate" type="date">
+          </div>
+        </div>
+        <div class="small">국내·해외투어는 시작일과 끝일을 지정해 주세요.</div>
+      </div>
 
       <div class="fee-entry-wrap">
         <div class="fee-entry-title">💳 라운딩 비용 입력</div>
@@ -2840,7 +3015,32 @@ function resetRoundCostInputs() {
     button.classList.toggle("active", button.dataset.roundType === "일반 18홀");
   });
 
+  const tourStart = document.getElementById("tourStartDate");
+  const tourEnd = document.getElementById("tourEndDate");
+  if (tourStart) tourStart.value = "";
+  if (tourEnd) tourEnd.value = "";
+  updateTourDateFields();
+
   updateFeeInputUI();
+}
+
+function isTourType(type) {
+  return type === "국내투어" || type === "해외투어";
+}
+
+function updateTourDateFields() {
+  const type = document.getElementById("roundType")?.value || "";
+  const box = document.getElementById("tourDateFields");
+  if (!box) return;
+
+  const tour = isTourType(type);
+  box.classList.toggle("hidden", !tour);
+
+  if (tour) {
+    const mainDate = document.getElementById("roundDate")?.value || "";
+    const start = document.getElementById("tourStartDate");
+    if (start && !start.value && mainDate) start.value = mainDate;
+  }
 }
 
 document.querySelectorAll(".round-type-btn").forEach(button => {
@@ -2849,7 +3049,15 @@ document.querySelectorAll(".round-type-btn").forEach(button => {
     document.querySelectorAll(".round-type-btn").forEach(item => {
       item.classList.toggle("active", item === button);
     });
+    updateTourDateFields();
   });
+});
+
+document.getElementById("roundDate")?.addEventListener("change", () => {
+  const type = document.getElementById("roundType")?.value || "";
+  if (!isTourType(type)) return;
+  const start = document.getElementById("tourStartDate");
+  if (start && !start.value) start.value = document.getElementById("roundDate").value;
 });
 
 document.querySelectorAll(".fee-tab").forEach(button => {
@@ -2897,6 +3105,8 @@ document.getElementById("addRoundBtn").addEventListener("click", async () => {
   const time = document.getElementById("roundTime").value;
   const course = document.getElementById("roundCourse").value.trim();
   const roundType = document.getElementById("roundType").value;
+  const tourStartDate = document.getElementById("tourStartDate")?.value || "";
+  const tourEndDate = document.getElementById("tourEndDate")?.value || "";
   const greenFee = Number(document.getElementById("greenFee").value || 0);
   const caddieFee = Number(document.getElementById("caddieFee").value || 0);
   const cartFee = Number(document.getElementById("cartFee").value || 0);
@@ -2910,6 +3120,17 @@ document.getElementById("addRoundBtn").addEventListener("click", async () => {
     return;
   }
 
+  if (isTourType(roundType)) {
+    if (!tourStartDate || !tourEndDate) {
+      alert("투어 시작일과 끝일을 모두 지정해줘!");
+      return;
+    }
+    if (tourEndDate < tourStartDate) {
+      alert("투어 끝일은 시작일보다 빠를 수 없어!");
+      return;
+    }
+  }
+
   if (attendeeIds.length === 0) {
     alert("참석자를 1명 이상 선택해줘!");
     return;
@@ -2921,6 +3142,8 @@ document.getElementById("addRoundBtn").addEventListener("click", async () => {
       time,
       course,
       roundType,
+      tourStartDate: isTourType(roundType) ? tourStartDate : "",
+      tourEndDate: isTourType(roundType) ? tourEndDate : "",
       greenFee,
       caddieFee,
       cartFee,
@@ -2956,89 +3179,154 @@ function getRoundFeeText(round) {
 }
 
 
+function getRoundStartDateTime(round) {
+  const baseDate = (isTourType(round?.roundType) && round?.tourStartDate)
+    ? round.tourStartDate
+    : round?.date;
+
+  if (!baseDate) return new Date(0);
+
+  const time = round?.time || "23:59";
+  const result = new Date(`${baseDate}T${time}:00`);
+  return Number.isNaN(result.getTime()) ? new Date(0) : result;
+}
+
+function getRoundEndDateTime(round) {
+  if (isTourType(round?.roundType)) {
+    const endDate = round?.tourEndDate || round?.tourStartDate || round?.date;
+    if (!endDate) return new Date(0);
+    const result = new Date(`${endDate}T23:59:59`);
+    return Number.isNaN(result.getTime()) ? new Date(0) : result;
+  }
+  return getRoundStartDateTime(round);
+}
+
+function isPastRound(round, now = new Date()) {
+  return getRoundEndDateTime(round).getTime() < now.getTime();
+}
+
+function getRoundDateText(round) {
+  if (isTourType(round?.roundType)) {
+    const start = round?.tourStartDate || round?.date || "";
+    const end = round?.tourEndDate || start;
+    return start && end && start !== end ? `${start} ~ ${end}` : start;
+  }
+  return `${round?.date || ""}${round?.time ? " " + round.time : ""}`;
+}
+
+function buildRoundDetailHtml(round) {
+  const attendeeIds = getAttendeeIds(round);
+  const attendeeNames = attendeeIds.map(getMemberName);
+  const absentCount = Math.max(members.length - attendeeIds.length, 0);
+
+  let savedTeams = "";
+  if (Array.isArray(round.teams) && round.teams.length > 0) {
+    savedTeams = `
+      <div style="margin-top:9px;">
+        <span class="badge gray">저장된 조편성</span>
+        <div class="small">
+          ${round.teams.map((team,index) =>
+            `${index + 1}조: ${team.map(getMemberName).join(" · ")}`
+          ).join("<br>")}
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <strong>⛳ ${escapeHtml(round.course)}</strong>
+
+    <div class="small">${escapeHtml(getRoundDateText(round))}</div>
+
+    ${round.roundType ? `<div class="round-meta-row"><span class="round-type-badge">${escapeHtml(round.roundType)}</span></div>` : ""}
+    ${getRoundFeeText(round) ? `<div class="round-fee-line">💳 ${escapeHtml(getRoundFeeText(round))}</div>` : ""}
+
+    <div class="small">${escapeHtml(round.memo || "")}</div>
+
+    <div style="margin-top:8px;">
+      <span class="badge">참석 ${attendeeIds.length}명</span>
+      <span class="badge gray">불참 ${absentCount}명</span>
+    </div>
+
+    <div class="small">
+      ${attendeeNames.length
+        ? "🙋 " + attendeeNames.map(escapeHtml).join(" · ")
+        : "참석자가 아직 선택되지 않았습니다."
+      }
+    </div>
+
+    ${savedTeams}
+
+    ${isAdmin()
+      ? `
+        <button class="edit-btn" data-edit-memo="${round.id}">메모 수정</button>
+        <button class="edit-btn" data-edit-attendance="${round.id}">참석 수정</button>
+        <button class="team-btn" data-pick-team-round="${round.id}">이 라운딩 조편성</button>
+        <button class="delete-btn" data-delete-round="${round.id}">삭제</button>
+      `
+      : `
+        <button class="edit-btn" data-toggle-own-attendance="${round.id}">
+          ${attendeeIds.includes(ownMemberId()) ? "이번 라운딩 불참" : "이번 라운딩 참석"}
+        </button>
+      `
+    }
+  `;
+}
+
 function renderRounds() {
   const list = document.getElementById("roundList");
+  const now = new Date();
 
   if (rounds.length === 0) {
     list.innerHTML = "아직 등록된 라운딩이 없습니다.";
     return;
   }
 
+  const upcomingRounds = rounds
+    .filter(round => !isPastRound(round, now))
+    .sort((a,b) => getRoundStartDateTime(a) - getRoundStartDateTime(b));
+
+  const pastRounds = rounds
+    .filter(round => isPastRound(round, now))
+    .sort((a,b) => getRoundEndDateTime(b) - getRoundEndDateTime(a));
+
   list.innerHTML = "";
 
-  rounds.forEach(round => {
+  if (upcomingRounds.length === 0) {
+    list.insertAdjacentHTML("beforeend",
+      `<div class="small" style="padding:8px 0 4px;">예정된 라운딩이 없습니다.</div>`);
+  } else {
+    upcomingRounds.forEach(round => {
+      const item = document.createElement("div");
+      item.className = "list-item";
+      item.innerHTML = buildRoundDetailHtml(round);
+      list.appendChild(item);
+    });
+  }
 
-    const attendeeIds = getAttendeeIds(round);
-    const attendeeNames = attendeeIds.map(getMemberName);
-    const absentCount = Math.max(members.length - attendeeIds.length, 0);
+  if (pastRounds.length > 0) {
+    list.insertAdjacentHTML("beforeend",
+      `<div class="round-history-title">🕘 지난 라운딩 · 최근 기록</div>`);
 
-    const item = document.createElement("div");
-    item.className = "list-item";
-
-    let savedTeams = "";
-
-    if (Array.isArray(round.teams) && round.teams.length > 0) {
-      savedTeams = `
-        <div style="margin-top:9px;">
-          <span class="badge gray">저장된 조편성</span>
-          <div class="small">
-            ${round.teams.map((team,index) =>
-              `${index + 1}조: ${team.map(getMemberName).join(" · ")}`
-            ).join("<br>")}
-          </div>
+    pastRounds.forEach(round => {
+      const attendeeIds = getAttendeeIds(round);
+      const item = document.createElement("div");
+      item.className = "past-round-item";
+      item.innerHTML = `
+        <div class="past-round-head">
+          <div class="past-round-course">⛳ ${escapeHtml(round.course || "")}</div>
+          <div class="past-round-date">${escapeHtml(getRoundDateText(round))}</div>
         </div>
+        <div class="past-round-meta">
+          ${escapeHtml(round.roundType || "일반 18홀")}
+          · 참석 ${attendeeIds.length}명
+          ${getRoundFeeText(round) ? " · " + escapeHtml(getRoundFeeText(round)) : ""}
+        </div>
+        ${isAdmin() ? `<button class="delete-btn" data-delete-round="${round.id}" style="margin-top:5px;">삭제</button>` : ""}
       `;
-    }
-
-    item.innerHTML = `
-      <strong>⛳ ${escapeHtml(round.course)}</strong>
-
-      <div class="small">
-        ${escapeHtml(round.date || "")}
-        ${escapeHtml(round.time || "")}
-      </div>
-
-      ${round.roundType ? `<div class="round-meta-row"><span class="round-type-badge">${escapeHtml(round.roundType)}</span></div>` : ""}
-
-      ${getRoundFeeText(round) ? `<div class="round-fee-line">💳 ${escapeHtml(getRoundFeeText(round))}</div>` : ""}
-
-      <div class="small">
-        ${escapeHtml(round.memo || "")}
-      </div>
-
-      <div style="margin-top:8px;">
-        <span class="badge">참석 ${attendeeIds.length}명</span>
-        <span class="badge gray">불참 ${absentCount}명</span>
-      </div>
-
-      <div class="small">
-        ${attendeeNames.length
-          ? "🙋 " + attendeeNames.map(escapeHtml).join(" · ")
-          : "참석자가 아직 선택되지 않았습니다."
-        }
-      </div>
-
-      ${savedTeams}
-
-      ${isAdmin()
-        ? `
-          <button class="edit-btn" data-edit-memo="${round.id}">메모 수정</button>
-          <button class="edit-btn" data-edit-attendance="${round.id}">참석 수정</button>
-          <button class="team-btn" data-pick-team-round="${round.id}">이 라운딩 조편성</button>
-          <button class="delete-btn" data-delete-round="${round.id}">삭제</button>
-        `
-        : `
-          <button class="edit-btn" data-toggle-own-attendance="${round.id}">
-            ${attendeeIds.includes(ownMemberId()) ? "이번 라운딩 불참" : "이번 라운딩 참석"}
-          </button>
-        `
-      }
-    `;
-
-    list.appendChild(item);
-  });
-
-
+      list.appendChild(item);
+    });
+  }
 
   document.querySelectorAll("[data-toggle-own-attendance]").forEach(button => {
     button.addEventListener("click", async () => {
@@ -3047,63 +3335,38 @@ function renderRounds() {
       const round = rounds.find(item => item.id === button.dataset.toggleOwnAttendance);
       if (!round) return;
 
-      const memberId = ownMemberId();
-      const attendeeIds = getAttendeeIds(round);
-      const attending = attendeeIds.includes(memberId);
-
-      const next = attending
-        ? attendeeIds.filter(id => id !== memberId)
-        : [...attendeeIds, memberId];
+      const currentIds = getAttendeeIds(round);
+      const me = ownMemberId();
+      const nextIds = currentIds.includes(me)
+        ? currentIds.filter(id => id !== me)
+        : [...currentIds, me];
 
       try {
         await updateDoc(doc(db, "rounds", round.id), {
-          attendeeIds: next,
+          attendeeIds: nextIds,
           teams: [],
           attendanceUpdatedAt: Date.now()
         });
-
-        alert(attending ? "이번 라운딩 불참으로 바꿨어." : "이번 라운딩 참석으로 바꿨어.");
-      } catch (error) {
+      } catch(error) {
         alert("참석 변경 실패");
         setError(error);
       }
     });
   });
 
-  document.querySelectorAll("[data-delete-round]").forEach(button => {
-    button.addEventListener("click", async () => {
-
-      if (!isAdmin()) return;
-
-      if (!confirm("이 라운딩 삭제할까?")) return;
-
-      try {
-        await deleteDoc(doc(db, "rounds", button.dataset.deleteRound));
-      } catch(error) {
-        alert("삭제 실패");
-        setError(error);
-      }
-    });
-  });
-
-
-
   document.querySelectorAll("[data-edit-memo]").forEach(button => {
     button.addEventListener("click", async () => {
       if (!isAdmin()) return;
-
       const round = rounds.find(item => item.id === button.dataset.editMemo);
       if (!round) return;
 
-      const nextMemo = prompt("라운딩 메모 수정", round.memo || "");
-      if (nextMemo === null) return;
+      const newMemo = prompt("메모 수정", round.memo || "");
+      if (newMemo === null) return;
 
       try {
         await updateDoc(doc(db, "rounds", round.id), {
-          memo: nextMemo.trim(),
-          memoUpdatedAt: Date.now()
+          memo: newMemo.trim()
         });
-        alert("📝 메모 수정 완료!");
       } catch(error) {
         alert("메모 수정 실패");
         setError(error);
@@ -3113,310 +3376,35 @@ function renderRounds() {
 
   document.querySelectorAll("[data-edit-attendance]").forEach(button => {
     button.addEventListener("click", () => {
-      openAttendanceModal(button.dataset.editAttendance);
+      if (!isAdmin()) return;
+      const round = rounds.find(item => item.id === button.dataset.editAttendance);
+      if (round) openAttendanceModal(round);
     });
   });
-
 
   document.querySelectorAll("[data-pick-team-round]").forEach(button => {
     button.addEventListener("click", () => {
-      document.getElementById("teamRoundSelect").value =
-        button.dataset.pickTeamRound;
+      if (!isAdmin()) return;
+      document.getElementById("teamRoundSelect").value = button.dataset.pickTeamRound;
+      updateTeamRoundInfo();
+      document.getElementById("teamMakerCard")?.scrollIntoView({ behavior: "smooth" });
+    });
+  });
 
-      renderTeamRoundInfo();
-      document.getElementById("teamRoundSelect")
-        .scrollIntoView({ behavior: "smooth", block: "center" });
+  document.querySelectorAll("[data-delete-round]").forEach(button => {
+    button.addEventListener("click", async () => {
+      if (!isAdmin()) return;
+      if (!confirm("이 라운딩을 삭제할까?")) return;
+
+      try {
+        await deleteDoc(doc(db, "rounds", button.dataset.deleteRound));
+      } catch(error) {
+        alert("삭제 실패");
+        setError(error);
+      }
     });
   });
 }
-
-
-function renderTeamRoundSelect() {
-  const select = document.getElementById("teamRoundSelect");
-  const prev = select.value;
-
-  select.innerHTML = '<option value="">라운딩을 선택하세요</option>';
-
-  rounds.forEach(round => {
-    const attendeeCount = getAttendeeIds(round).length;
-
-    select.innerHTML += `
-      <option value="${round.id}">
-        ${escapeHtml(round.date || "")} · ${escapeHtml(round.course || "")}
-        (${attendeeCount}명)
-      </option>
-    `;
-  });
-
-  if (rounds.some(round => round.id === prev)) {
-    select.value = prev;
-  }
-
-  renderTeamRoundInfo();
-}
-
-
-function renderTeamRoundInfo() {
-  const roundId = document.getElementById("teamRoundSelect").value;
-  const info = document.getElementById("teamRoundInfo");
-  const result = document.getElementById("teamResult");
-
-  const round = rounds.find(item => item.id === roundId);
-
-  if (!round) {
-    info.textContent = "라운딩을 선택하면 참석 인원으로 자동 조편성합니다.";
-    result.innerHTML = "";
-    return;
-  }
-
-  const attendeeIds = getAttendeeIds(round);
-  const sizes = getTeamSizes(attendeeIds.length);
-
-  info.textContent =
-    `참석 ${attendeeIds.length}명 · 예상 조 구성 ${sizes.length ? sizes.join("-") : "없음"}`;
-
-  if (Array.isArray(round.teams) && round.teams.length > 0) {
-    renderTeams(round.teams, true);
-  } else {
-    result.innerHTML = '<div class="small">아직 저장된 조편성이 없습니다.</div>';
-  }
-}
-
-
-document.getElementById("teamRoundSelect")
-  .addEventListener("change", renderTeamRoundInfo);
-
-
-document.getElementById("makeTeamsBtn")
-  .addEventListener("click", async () => {
-
-    if (!isAdmin()) {
-      alert("조편성은 관리자만 가능해.");
-      return;
-    }
-
-    const roundId = document.getElementById("teamRoundSelect").value;
-    const round = rounds.find(item => item.id === roundId);
-
-    if (!round) {
-      alert("조편성할 라운딩부터 선택해줘!");
-      return;
-    }
-
-    const attendeeIds = getAttendeeIds(round);
-
-    if (attendeeIds.length === 0) {
-      alert("이 라운딩에는 참석자가 없어. 참석자부터 수정해줘!");
-      return;
-    }
-
-    const shuffled = shuffleArray(attendeeIds);
-    const sizes = getTeamSizes(shuffled.length);
-
-    const teams = [];
-    let offset = 0;
-
-    sizes.forEach(size => {
-      teams.push(shuffled.slice(offset, offset + size));
-      offset += size;
-    });
-
-    try {
-      await updateDoc(doc(db, "rounds", roundId), {
-        teams,
-        teamUpdatedAt: Date.now()
-      });
-
-      renderTeams(teams, false);
-      alert(`🎲 조편성 완료! ${sizes.join("-")} 구성으로 저장했어.`);
-    } catch(error) {
-      alert("조편성 저장 실패");
-      setError(error);
-    }
-  });
-
-
-function renderTeams(teams, saved = false) {
-  const result = document.getElementById("teamResult");
-
-  if (!Array.isArray(teams) || teams.length === 0) {
-    result.innerHTML = '<div class="small">저장된 조편성이 없습니다.</div>';
-    return;
-  }
-
-  result.innerHTML = saved
-    ? '<div class="small" style="margin-bottom:8px;">💾 현재 저장된 조편성</div>'
-    : '<div class="small" style="margin-bottom:8px;">✅ 새 조편성이 Firebase에 저장되었습니다.</div>';
-
-  teams.forEach((team,index) => {
-    result.innerHTML += `
-      <div class="team">
-        <h3>${index + 1}조 (${team.length}명)</h3>
-        ${team.map(id => escapeHtml(getMemberName(id))).join(" · ")}
-      </div>
-    `;
-  });
-}
-
-
-function openAttendanceModal(roundId) {
-  const round = rounds.find(item => item.id === roundId);
-  if (!round) return;
-
-  editingRoundId = roundId;
-
-  document.getElementById("modalRoundTitle").textContent =
-    `${round.date || ""} · ${round.course || ""}`;
-
-  const selected = new Set(getAttendeeIds(round));
-  const grid = document.getElementById("modalAttendanceGrid");
-
-  grid.innerHTML = "";
-
-  members.forEach(member => {
-    const label = document.createElement("label");
-    label.className = "attendance-item";
-
-    label.innerHTML = `
-      <input type="checkbox"
-             class="modal-attendee-check"
-             value="${member.id}"
-             ${selected.has(member.id) ? "checked" : ""}>
-      <span>${escapeHtml(member.name)}</span>
-    `;
-
-    grid.appendChild(label);
-  });
-
-  updateModalAttendanceCount();
-  document.getElementById("attendanceModal").classList.add("show");
-}
-
-
-function closeAttendanceModal() {
-  editingRoundId = null;
-  document.getElementById("attendanceModal").classList.remove("show");
-}
-
-
-function updateModalAttendanceCount() {
-  const checks = [...document.querySelectorAll(".modal-attendee-check")];
-  const count = checks.filter(check => check.checked).length;
-
-  document.getElementById("modalAttendanceCount").textContent =
-    `${count}명 참석 / ${Math.max(members.length - count, 0)}명 불참`;
-
-  document.getElementById("toggleModalAttendanceBtn").textContent =
-    count === members.length && members.length > 0
-      ? "전체 해제"
-      : "전체 선택";
-}
-
-
-document.getElementById("modalAttendanceGrid")
-  .addEventListener("change", updateModalAttendanceCount);
-
-
-document.getElementById("toggleModalAttendanceBtn")
-  .addEventListener("click", () => {
-
-    const checks = [...document.querySelectorAll(".modal-attendee-check")];
-    const allChecked = checks.length > 0 && checks.every(check => check.checked);
-
-    checks.forEach(check => check.checked = !allChecked);
-    updateModalAttendanceCount();
-  });
-
-
-document.getElementById("closeAttendanceModalBtn")
-  .addEventListener("click", closeAttendanceModal);
-
-
-document.getElementById("attendanceModal")
-  .addEventListener("click", event => {
-    if (event.target.id === "attendanceModal") {
-      closeAttendanceModal();
-    }
-  });
-
-
-document.getElementById("saveAttendanceBtn")
-  .addEventListener("click", async () => {
-
-    if (!editingRoundId) return;
-
-    const attendeeIds =
-      [...document.querySelectorAll(".modal-attendee-check:checked")]
-        .map(input => input.value);
-
-    if (attendeeIds.length === 0) {
-      alert("참석자를 1명 이상 선택해줘!");
-      return;
-    }
-
-    try {
-      await updateDoc(doc(db, "rounds", editingRoundId), {
-        attendeeIds,
-        teams: [],
-        attendanceUpdatedAt: Date.now()
-      });
-
-      closeAttendanceModal();
-
-      alert(`🙋 참석자 수정 완료! ${attendeeIds.length}명 참석`);
-    } catch(error) {
-      alert("참석자 수정 실패");
-      setError(error);
-    }
-  });
-
-
-document.getElementById("addScoreBtn").addEventListener("click", async () => {
-
-  const memberId = isAdmin()
-    ? document.getElementById("scoreMember").value
-    : ownMemberId();
-  const member = members.find(item => item.id === memberId);
-
-  const date = document.getElementById("scoreDate").value;
-  const course = document.getElementById("scoreCourse").value.trim();
-
-  const score = Number(document.getElementById("scoreValue").value);
-  const birdies = Number(document.getElementById("birdies").value) || 0;
-  const near = Number(document.getElementById("near").value);
-  const longest = Number(document.getElementById("longest").value);
-
-  if (!member || !date || !course || !score) {
-    alert("멤버, 날짜, 골프장, 타수를 확인해줘!");
-    return;
-  }
-
-  try {
-    await addDoc(collection(db, "scores"), {
-      memberId: member.id,
-      memberName: member.name,
-      date,
-      course,
-      score,
-      birdies,
-      near,
-      longest,
-      createdAt: Date.now()
-    });
-
-    document.getElementById("scoreCourse").value = "";
-    document.getElementById("scoreValue").value = "";
-    document.getElementById("birdies").value = 0;
-    document.getElementById("near").value = "0";
-    document.getElementById("longest").value = "0";
-
-    alert(`🏌️ ${member.name} ${score}타 저장 완료!`);
-  } catch(error) {
-    alert("스코어 저장 실패");
-    setError(error);
-  }
-});
-
 
 function renderScores() {
   const list = document.getElementById("scoreList");
@@ -3673,58 +3661,48 @@ function renderMoney() {
 }
 
 
-function renderNextRound() {
-  const box = document.getElementById("nextRound");
+function renderHomeScheduleBox(elementId, round, emptyText) {
+  const box = document.getElementById(elementId);
+  if (!box) return;
 
-  const today = new Date();
-  today.setHours(0,0,0,0);
-
-  const upcoming = rounds
-    .filter(round => {
-      const date = new Date(round.date + "T00:00:00");
-      return date >= today;
-    })
-    .sort((a,b) => new Date(a.date) - new Date(b.date));
-
-  if (upcoming.length === 0) {
-    box.innerHTML = "예정된 라운딩이 없습니다.";
+  if (!round) {
+    box.innerHTML = `<div class="home-schedule-empty">${escapeHtml(emptyText)}</div>`;
     return;
   }
 
-  const round = upcoming[0];
   const attendeeIds = getAttendeeIds(round);
+  const dateText = getRoundDateText(round);
 
   box.innerHTML = `
-    <strong style="font-size:18px;">
-      ⛳ ${escapeHtml(round.course)}
-    </strong>
-
-    <div class="small">
-      ${escapeHtml(round.date || "")}
-      ${escapeHtml(round.time || "")}
-    </div>
-
-    ${round.roundType ? `<div class="round-meta-row"><span class="round-type-badge">${escapeHtml(round.roundType)}</span></div>` : ""}
-
-    ${getRoundFeeText(round) ? `<div class="round-fee-line">💳 ${escapeHtml(getRoundFeeText(round))}</div>` : ""}
-
-    <div style="margin-top:8px;">
-      ${escapeHtml(round.memo || "")}
-    </div>
-
-    <div style="margin-top:9px;">
-      <span class="badge">참석 ${attendeeIds.length}명</span>
-    </div>
-
-    <div class="small">
-      ${attendeeIds.length
-        ? attendeeIds.map(id => escapeHtml(getMemberName(id))).join(" · ")
-        : "참석자 미정"
-      }
-    </div>
+    <div class="home-schedule-main">${escapeHtml(round.course || "")}</div>
+    <div class="home-schedule-date">${escapeHtml(dateText)}</div>
+    ${attendeeIds.length ? `<div class="home-schedule-more">참석 ${attendeeIds.length}명</div>` : ""}
   `;
 }
 
+function renderNextRound() {
+  const now = new Date();
+
+  const activeOrUpcoming = rounds
+    .filter(round => !isPastRound(round, now))
+    .sort((a,b) => getRoundStartDateTime(a) - getRoundStartDateTime(b));
+
+  const normal = activeOrUpcoming.find(round =>
+    round.roundType !== "국내투어" && round.roundType !== "해외투어"
+  );
+
+  const domestic = activeOrUpcoming.find(round =>
+    round.roundType === "국내투어"
+  );
+
+  const overseas = activeOrUpcoming.find(round =>
+    round.roundType === "해외투어"
+  );
+
+  renderHomeScheduleBox("nextRound", normal, "예정 없음");
+  renderHomeScheduleBox("nextDomesticTour", domestic, "예정 없음");
+  renderHomeScheduleBox("nextOverseasTour", overseas, "예정 없음");
+}
 
 function renderStats() {
   document.getElementById("memberCount").textContent = members.length;
@@ -3752,6 +3730,7 @@ function renderAll() {
 const todayString = new Date().toISOString().split("T")[0];
 document.getElementById("roundDate").value = todayString;
 document.getElementById("scoreDate").value = todayString;
+updateTourDateFields();
 
 
 async function startApp() {
