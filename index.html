@@ -7,6 +7,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
   <title>골친자들 골치아픔 ⛳</title>
+  <!-- audited build: 2026-08-19 / latest index(2) base -->
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -2175,6 +2176,42 @@
 </div>
 
 
+<script>
+// 단일 HTML 배포 진단: 모듈/런타임 오류가 나면 화면에 원인을 남긴다.
+(function () {
+  function showBootError(message) {
+    const status = document.getElementById("connectionStatus");
+    const detail = document.getElementById("appErrorDetail");
+    if (status) {
+      status.textContent = "🔴 앱 실행 오류";
+      status.className = "status error";
+    }
+    if (detail) {
+      detail.textContent = "오류: " + message;
+      detail.classList.remove("hidden");
+    }
+  }
+
+  window.addEventListener("error", function (event) {
+    const message = event?.message || "스크립트 또는 외부 모듈을 불러오지 못했습니다.";
+    showBootError(message);
+  });
+
+  window.addEventListener("unhandledrejection", function (event) {
+    const reason = event?.reason;
+    showBootError(reason?.message || reason || "처리되지 않은 비동기 오류");
+  });
+
+  window.setTimeout(function () {
+    const loading = document.getElementById("authLoading");
+    const shell = document.getElementById("appShell");
+    if (loading && !loading.classList.contains("hidden") && shell?.classList.contains("hidden")) {
+      showBootError("인증이 오래 걸리고 있습니다. Firebase 익명 인증 설정과 네트워크를 확인해 주세요.");
+    }
+  }, 12000);
+})();
+</script>
+
 <script type="module">
 
 import { initializeApp }
@@ -2223,8 +2260,15 @@ let scores = [];
 let money = [];
 let joinPosts = [];
 
-let favoriteGolfCourses =
-  JSON.parse(localStorage.getItem("favoriteGolfCourses") || "[]");
+let favoriteGolfCourses = [];
+try {
+  const savedFavorites = JSON.parse(localStorage.getItem("favoriteGolfCourses") || "[]");
+  favoriteGolfCourses = Array.isArray(savedFavorites) ? savedFavorites : [];
+} catch (error) {
+  console.warn("즐겨찾기 저장값 복구:", error);
+  favoriteGolfCourses = [];
+  try { localStorage.removeItem("favoriteGolfCourses"); } catch (_) {}
+}
 
 let editingRoundId = null;
 
@@ -2351,6 +2395,11 @@ function renderJoinMemberOptions() {
 
 
 async function sendJoinRequest() {
+  if (!currentAuthUser) {
+    alert("기기 인증이 아직 완료되지 않았어. 잠시 후 다시 눌러줘.");
+    return;
+  }
+
   const memberId = document.getElementById("joinMemberSelect")?.value;
   const member = members.find(item => item.id === memberId);
 
@@ -2612,7 +2661,7 @@ document.getElementById("retryJoinRequestBtn")
 
 
 function setConnected() {
-  statusBox.textContent = "🟢 15명 실시간 연결";
+  statusBox.textContent = `🟢 ${members.length || 0}명 실시간 연결`;
   statusBox.className = "status online";
 
   const detail = document.getElementById("appErrorDetail");
@@ -2765,7 +2814,12 @@ document.querySelectorAll("nav button").forEach(button => {
     document.querySelectorAll("nav button")
       .forEach(btn => btn.classList.remove("active"));
 
-    document.getElementById(pageId).classList.add("active");
+    const targetPage = document.getElementById(pageId);
+    if (!targetPage) {
+      setError(new Error(`화면을 찾을 수 없습니다: ${pageId}`));
+      return;
+    }
+    targetPage.classList.add("active");
     button.classList.add("active");
 
     renderAll();
@@ -4135,11 +4189,6 @@ function renderRanking() {
 
 
 
-function formatWon(value) {
-  const amount = Number(value || 0);
-  return amount > 0 ? `${amount.toLocaleString("ko-KR")}원` : "";
-}
-
 function getJoinMemberNames(ids) {
   return (Array.isArray(ids) ? ids : []).map(getMemberName);
 }
@@ -4747,10 +4796,21 @@ setInterval(() => {
 
 
 async function startApp() {
-  try {
-    await seedMembers();
-    startRealtimeListeners();
+  // 인증이 끝나기 전에 Firestore를 먼저 읽으면 네트워크/권한 문제에서
+  // 이 화면(기기 인증 중...)에 계속 멈출 수 있다.
+  // 그래서 인증 리스너를 가장 먼저 붙이고, 익명 로그인 완료 후 DB를 시작한다.
+  let realtimeStarted = false;
 
+  const startDataLayer = async () => {
+    if (realtimeStarted) return;
+    realtimeStarted = true;
+
+    // 멤버 초기화는 실패해도 앱 인증 흐름을 막지 않도록 비동기로 처리
+    seedMembers().catch(error => setError(error));
+    startRealtimeListeners();
+  };
+
+  try {
     onAuthStateChanged(auth, async user => {
       if (!user) {
         try {
@@ -4763,10 +4823,11 @@ async function startApp() {
       }
 
       currentAuthUser = user;
+      await startDataLayer();
       watchCurrentUser();
     });
-
   } catch(error) {
+    showAuthPanel("authRequest");
     setError(error);
   }
 }
