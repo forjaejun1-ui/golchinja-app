@@ -3378,7 +3378,7 @@ function renderRounds() {
     button.addEventListener("click", () => {
       if (!isAdmin()) return;
       const round = rounds.find(item => item.id === button.dataset.editAttendance);
-      if (round) openAttendanceModal(round);
+      if (round) openAttendanceModal(round.id);
     });
   });
 
@@ -3386,7 +3386,7 @@ function renderRounds() {
     button.addEventListener("click", () => {
       if (!isAdmin()) return;
       document.getElementById("teamRoundSelect").value = button.dataset.pickTeamRound;
-      updateTeamRoundInfo();
+      renderTeamRoundInfo();
       document.getElementById("teamMakerCard")?.scrollIntoView({ behavior: "smooth" });
     });
   });
@@ -3405,6 +3405,294 @@ function renderRounds() {
     });
   });
 }
+
+function renderTeamRoundSelect() {
+  const select = document.getElementById("teamRoundSelect");
+  const prev = select.value;
+
+  select.innerHTML = '<option value="">라운딩을 선택하세요</option>';
+
+  rounds.forEach(round => {
+    const attendeeCount = getAttendeeIds(round).length;
+
+    select.innerHTML += `
+      <option value="${round.id}">
+        ${escapeHtml(round.date || "")} · ${escapeHtml(round.course || "")}
+        (${attendeeCount}명)
+      </option>
+    `;
+  });
+
+  if (rounds.some(round => round.id === prev)) {
+    select.value = prev;
+  }
+
+  renderTeamRoundInfo();
+}
+
+
+function renderTeamRoundInfo() {
+  const roundId = document.getElementById("teamRoundSelect").value;
+  const info = document.getElementById("teamRoundInfo");
+  const result = document.getElementById("teamResult");
+
+  const round = rounds.find(item => item.id === roundId);
+
+  if (!round) {
+    info.textContent = "라운딩을 선택하면 참석 인원으로 자동 조편성합니다.";
+    result.innerHTML = "";
+    return;
+  }
+
+  const attendeeIds = getAttendeeIds(round);
+  const sizes = getTeamSizes(attendeeIds.length);
+
+  info.textContent =
+    `참석 ${attendeeIds.length}명 · 예상 조 구성 ${sizes.length ? sizes.join("-") : "없음"}`;
+
+  if (Array.isArray(round.teams) && round.teams.length > 0) {
+    renderTeams(round.teams, true);
+  } else {
+    result.innerHTML = '<div class="small">아직 저장된 조편성이 없습니다.</div>';
+  }
+}
+
+
+document.getElementById("teamRoundSelect")
+  .addEventListener("change", renderTeamRoundInfo);
+
+
+document.getElementById("makeTeamsBtn")
+  .addEventListener("click", async () => {
+
+    if (!isAdmin()) {
+      alert("조편성은 관리자만 가능해.");
+      return;
+    }
+
+    const roundId = document.getElementById("teamRoundSelect").value;
+    const round = rounds.find(item => item.id === roundId);
+
+    if (!round) {
+      alert("조편성할 라운딩부터 선택해줘!");
+      return;
+    }
+
+    const attendeeIds = getAttendeeIds(round);
+
+    if (attendeeIds.length === 0) {
+      alert("이 라운딩에는 참석자가 없어. 참석자부터 수정해줘!");
+      return;
+    }
+
+    const shuffled = shuffleArray(attendeeIds);
+    const sizes = getTeamSizes(shuffled.length);
+
+    const teams = [];
+    let offset = 0;
+
+    sizes.forEach(size => {
+      teams.push(shuffled.slice(offset, offset + size));
+      offset += size;
+    });
+
+    try {
+      await updateDoc(doc(db, "rounds", roundId), {
+        teams,
+        teamUpdatedAt: Date.now()
+      });
+
+      renderTeams(teams, false);
+      alert(`🎲 조편성 완료! ${sizes.join("-")} 구성으로 저장했어.`);
+    } catch(error) {
+      alert("조편성 저장 실패");
+      setError(error);
+    }
+  });
+
+
+function renderTeams(teams, saved = false) {
+  const result = document.getElementById("teamResult");
+
+  if (!Array.isArray(teams) || teams.length === 0) {
+    result.innerHTML = '<div class="small">저장된 조편성이 없습니다.</div>';
+    return;
+  }
+
+  result.innerHTML = saved
+    ? '<div class="small" style="margin-bottom:8px;">💾 현재 저장된 조편성</div>'
+    : '<div class="small" style="margin-bottom:8px;">✅ 새 조편성이 Firebase에 저장되었습니다.</div>';
+
+  teams.forEach((team,index) => {
+    result.innerHTML += `
+      <div class="team">
+        <h3>${index + 1}조 (${team.length}명)</h3>
+        ${team.map(id => escapeHtml(getMemberName(id))).join(" · ")}
+      </div>
+    `;
+  });
+}
+
+
+function openAttendanceModal(roundId) {
+  const round = rounds.find(item => item.id === roundId);
+  if (!round) return;
+
+  editingRoundId = roundId;
+
+  document.getElementById("modalRoundTitle").textContent =
+    `${round.date || ""} · ${round.course || ""}`;
+
+  const selected = new Set(getAttendeeIds(round));
+  const grid = document.getElementById("modalAttendanceGrid");
+
+  grid.innerHTML = "";
+
+  members.forEach(member => {
+    const label = document.createElement("label");
+    label.className = "attendance-item";
+
+    label.innerHTML = `
+      <input type="checkbox"
+             class="modal-attendee-check"
+             value="${member.id}"
+             ${selected.has(member.id) ? "checked" : ""}>
+      <span>${escapeHtml(member.name)}</span>
+    `;
+
+    grid.appendChild(label);
+  });
+
+  updateModalAttendanceCount();
+  document.getElementById("attendanceModal").classList.add("show");
+}
+
+
+function closeAttendanceModal() {
+  editingRoundId = null;
+  document.getElementById("attendanceModal").classList.remove("show");
+}
+
+
+function updateModalAttendanceCount() {
+  const checks = [...document.querySelectorAll(".modal-attendee-check")];
+  const count = checks.filter(check => check.checked).length;
+
+  document.getElementById("modalAttendanceCount").textContent =
+    `${count}명 참석 / ${Math.max(members.length - count, 0)}명 불참`;
+
+  document.getElementById("toggleModalAttendanceBtn").textContent =
+    count === members.length && members.length > 0
+      ? "전체 해제"
+      : "전체 선택";
+}
+
+
+document.getElementById("modalAttendanceGrid")
+  .addEventListener("change", updateModalAttendanceCount);
+
+
+document.getElementById("toggleModalAttendanceBtn")
+  .addEventListener("click", () => {
+
+    const checks = [...document.querySelectorAll(".modal-attendee-check")];
+    const allChecked = checks.length > 0 && checks.every(check => check.checked);
+
+    checks.forEach(check => check.checked = !allChecked);
+    updateModalAttendanceCount();
+  });
+
+
+document.getElementById("closeAttendanceModalBtn")
+  .addEventListener("click", closeAttendanceModal);
+
+
+document.getElementById("attendanceModal")
+  .addEventListener("click", event => {
+    if (event.target.id === "attendanceModal") {
+      closeAttendanceModal();
+    }
+  });
+
+
+document.getElementById("saveAttendanceBtn")
+  .addEventListener("click", async () => {
+
+    if (!editingRoundId) return;
+
+    const attendeeIds =
+      [...document.querySelectorAll(".modal-attendee-check:checked")]
+        .map(input => input.value);
+
+    if (attendeeIds.length === 0) {
+      alert("참석자를 1명 이상 선택해줘!");
+      return;
+    }
+
+    try {
+      await updateDoc(doc(db, "rounds", editingRoundId), {
+        attendeeIds,
+        teams: [],
+        attendanceUpdatedAt: Date.now()
+      });
+
+      closeAttendanceModal();
+
+      alert(`🙋 참석자 수정 완료! ${attendeeIds.length}명 참석`);
+    } catch(error) {
+      alert("참석자 수정 실패");
+      setError(error);
+    }
+  });
+
+
+document.getElementById("addScoreBtn").addEventListener("click", async () => {
+
+  const memberId = isAdmin()
+    ? document.getElementById("scoreMember").value
+    : ownMemberId();
+  const member = members.find(item => item.id === memberId);
+
+  const date = document.getElementById("scoreDate").value;
+  const course = document.getElementById("scoreCourse").value.trim();
+
+  const score = Number(document.getElementById("scoreValue").value);
+  const birdies = Number(document.getElementById("birdies").value) || 0;
+  const near = Number(document.getElementById("near").value);
+  const longest = Number(document.getElementById("longest").value);
+
+  if (!member || !date || !course || !score) {
+    alert("멤버, 날짜, 골프장, 타수를 확인해줘!");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "scores"), {
+      memberId: member.id,
+      memberName: member.name,
+      date,
+      course,
+      score,
+      birdies,
+      near,
+      longest,
+      createdAt: Date.now()
+    });
+
+    document.getElementById("scoreCourse").value = "";
+    document.getElementById("scoreValue").value = "";
+    document.getElementById("birdies").value = 0;
+    document.getElementById("near").value = "0";
+    document.getElementById("longest").value = "0";
+
+    alert(`🏌️ ${member.name} ${score}타 저장 완료!`);
+  } catch(error) {
+    alert("스코어 저장 실패");
+    setError(error);
+  }
+});
+
+
 
 function renderScores() {
   const list = document.getElementById("scoreList");
