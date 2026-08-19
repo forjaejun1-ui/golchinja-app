@@ -279,7 +279,7 @@
 
     .golf-actions {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       margin-top: 10px;
     }
@@ -299,9 +299,14 @@
       color: #166534;
     }
 
-    .course-map-btn {
+    .official-site-btn {
       background: #e0f2fe;
       color: #075985;
+    }
+
+    .kakao-btn {
+      background: #fef9c3;
+      color: #713f12;
     }
 
     .loading { text-align: center; padding: 20px; color: #6b7280; }
@@ -419,7 +424,7 @@
       <input id="roundTime" type="time">
       <input id="roundCourse" type="text" list="golfCourseList" autocomplete="off" placeholder="골프장 검색 예) 레이크, 선산, 안성">
       <datalist id="golfCourseList"></datalist>
-      <div class="small" style="margin-top:-5px;margin-bottom:10px;">협회 회원사 209개 자동완성 + 직접 입력 가능</div>
+      <div class="small" style="margin-top:-5px;margin-bottom:10px;">전국 골프장 자동완성 + 목록에 없어도 직접 입력 가능</div>
       <textarea id="roundMemo" placeholder="메모 / 회비 / 집결시간 등"></textarea>
 
       <div class="attendance-box">
@@ -468,7 +473,7 @@
 
       <select id="scoreMember"></select>
       <input id="scoreDate" type="date">
-      <input id="scoreCourse" type="text" placeholder="골프장">
+      <input id="scoreCourse" type="text" list="golfCourseList" autocomplete="off" placeholder="골프장 검색 예) 솔트, 선산, 레이크">
       <input id="scoreValue" type="number" min="50" max="200" placeholder="타수">
       <input id="birdies" type="number" min="0" value="0" placeholder="버디 개수">
 
@@ -497,7 +502,7 @@
     <div class="card">
       <h2>🗺️ 전국 골프장</h2>
       <p class="small" style="margin-bottom:12px;">
-        골프장명을 검색해서 네이버 지도·18홀 코스맵 검색을 바로 열 수 있어.
+        골프장명을 검색해서 네이버 지도·공식 홈페이지·카카오맵을 바로 열 수 있어.
       </p>
 
       <input id="golfSearch" type="search" placeholder="골프장 검색 예) 레이크우드, 선산, 제주">
@@ -853,6 +858,9 @@ const golfCourses = [
 ];
 
 
+
+const supplementalGolfCourses = [{"region": "경기", "name": "솔트베이 골프클럽"}, {"region": "경기", "name": "아세코밸리 골프클럽"}, {"region": "경기", "name": "광릉CC"}, {"region": "경기", "name": "고양컨트리클럽"}, {"region": "경기", "name": "일산스프링힐스 컨트리클럽"}, {"region": "경기", "name": "중부컨트리클럽"}, {"region": "경기", "name": "큐로CC"}, {"region": "경기", "name": "마에스트로CC"}, {"region": "경기", "name": "파인크리크CC"}, {"region": "경기", "name": "골프존카운티 안성W"}, {"region": "경기", "name": "루나힐스 안성"}, {"region": "경기", "name": "한림안성"}, {"region": "경기", "name": "에덴블루CC"}, {"region": "경기", "name": "양평TPC"}, {"region": "경기", "name": "360도CC"}, {"region": "경기", "name": "아리지CC"}, {"region": "경기", "name": "여주CC"}, {"region": "경기", "name": "이천실크밸리"}, {"region": "경기", "name": "더크로스비"}, {"region": "경기", "name": "스마트KU"}, {"region": "경기", "name": "포천힐스"}, {"region": "경기", "name": "참밸리"}, {"region": "경기", "name": "라싸"}, {"region": "경기", "name": "필로스"}, {"region": "경기", "name": "포레스트힐"}, {"region": "경기", "name": "베어크리크"}, {"region": "경기", "name": "화성골프클럽"}, {"region": "경기", "name": "라비돌CC"}, {"region": "서울", "name": "인서울27골프클럽"}, {"region": "강원", "name": "성문안"}, {"region": "강원", "name": "오투리조트CC"}, {"region": "경북", "name": "경주CC"}, {"region": "경북", "name": "루나엑스"}, {"region": "경남", "name": "용원CC"}, {"region": "전북", "name": "내장산CC"}, {"region": "전북", "name": "익산CC"}, {"region": "전북", "name": "군산CC"}, {"region": "전북", "name": "석정힐CC"}, {"region": "전북", "name": "골프존카운티 무주"}, {"region": "전북", "name": "동전주써미트CC"}, {"region": "전남", "name": "사우스링스영암"}, {"region": "전남", "name": "솔라시도CC"}, {"region": "전남", "name": "무안CC"}, {"region": "전남", "name": "웨스트오션CC"}, {"region": "전남", "name": "함평엘리체CC"}, {"region": "전남", "name": "화순엘리체"}, {"region": "전남", "name": "아크로CC"}, {"region": "전남", "name": "파인힐스CC"}, {"region": "전남", "name": "디오션CC"}, {"region": "전남", "name": "보성CC"}, {"region": "전남", "name": "여수경도CC"}, {"region": "전남", "name": "순천부영CC"}, {"region": "충북", "name": "레인보우힐스"}, {"region": "충북", "name": "대영베이스"}, {"region": "충북", "name": "시그너스CC"}, {"region": "충남", "name": "버드우드"}, {"region": "충남", "name": "스톤비치CC"}, {"region": "충남", "name": "로얄링스"}, {"region": "대전", "name": "유성CC"}, {"region": "제주", "name": "부영CC"}];
+
 const statusBox = document.getElementById("connectionStatus");
 
 function setConnected() {
@@ -1036,6 +1044,21 @@ function normalizeCourseText(value) {
 }
 
 
+
+const courseKey = course =>
+  normalizeCourseText(course.name);
+
+supplementalGolfCourses.forEach(course => {
+  if (!golfCourses.some(existing => courseKey(existing) === courseKey(course))) {
+    golfCourses.push(course);
+  }
+});
+
+golfCourses.sort((a,b) =>
+  a.name.localeCompare(b.name, "ko")
+);
+
+
 function buildGolfAutocomplete() {
   const list = document.getElementById("golfCourseList");
   if (!list) return;
@@ -1057,10 +1080,17 @@ function makeNaverMapUrl(name) {
 }
 
 
-function makeCourseMapSearchUrl(name) {
-  return "https://search.naver.com/search.naver?where=image&query=" +
-    encodeURIComponent(name + " 18홀 코스맵");
+function makeOfficialSiteSearchUrl(name) {
+  return "https://search.naver.com/search.naver?query=" +
+    encodeURIComponent(name + " 골프장 공식 홈페이지");
 }
+
+
+function makeKakaoMapUrl(name) {
+  return "https://m.map.kakao.com/scheme/search?q=" +
+    encodeURIComponent(name + " 골프장");
+}
+
 
 
 function renderGolfCourses() {
@@ -1101,7 +1131,8 @@ function renderGolfCourses() {
     div.className = "golf-card";
 
     const mapUrl = makeNaverMapUrl(course.name);
-    const courseMapUrl = makeCourseMapSearchUrl(course.name);
+    const officialUrl = makeOfficialSiteSearchUrl(course.name);
+    const kakaoUrl = makeKakaoMapUrl(course.name);
 
     div.innerHTML = `
       <div class="golf-card-head">
@@ -1110,7 +1141,7 @@ function renderGolfCourses() {
       </div>
 
       <div class="small">
-        네이버에서 해당 골프장 위치와 18홀 코스맵 자료를 바로 검색해.
+        네이버 지도, 공식 홈페이지 검색, 카카오맵 검색을 바로 열어.
       </div>
 
       <div class="golf-actions">
@@ -1121,11 +1152,18 @@ function renderGolfCourses() {
           🧭 네이버 지도
         </a>
 
-        <a class="golf-link course-map-btn"
-           href="${courseMapUrl}"
+        <a class="golf-link official-site-btn"
+           href="${officialUrl}"
            target="_blank"
            rel="noopener noreferrer">
-          🗺️ 18홀 코스맵
+          🌐 공식 홈페이지
+        </a>
+
+        <a class="golf-link kakao-btn"
+           href="${kakaoUrl}"
+           target="_blank"
+           rel="noopener noreferrer">
+          🚗 카카오맵
         </a>
       </div>
     `;
@@ -1383,6 +1421,7 @@ function renderRounds() {
 
       ${savedTeams}
 
+      <button class="edit-btn" data-edit-memo="${round.id}">메모 수정</button>
       <button class="edit-btn" data-edit-attendance="${round.id}">참석 수정</button>
       <button class="team-btn" data-pick-team-round="${round.id}">이 라운딩 조편성</button>
       <button class="delete-btn" data-delete-round="${round.id}">삭제</button>
@@ -1406,6 +1445,28 @@ function renderRounds() {
     });
   });
 
+
+
+  document.querySelectorAll("[data-edit-memo]").forEach(button => {
+    button.addEventListener("click", async () => {
+      const round = rounds.find(item => item.id === button.dataset.editMemo);
+      if (!round) return;
+
+      const nextMemo = prompt("라운딩 메모 수정", round.memo || "");
+      if (nextMemo === null) return;
+
+      try {
+        await updateDoc(doc(db, "rounds", round.id), {
+          memo: nextMemo.trim(),
+          memoUpdatedAt: Date.now()
+        });
+        alert("📝 메모 수정 완료!");
+      } catch(error) {
+        alert("메모 수정 실패");
+        setError(error);
+      }
+    });
+  });
 
   document.querySelectorAll("[data-edit-attendance]").forEach(button => {
     button.addEventListener("click", () => {
