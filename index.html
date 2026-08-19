@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#111827" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111827">
   <title>골친자들 골치아픔 ⛳</title>
 
   <style>
@@ -37,6 +37,23 @@
       color: #d1d5db;
     }
 
+    .status {
+      display: inline-block;
+      margin-top: 9px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #374151;
+      font-size: 11px;
+    }
+
+    .status.online {
+      background: #166534;
+    }
+
+    .status.error {
+      background: #991b1b;
+    }
+
     .container {
       max-width: 760px;
       margin: auto;
@@ -58,7 +75,7 @@
 
     .stats {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3,1fr);
       gap: 8px;
     }
 
@@ -118,9 +135,22 @@
       color: white;
     }
 
-    .red {
-      background: #dc2626;
-      color: white;
+    .delete-btn {
+      width: auto;
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 7px 10px;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    .edit-btn {
+      width: auto;
+      background: #e0f2fe;
+      color: #075985;
+      padding: 7px 10px;
+      font-size: 12px;
+      margin-top: 8px;
     }
 
     .list-item {
@@ -151,9 +181,16 @@
       margin-right: 10px;
     }
 
+    .rank-first {
+      background: #fef9c3;
+      margin: 0 -8px;
+      padding: 11px 8px;
+      border-radius: 10px;
+    }
+
     .member-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2,1fr);
       gap: 9px;
     }
 
@@ -174,6 +211,36 @@
     .team h3 {
       margin-bottom: 7px;
       font-size: 15px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #dcfce7;
+      color: #166534;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .money-plus {
+      color: #16a34a;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #6b7280;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
     }
 
     nav {
@@ -208,44 +275,7 @@
       margin-bottom: 2px;
     }
 
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    .badge {
-      display: inline-block;
-      background: #dcfce7;
-      color: #166534;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: bold;
-    }
-
-    .money-plus {
-      color: #16a34a;
-      font-weight: bold;
-    }
-
-    .money-minus {
-      color: #dc2626;
-      font-weight: bold;
-    }
-
-    .delete-btn {
-      width: auto;
-      background: #fee2e2;
-      color: #991b1b;
-      padding: 7px 10px;
-      font-size: 12px;
-      margin-top: 8px;
-    }
-
-    @media (max-width: 450px) {
+    @media(max-width:450px) {
       header h1 {
         font-size: 21px;
       }
@@ -262,6 +292,9 @@
 <header>
   <h1>골친자들 골치아픔 ⛳</h1>
   <p>15명 전용 골프모임 · 시즌 2026</p>
+  <div id="connectionStatus" class="status">
+    🔄 Firebase 연결 중...
+  </div>
 </header>
 
 <div class="container">
@@ -274,7 +307,7 @@
 
       <div class="stats">
         <div class="stat">
-          <strong id="memberCount">15</strong>
+          <strong id="memberCount">0</strong>
           <span>멤버</span>
         </div>
 
@@ -291,15 +324,15 @@
     </div>
 
     <div class="card">
-      <h2>🥇 시즌 랭킹</h2>
-      <div id="ranking"></div>
+      <h2>🏅 시즌 랭킹</h2>
+      <div id="ranking">
+        <div class="loading">불러오는 중...</div>
+      </div>
     </div>
 
     <div class="card">
       <h2>⛳ 다음 라운딩</h2>
-      <div id="nextRound">
-        아직 등록된 라운딩이 없습니다.
-      </div>
+      <div id="nextRound">불러오는 중...</div>
     </div>
 
   </section>
@@ -312,7 +345,6 @@
       <h2>📅 라운딩 등록</h2>
 
       <input id="roundDate" type="date">
-
       <input id="roundTime" type="time">
 
       <input
@@ -326,35 +358,30 @@
         placeholder="메모 / 회비 / 집결시간 등"
       ></textarea>
 
-      <button
-        class="green"
-        onclick="addRound()"
-      >
+      <button id="addRoundBtn" class="green">
         라운딩 저장
       </button>
     </div>
 
-
     <div class="card">
       <h2>🎲 랜덤 조편성</h2>
 
-      <button
-        class="primary"
-        onclick="makeTeams()"
-      >
+      <p class="small" style="margin-bottom:12px;">
+        15명 기준 4명 · 4명 · 4명 · 3명
+      </p>
+
+      <button id="makeTeamsBtn" class="primary">
         15명 랜덤 조편성
       </button>
 
-      <div
-        id="teamResult"
-        style="margin-top:15px"
-      ></div>
+      <div id="teamResult" style="margin-top:15px;"></div>
     </div>
-
 
     <div class="card">
       <h2>📋 라운딩 목록</h2>
-      <div id="roundList"></div>
+      <div id="roundList">
+        <div class="loading">불러오는 중...</div>
+      </div>
     </div>
 
   </section>
@@ -368,10 +395,7 @@
 
       <select id="scoreMember"></select>
 
-      <input
-        id="scoreDate"
-        type="date"
-      >
+      <input id="scoreDate" type="date">
 
       <input
         id="scoreCourse"
@@ -382,8 +406,8 @@
       <input
         id="scoreValue"
         type="number"
-        min="55"
-        max="180"
+        min="50"
+        max="200"
         placeholder="타수"
       >
 
@@ -396,37 +420,25 @@
       >
 
       <select id="near">
-        <option value="0">
-          니어리스트 없음
-        </option>
-
-        <option value="1">
-          니어리스트 🏆
-        </option>
+        <option value="0">니어리스트 없음</option>
+        <option value="1">니어리스트 🎯</option>
       </select>
 
       <select id="longest">
-        <option value="0">
-          롱기스트 없음
-        </option>
-
-        <option value="1">
-          롱기스트 💣
-        </option>
+        <option value="0">롱기스트 없음</option>
+        <option value="1">롱기스트 💣</option>
       </select>
 
-      <button
-        class="green"
-        onclick="addScore()"
-      >
+      <button id="addScoreBtn" class="green">
         기록 저장
       </button>
     </div>
 
-
     <div class="card">
       <h2>📊 스코어 기록</h2>
-      <div id="scoreList"></div>
+      <div id="scoreList">
+        <div class="loading">불러오는 중...</div>
+      </div>
     </div>
 
   </section>
@@ -436,12 +448,13 @@
   <section id="member" class="page">
 
     <div class="card">
-      <h2>👥 멤버 15명</h2>
+      <h2>👥 우리 멤버</h2>
 
-      <div
-        id="memberGrid"
-        class="member-grid"
-      ></div>
+      <p class="small" style="margin-bottom:15px;">
+        이름 수정 시 모든 회원 화면에 같이 반영됩니다.
+      </p>
+
+      <div id="memberGrid" class="member-grid"></div>
     </div>
 
   </section>
@@ -473,31 +486,27 @@
         placeholder="메모 예) 지각 벌금"
       >
 
-      <button
-        class="green"
-        onclick="addMoney()"
-      >
+      <button id="addMoneyBtn" class="green">
         정산 저장
       </button>
     </div>
-
 
     <div class="card">
       <h2>💵 총 정산</h2>
 
       <div
         id="moneySummary"
-        style="font-size:22px;font-weight:bold"
+        style="font-size:22px;font-weight:bold;"
       >
         0원
       </div>
     </div>
 
-
     <div class="card">
       <h2>🧾 정산 내역</h2>
-
-      <div id="moneyList"></div>
+      <div id="moneyList">
+        <div class="loading">불러오는 중...</div>
+      </div>
     </div>
 
   </section>
@@ -506,47 +515,83 @@
 
 
 <nav>
-
-  <button
-    class="active"
-    onclick="showPage('home',this)"
-  >
+  <button class="active" data-page="home">
     <span class="nav-icon">🏠</span>
     홈
   </button>
 
-  <button
-    onclick="showPage('round',this)"
-  >
+  <button data-page="round">
     <span class="nav-icon">⛳</span>
     라운딩
   </button>
 
-  <button
-    onclick="showPage('score',this)"
-  >
+  <button data-page="score">
     <span class="nav-icon">📊</span>
     스코어
   </button>
 
-  <button
-    onclick="showPage('member',this)"
-  >
+  <button data-page="member">
     <span class="nav-icon">👥</span>
     멤버
   </button>
 
-  <button
-    onclick="showPage('money',this)"
-  >
+  <button data-page="money">
     <span class="nav-icon">💰</span>
     회비
   </button>
-
 </nav>
 
 
-<script>
+<script type="module">
+
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  getDocs,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+/* ================================
+   Firebase 연결 설정
+================================ */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDckMlm9r_d5sYguAS5TN8brcuoUn98kKU",
+  authDomain: "golchinja-app.firebaseapp.com",
+  projectId: "golchinja-app",
+  storageBucket: "golchinja-app.firebasestorage.app",
+  messagingSenderId: "342049765213",
+  appId: "1:342049765213:web:3863996a94b0ba260ddab4"
+};
+
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+
+/* ================================
+   데이터
+================================ */
+
+let members = [];
+let rounds = [];
+let scores = [];
+let money = [];
+
+
+/* ================================
+   기본 멤버 15명
+================================ */
 
 const defaultMembers = [
   "재준",
@@ -567,236 +612,427 @@ const defaultMembers = [
 ];
 
 
-let members =
-JSON.parse(localStorage.getItem("members"))
-|| defaultMembers;
+/* ================================
+   연결 상태
+================================ */
+
+const statusBox =
+  document.getElementById("connectionStatus");
 
 
-let rounds =
-JSON.parse(localStorage.getItem("rounds"))
-|| [];
+function setConnected() {
 
+  statusBox.textContent =
+    "🟢 15명 실시간 연결";
 
-let scores =
-JSON.parse(localStorage.getItem("scores"))
-|| [];
-
-
-let money =
-JSON.parse(localStorage.getItem("money"))
-|| [];
-
-
-function saveData() {
-
-  localStorage.setItem(
-    "members",
-    JSON.stringify(members)
-  );
-
-  localStorage.setItem(
-    "rounds",
-    JSON.stringify(rounds)
-  );
-
-  localStorage.setItem(
-    "scores",
-    JSON.stringify(scores)
-  );
-
-  localStorage.setItem(
-    "money",
-    JSON.stringify(money)
-  );
-
+  statusBox.className =
+    "status online";
 }
 
 
-function showPage(id, btn) {
+function setError(message) {
 
-  document
-    .querySelectorAll(".page")
-    .forEach(page =>
-      page.classList.remove("active")
-    );
+  statusBox.textContent =
+    "🔴 연결 오류";
 
+  statusBox.className =
+    "status error";
 
-  document
-    .querySelectorAll("nav button")
-    .forEach(button =>
-      button.classList.remove("active")
-    );
-
-
-  document
-    .getElementById(id)
-    .classList.add("active");
-
-
-  btn.classList.add("active");
-
-
-  renderAll();
+  console.error(message);
 }
 
+
+/* ================================
+   최초 멤버 생성
+================================ */
+
+async function seedMembers() {
+
+  try {
+
+    const snapshot =
+      await getDocs(
+        collection(db, "members")
+      );
+
+    if (!snapshot.empty) {
+      return;
+    }
+
+    for (
+      let i = 0;
+      i < defaultMembers.length;
+      i++
+    ) {
+
+      const id =
+        "member" +
+        String(i + 1)
+          .padStart(2, "0");
+
+      await setDoc(
+        doc(db, "members", id),
+        {
+          name: defaultMembers[i],
+          order: i + 1
+        }
+      );
+    }
+
+  } catch (error) {
+
+    setError(error);
+  }
+}
+
+
+/* ================================
+   실시간 데이터 수신
+================================ */
+
+function startRealtimeListeners() {
+
+  onSnapshot(
+    collection(db, "members"),
+
+    snapshot => {
+
+      members =
+        snapshot.docs.map(item => ({
+          id: item.id,
+          ...item.data()
+        }));
+
+      members.sort(
+        (a,b) =>
+          (a.order || 0) -
+          (b.order || 0)
+      );
+
+      renderAll();
+      setConnected();
+    },
+
+    error => setError(error)
+  );
+
+
+  onSnapshot(
+    collection(db, "rounds"),
+
+    snapshot => {
+
+      rounds =
+        snapshot.docs.map(item => ({
+          id: item.id,
+          ...item.data()
+        }));
+
+      rounds.sort(
+        (a,b) =>
+          new Date(a.date) -
+          new Date(b.date)
+      );
+
+      renderAll();
+      setConnected();
+    },
+
+    error => setError(error)
+  );
+
+
+  onSnapshot(
+    collection(db, "scores"),
+
+    snapshot => {
+
+      scores =
+        snapshot.docs.map(item => ({
+          id: item.id,
+          ...item.data()
+        }));
+
+      scores.sort(
+        (a,b) =>
+          (b.createdAt || 0) -
+          (a.createdAt || 0)
+      );
+
+      renderAll();
+      setConnected();
+    },
+
+    error => setError(error)
+  );
+
+
+  onSnapshot(
+    collection(db, "money"),
+
+    snapshot => {
+
+      money =
+        snapshot.docs.map(item => ({
+          id: item.id,
+          ...item.data()
+        }));
+
+      money.sort(
+        (a,b) =>
+          (b.createdAt || 0) -
+          (a.createdAt || 0)
+      );
+
+      renderAll();
+      setConnected();
+    },
+
+    error => setError(error)
+  );
+}
+
+
+/* ================================
+   페이지 이동
+================================ */
+
+document
+  .querySelectorAll("nav button")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        const pageId =
+          button.dataset.page;
+
+        document
+          .querySelectorAll(".page")
+          .forEach(page => {
+            page.classList.remove("active");
+          });
+
+        document
+          .querySelectorAll("nav button")
+          .forEach(btn => {
+            btn.classList.remove("active");
+          });
+
+        document
+          .getElementById(pageId)
+          .classList.add("active");
+
+        button.classList.add("active");
+
+        renderAll();
+      }
+    );
+  });
+
+
+/* ================================
+   멤버
+================================ */
 
 function renderMembers() {
 
   const grid =
     document.getElementById("memberGrid");
 
-
-  grid.innerHTML = "";
-
-
-  members.forEach((member,index)=>{
-
-    const div =
-      document.createElement("div");
-
-
-    div.className = "member";
-
-
-    div.innerHTML = `
-      <strong>
-        ${index + 1}. ${member}
-      </strong>
-
-      <button
-        class="delete-btn"
-        onclick="editMember(${index})"
-      >
-        이름 수정
-      </button>
-    `;
-
-
-    grid.appendChild(div);
-
-  });
-
-
   const scoreSelect =
     document.getElementById("scoreMember");
-
 
   const moneySelect =
     document.getElementById("moneyMember");
 
 
+  grid.innerHTML = "";
   scoreSelect.innerHTML = "";
   moneySelect.innerHTML = "";
 
 
-  members.forEach(member=>{
+  members.forEach(
+    (member,index) => {
 
-    scoreSelect.innerHTML +=
-      `<option value="${member}">
-        ${member}
-      </option>`;
+      const div =
+        document.createElement("div");
 
+      div.className = "member";
 
-    moneySelect.innerHTML +=
-      `<option value="${member}">
-        ${member}
-      </option>`;
+      div.innerHTML = `
+        <strong>
+          ${index + 1}. ${escapeHtml(member.name)}
+        </strong>
 
-  });
+        <br>
 
-}
+        <button
+          class="edit-btn"
+          data-member-id="${member.id}"
+        >
+          이름 수정
+        </button>
+      `;
 
-
-function editMember(index) {
-
-  const name =
-    prompt(
-      "멤버 이름을 입력하세요",
-      members[index]
-    );
-
-
-  if(!name) return;
+      grid.appendChild(div);
 
 
-  members[index] = name;
+      scoreSelect.innerHTML += `
+        <option value="${member.id}">
+          ${escapeHtml(member.name)}
+        </option>
+      `;
 
 
-  saveData();
-  renderAll();
-
-}
-
-
-function addRound() {
-
-  const date =
-    document.getElementById("roundDate").value;
-
-
-  const time =
-    document.getElementById("roundTime").value;
-
-
-  const course =
-    document.getElementById("roundCourse").value;
-
-
-  const memo =
-    document.getElementById("roundMemo").value;
-
-
-  if(!date || !course) {
-
-    alert(
-      "날짜와 골프장을 입력해줘!"
-    );
-
-    return;
-
-  }
-
-
-  rounds.push({
-    date,
-    time,
-    course,
-    memo
-  });
-
-
-  rounds.sort(
-    (a,b)=>
-      new Date(a.date) -
-      new Date(b.date)
+      moneySelect.innerHTML += `
+        <option value="${member.id}">
+          ${escapeHtml(member.name)}
+        </option>
+      `;
+    }
   );
 
 
-  saveData();
+  document
+    .querySelectorAll("[data-member-id]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        async () => {
+
+          const member =
+            members.find(
+              item =>
+                item.id ===
+                button.dataset.memberId
+            );
+
+          if (!member) return;
 
 
-  document.getElementById("roundCourse").value = "";
-  document.getElementById("roundMemo").value = "";
+          const newName =
+            prompt(
+              "새 이름 입력",
+              member.name
+            );
 
 
-  renderAll();
+          if (
+            !newName ||
+            !newName.trim()
+          ) return;
 
+
+          try {
+
+            await updateDoc(
+              doc(
+                db,
+                "members",
+                member.id
+              ),
+              {
+                name: newName.trim()
+              }
+            );
+
+          } catch(error) {
+
+            alert(
+              "이름 수정 실패"
+            );
+
+            setError(error);
+          }
+        }
+      );
+    });
 }
 
 
-function deleteRound(index) {
+/* ================================
+   라운딩 등록
+================================ */
 
-  if(!confirm("라운딩 삭제할까?"))
-    return;
+document
+  .getElementById("addRoundBtn")
+  .addEventListener(
+    "click",
+    async () => {
+
+      const date =
+        document
+          .getElementById("roundDate")
+          .value;
+
+      const time =
+        document
+          .getElementById("roundTime")
+          .value;
+
+      const course =
+        document
+          .getElementById("roundCourse")
+          .value
+          .trim();
+
+      const memo =
+        document
+          .getElementById("roundMemo")
+          .value
+          .trim();
 
 
-  rounds.splice(index,1);
+      if (!date || !course) {
+
+        alert(
+          "날짜랑 골프장을 입력해줘!"
+        );
+
+        return;
+      }
 
 
-  saveData();
-  renderAll();
+      try {
 
-}
+        await addDoc(
+          collection(db, "rounds"),
+          {
+            date,
+            time,
+            course,
+            memo,
+            createdAt: Date.now()
+          }
+        );
+
+
+        document
+          .getElementById("roundCourse")
+          .value = "";
+
+        document
+          .getElementById("roundMemo")
+          .value = "";
+
+
+        alert(
+          "⛳ 라운딩 등록 완료!"
+        );
+
+      } catch(error) {
+
+        alert(
+          "라운딩 저장 실패"
+        );
+
+        setError(error);
+      }
+    }
+  );
 
 
 function renderRounds() {
@@ -805,377 +1041,518 @@ function renderRounds() {
     document.getElementById("roundList");
 
 
-  if(rounds.length === 0) {
+  if (rounds.length === 0) {
 
     list.innerHTML =
-      "아직 라운딩이 없습니다.";
+      "아직 등록된 라운딩이 없습니다.";
 
     return;
-
   }
 
 
   list.innerHTML = "";
 
 
-  rounds.forEach((round,index)=>{
+  rounds.forEach(round => {
 
-    list.innerHTML += `
+    const item =
+      document.createElement("div");
 
-      <div class="list-item">
+    item.className =
+      "list-item";
 
-        <strong>
-          ⛳ ${round.course}
-        </strong>
 
-        <div class="small">
-          ${round.date}
-          ${round.time || ""}
-        </div>
+    item.innerHTML = `
 
-        <div class="small">
-          ${round.memo || ""}
-        </div>
+      <strong>
+        ⛳ ${escapeHtml(round.course)}
+      </strong>
 
-        <button
-          class="delete-btn"
-          onclick="deleteRound(${index})"
-        >
-          삭제
-        </button>
-
+      <div class="small">
+        ${escapeHtml(round.date || "")}
+        ${escapeHtml(round.time || "")}
       </div>
 
+      <div class="small">
+        ${escapeHtml(round.memo || "")}
+      </div>
+
+      <button
+        class="delete-btn"
+        data-delete-round="${round.id}"
+      >
+        삭제
+      </button>
     `;
 
+
+    list.appendChild(item);
   });
 
+
+  document
+    .querySelectorAll(
+      "[data-delete-round]"
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        async () => {
+
+          if (
+            !confirm(
+              "이 라운딩 삭제할까?"
+            )
+          ) return;
+
+
+          try {
+
+            await deleteDoc(
+              doc(
+                db,
+                "rounds",
+                button.dataset.deleteRound
+              )
+            );
+
+          } catch(error) {
+
+            alert("삭제 실패");
+            setError(error);
+          }
+        }
+      );
+    });
 }
 
 
-function makeTeams() {
+/* ================================
+   랜덤 조편성
+================================ */
 
-  const shuffled =
-    [...members]
-      .sort(()=>Math.random() - .5);
+document
+  .getElementById("makeTeamsBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      if (
+        members.length === 0
+      ) {
+
+        alert(
+          "멤버 불러오는 중이야!"
+        );
+
+        return;
+      }
 
 
-  const teams = [
-    [],
-    [],
-    [],
-    []
-  ];
+      const shuffled =
+        [...members]
+          .sort(
+            () =>
+              Math.random() - 0.5
+          );
 
 
-  shuffled.forEach(
-    (member,index)=>{
+      const teamSizes =
+        [4,4,4,3];
 
-      teams[
-        index % 4
-      ].push(member);
 
+      const teams = [];
+
+      let start = 0;
+
+
+      teamSizes.forEach(size => {
+
+        teams.push(
+          shuffled.slice(
+            start,
+            start + size
+          )
+        );
+
+        start += size;
+      });
+
+
+      const result =
+        document.getElementById(
+          "teamResult"
+        );
+
+
+      result.innerHTML = "";
+
+
+      teams.forEach(
+        (team,index) => {
+
+          if (
+            team.length === 0
+          ) return;
+
+
+          result.innerHTML += `
+
+            <div class="team">
+
+              <h3>
+                ${index + 1}조
+                (${team.length}명)
+              </h3>
+
+              ${team
+                .map(member =>
+                  escapeHtml(member.name)
+                )
+                .join(" · ")
+              }
+
+            </div>
+          `;
+        }
+      );
     }
   );
 
 
-  const result =
-    document.getElementById(
-      "teamResult"
-    );
+/* ================================
+   스코어
+================================ */
+
+document
+  .getElementById("addScoreBtn")
+  .addEventListener(
+    "click",
+    async () => {
+
+      const memberId =
+        document
+          .getElementById("scoreMember")
+          .value;
+
+      const member =
+        members.find(
+          item =>
+            item.id === memberId
+        );
 
 
-  result.innerHTML = "";
+      const date =
+        document
+          .getElementById("scoreDate")
+          .value;
+
+      const course =
+        document
+          .getElementById("scoreCourse")
+          .value
+          .trim();
+
+      const score =
+        Number(
+          document
+            .getElementById("scoreValue")
+            .value
+        );
+
+      const birdies =
+        Number(
+          document
+            .getElementById("birdies")
+            .value
+        ) || 0;
+
+      const near =
+        Number(
+          document
+            .getElementById("near")
+            .value
+        );
+
+      const longest =
+        Number(
+          document
+            .getElementById("longest")
+            .value
+        );
 
 
-  teams.forEach((team,index)=>{
+      if (
+        !member ||
+        !date ||
+        !course ||
+        !score
+      ) {
 
-    result.innerHTML += `
+        alert(
+          "멤버, 날짜, 골프장, 타수를 확인해줘!"
+        );
 
-      <div class="team">
-
-        <h3>
-          ${index + 1}조
-        </h3>
-
-        ${team.join(" · ")}
-
-      </div>
-
-    `;
-
-  });
-
-}
+        return;
+      }
 
 
-function addScore() {
+      try {
 
-  const member =
-    document.getElementById(
-      "scoreMember"
-    ).value;
-
-
-  const date =
-    document.getElementById(
-      "scoreDate"
-    ).value;
-
-
-  const course =
-    document.getElementById(
-      "scoreCourse"
-    ).value;
+        await addDoc(
+          collection(db, "scores"),
+          {
+            memberId: member.id,
+            memberName: member.name,
+            date,
+            course,
+            score,
+            birdies,
+            near,
+            longest,
+            createdAt: Date.now()
+          }
+        );
 
 
-  const score =
-    Number(
-      document.getElementById(
-        "scoreValue"
-      ).value
-    );
+        document
+          .getElementById("scoreCourse")
+          .value = "";
+
+        document
+          .getElementById("scoreValue")
+          .value = "";
+
+        document
+          .getElementById("birdies")
+          .value = 0;
+
+        document
+          .getElementById("near")
+          .value = "0";
+
+        document
+          .getElementById("longest")
+          .value = "0";
 
 
-  const birdies =
-    Number(
-      document.getElementById(
-        "birdies"
-      ).value
-    );
+        alert(
+          `🏌️ ${member.name} ${score}타 저장 완료!`
+        );
 
+      } catch(error) {
 
-  const near =
-    Number(
-      document.getElementById(
-        "near"
-      ).value
-    );
-
-
-  const longest =
-    Number(
-      document.getElementById(
-        "longest"
-      ).value
-    );
-
-
-  if(
-    !date ||
-    !course ||
-    !score
-  ) {
-
-    alert(
-      "날짜, 골프장, 타수를 입력해줘!"
-    );
-
-    return;
-
-  }
-
-
-  scores.push({
-    member,
-    date,
-    course,
-    score,
-    birdies,
-    near,
-    longest
-  });
-
-
-  saveData();
-
-
-  document.getElementById(
-    "scoreCourse"
-  ).value = "";
-
-
-  document.getElementById(
-    "scoreValue"
-  ).value = "";
-
-
-  document.getElementById(
-    "birdies"
-  ).value = 0;
-
-
-  renderAll();
-
-}
-
-
-function deleteScore(index) {
-
-  if(
-    !confirm(
-      "스코어 기록 삭제할까?"
-    )
-  ) return;
-
-
-  scores.splice(index,1);
-
-
-  saveData();
-  renderAll();
-
-}
+        alert("스코어 저장 실패");
+        setError(error);
+      }
+    }
+  );
 
 
 function renderScores() {
 
   const list =
-    document.getElementById(
-      "scoreList"
-    );
+    document.getElementById("scoreList");
 
 
-  if(scores.length === 0) {
+  if (
+    scores.length === 0
+  ) {
 
     list.innerHTML =
-      "아직 기록이 없습니다.";
+      "아직 스코어 기록이 없습니다.";
 
     return;
-
   }
 
 
   list.innerHTML = "";
 
 
-  [...scores]
-    .reverse()
-    .forEach(
-      (score,reverseIndex)=>{
+  scores.forEach(score => {
 
-        const realIndex =
-          scores.length -
-          1 -
-          reverseIndex;
+    const currentMember =
+      members.find(
+        member =>
+          member.id === score.memberId
+      );
+
+    const name =
+      currentMember?.name ||
+      score.memberName ||
+      "멤버";
 
 
-        list.innerHTML += `
+    const item =
+      document.createElement("div");
 
-          <div class="list-item">
 
-            <strong>
-              ${score.member}
-              ·
-              ${score.score}타
-            </strong>
+    item.className =
+      "list-item";
 
-            <div class="small">
-              ${score.date}
-              ·
-              ${score.course}
-            </div>
 
-            <div class="small">
+    item.innerHTML = `
 
-              🐦 버디
-              ${score.birdies}
+      <strong>
+        ${escapeHtml(name)}
+        ·
+        ${Number(score.score)}타
+      </strong>
 
-              &nbsp;
+      <div class="small">
+        ${escapeHtml(score.date || "")}
+        ·
+        ${escapeHtml(score.course || "")}
+      </div>
 
-              ${
-                score.near
-                ? "🎯 니어"
-                : ""
-              }
+      <div class="small">
 
-              &nbsp;
+        🐦 버디
+        ${Number(score.birdies || 0)}
 
-              ${
-                score.longest
-                ? "💣 롱기"
-                : ""
-              }
+        ${score.near ? " &nbsp;🎯 니어" : ""}
 
-            </div>
+        ${score.longest ? " &nbsp;💣 롱기" : ""}
 
-            <button
-              class="delete-btn"
-              onclick="deleteScore(${realIndex})"
-            >
-              삭제
-            </button>
+      </div>
 
-          </div>
+      <button
+        class="delete-btn"
+        data-delete-score="${score.id}"
+      >
+        삭제
+      </button>
+    `;
 
-        `;
 
-      }
-    );
+    list.appendChild(item);
+  });
 
+
+  document
+    .querySelectorAll(
+      "[data-delete-score]"
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        async () => {
+
+          if (
+            !confirm(
+              "스코어 기록 삭제할까?"
+            )
+          ) return;
+
+
+          try {
+
+            await deleteDoc(
+              doc(
+                db,
+                "scores",
+                button.dataset.deleteScore
+              )
+            );
+
+          } catch(error) {
+
+            alert("삭제 실패");
+            setError(error);
+          }
+        }
+      );
+    });
 }
 
+
+/* ================================
+   시즌 랭킹
+================================ */
 
 function renderRanking() {
 
   const ranking =
-    document.getElementById(
-      "ranking"
-    );
+    document.getElementById("ranking");
 
 
   const data = [];
 
 
-  members.forEach(member=>{
+  members.forEach(member => {
 
     const memberScores =
-      scores
-        .filter(
-          score =>
-            score.member === member
-        )
-        .map(
-          score => score.score
-        );
+      scores.filter(
+        score =>
+          score.memberId ===
+          member.id
+      );
 
 
-    if(
-      memberScores.length > 0
-    ) {
-
-      const avg =
-        memberScores.reduce(
-          (a,b)=>a+b,
-          0
-        )
-        /
-        memberScores.length;
+    if (
+      memberScores.length === 0
+    ) return;
 
 
-      const best =
-        Math.min(
-          ...memberScores
-        );
+    const scoreValues =
+      memberScores.map(
+        item =>
+          Number(item.score)
+      );
 
 
-      data.push({
-        member,
-        avg,
-        best
-      });
+    const total =
+      scoreValues.reduce(
+        (a,b) => a + b,
+        0
+      );
 
-    }
 
+    const avg =
+      total /
+      scoreValues.length;
+
+
+    const best =
+      Math.min(
+        ...scoreValues
+      );
+
+
+    const totalBirdies =
+      memberScores.reduce(
+        (total,item) =>
+          total +
+          Number(item.birdies || 0),
+        0
+      );
+
+
+    data.push({
+      name: member.name,
+      games: scoreValues.length,
+      avg,
+      best,
+      birdies: totalBirdies
+    });
   });
 
 
   data.sort(
-    (a,b)=>a.avg - b.avg
+    (a,b) => {
+
+      if (
+        a.avg !== b.avg
+      ) return a.avg - b.avg;
+
+      return a.best - b.best;
+    }
   );
 
 
-  if(
+  if (
     data.length === 0
   ) {
 
@@ -1183,7 +1560,6 @@ function renderRanking() {
       "스코어가 입력되면 랭킹이 표시됩니다.";
 
     return;
-
   }
 
 
@@ -1191,161 +1567,192 @@ function renderRanking() {
 
 
   data.forEach(
-    (item,index)=>{
+    (item,index) => {
 
-      ranking.innerHTML += `
+      const div =
+        document.createElement("div");
 
-        <div class="rank-item">
 
-          <div>
+      div.className =
+        "rank-item" +
+        (
+          index === 0
+            ? " rank-first"
+            : ""
+        );
 
-            <span class="rank-num">
-              ${index + 1}위
-            </span>
 
-            ${item.member}
+      let medal = "";
 
-          </div>
+      if (index === 0)
+        medal = "🥇";
 
-          <div>
+      if (index === 1)
+        medal = "🥈";
 
-            평균
-            ${item.avg.toFixed(1)}
+      if (index === 2)
+        medal = "🥉";
 
-            <div class="small">
 
-              라베
-              ${item.best}
+      div.innerHTML = `
 
-            </div>
+        <div>
 
+          <span class="rank-num">
+            ${medal}
+            ${index + 1}위
+          </span>
+
+          ${escapeHtml(item.name)}
+
+          <div class="small">
+            ${item.games}회 라운드
+            ·
+            🐦 ${item.birdies}
           </div>
 
         </div>
 
+        <div style="text-align:right;">
+
+          <strong>
+            평균
+            ${item.avg.toFixed(1)}
+          </strong>
+
+          <div class="small">
+            라베 ${item.best}
+          </div>
+
+        </div>
       `;
 
+
+      ranking.appendChild(div);
     }
   );
-
 }
 
 
-function addMoney() {
+/* ================================
+   회비
+================================ */
 
-  const member =
-    document.getElementById(
-      "moneyMember"
-    ).value;
+document
+  .getElementById("addMoneyBtn")
+  .addEventListener(
+    "click",
+    async () => {
 
+      const memberId =
+        document
+          .getElementById("moneyMember")
+          .value;
 
-  const type =
-    document.getElementById(
-      "moneyType"
-    ).value;
-
-
-  const amount =
-    Number(
-      document.getElementById(
-        "moneyAmount"
-      ).value
-    );
-
-
-  const memo =
-    document.getElementById(
-      "moneyMemo"
-    ).value;
+      const member =
+        members.find(
+          item =>
+            item.id === memberId
+        );
 
 
-  if(!amount) {
+      const type =
+        document
+          .getElementById("moneyType")
+          .value;
 
-    alert(
-      "금액을 입력해줘!"
-    );
+      const amount =
+        Number(
+          document
+            .getElementById("moneyAmount")
+            .value
+        );
 
-    return;
-
-  }
-
-
-  money.push({
-    member,
-    type,
-    amount,
-    memo,
-    date:
-      new Date()
-        .toLocaleDateString()
-  });
+      const memo =
+        document
+          .getElementById("moneyMemo")
+          .value
+          .trim();
 
 
-  saveData();
+      if (
+        !member ||
+        !amount ||
+        amount <= 0
+      ) {
+
+        alert(
+          "멤버와 금액을 확인해줘!"
+        );
+
+        return;
+      }
 
 
-  document.getElementById(
-    "moneyAmount"
-  ).value = "";
+      try {
+
+        await addDoc(
+          collection(db, "money"),
+          {
+            memberId: member.id,
+            memberName: member.name,
+            type,
+            amount,
+            memo,
+            date:
+              new Date()
+                .toLocaleDateString("ko-KR"),
+            createdAt: Date.now()
+          }
+        );
 
 
-  document.getElementById(
-    "moneyMemo"
-  ).value = "";
+        document
+          .getElementById("moneyAmount")
+          .value = "";
+
+        document
+          .getElementById("moneyMemo")
+          .value = "";
 
 
-  renderAll();
+        alert(
+          "💰 정산 저장 완료!"
+        );
 
-}
+      } catch(error) {
 
-
-function deleteMoney(index) {
-
-  if(
-    !confirm(
-      "정산 내역 삭제할까?"
-    )
-  ) return;
-
-
-  money.splice(index,1);
-
-
-  saveData();
-  renderAll();
-
-}
+        alert("정산 저장 실패");
+        setError(error);
+      }
+    }
+  );
 
 
 function renderMoney() {
 
   const list =
-    document.getElementById(
-      "moneyList"
-    );
-
+    document.getElementById("moneyList");
 
   const summary =
-    document.getElementById(
-      "moneySummary"
-    );
+    document.getElementById("moneySummary");
 
 
   const total =
     money.reduce(
-      (sum,item)=>
+      (sum,item) =>
         sum +
-        item.amount,
+        Number(item.amount || 0),
       0
     );
 
 
-  summary.innerText =
-    total.toLocaleString()
+  summary.textContent =
+    total.toLocaleString("ko-KR")
     + "원";
 
 
-  if(
+  if (
     money.length === 0
   ) {
 
@@ -1353,64 +1760,115 @@ function renderMoney() {
       "아직 정산 내역이 없습니다.";
 
     return;
-
   }
 
 
   list.innerHTML = "";
 
 
-  [...money]
-    .reverse()
-    .forEach(
-      (item,reverseIndex)=>{
+  money.forEach(item => {
 
-        const realIndex =
-          money.length -
-          1 -
-          reverseIndex;
+    const currentMember =
+      members.find(
+        member =>
+          member.id === item.memberId
+      );
 
 
-        list.innerHTML += `
+    const name =
+      currentMember?.name ||
+      item.memberName ||
+      "멤버";
 
-          <div class="list-item">
 
-            <strong>
-              ${item.member}
-            </strong>
+    const div =
+      document.createElement("div");
 
-            <span class="badge">
-              ${item.type}
-            </span>
 
-            <div class="money-plus">
+    div.className =
+      "list-item";
 
-              +
-              ${item.amount.toLocaleString()}
-              원
 
-            </div>
+    div.innerHTML = `
 
-            <div class="small">
-              ${item.memo || ""}
-            </div>
+      <strong>
+        ${escapeHtml(name)}
+      </strong>
 
-            <button
-              class="delete-btn"
-              onclick="deleteMoney(${realIndex})"
-            >
-              삭제
-            </button>
+      <span class="badge">
+        ${escapeHtml(item.type)}
+      </span>
 
-          </div>
+      <div class="money-plus">
+        +
+        ${Number(item.amount)
+          .toLocaleString("ko-KR")}
+        원
+      </div>
 
-        `;
+      <div class="small">
+        ${escapeHtml(item.date || "")}
+        ${item.memo
+          ? " · " +
+            escapeHtml(item.memo)
+          : ""
+        }
+      </div>
 
-      }
-    );
+      <button
+        class="delete-btn"
+        data-delete-money="${item.id}"
+      >
+        삭제
+      </button>
+    `;
 
+
+    list.appendChild(div);
+  });
+
+
+  document
+    .querySelectorAll(
+      "[data-delete-money]"
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        async () => {
+
+          if (
+            !confirm(
+              "정산 내역 삭제할까?"
+            )
+          ) return;
+
+
+          try {
+
+            await deleteDoc(
+              doc(
+                db,
+                "money",
+                button.dataset.deleteMoney
+              )
+            );
+
+          } catch(error) {
+
+            alert("삭제 실패");
+            setError(error);
+          }
+        }
+      );
+    });
 }
 
+
+/* ================================
+   다음 라운딩
+================================ */
 
 function renderNextRound() {
 
@@ -1423,7 +1881,6 @@ function renderNextRound() {
   const today =
     new Date();
 
-
   today.setHours(
     0,0,0,0
   );
@@ -1431,21 +1888,24 @@ function renderNextRound() {
 
   const upcoming =
     rounds
-      .filter(
-        round =>
+      .filter(round => {
+
+        const date =
           new Date(
-            round.date
-          ) >= today
-      )
+            round.date +
+            "T00:00:00"
+          );
+
+        return date >= today;
+      })
       .sort(
-        (a,b)=>
-          new Date(a.date)
-          -
+        (a,b) =>
+          new Date(a.date) -
           new Date(b.date)
       );
 
 
-  if(
+  if (
     upcoming.length === 0
   ) {
 
@@ -1453,7 +1913,6 @@ function renderNextRound() {
       "예정된 라운딩이 없습니다.";
 
     return;
-
   }
 
 
@@ -1463,73 +1922,120 @@ function renderNextRound() {
 
   box.innerHTML = `
 
-    <strong style="font-size:18px">
-
-      ⛳ ${round.course}
-
+    <strong style="font-size:18px;">
+      ⛳ ${escapeHtml(round.course)}
     </strong>
 
     <div class="small">
-
-      ${round.date}
-
-      ${round.time || ""}
-
+      ${escapeHtml(round.date || "")}
+      ${escapeHtml(round.time || "")}
     </div>
 
-    <div style="margin-top:8px">
-
-      ${round.memo || ""}
-
+    <div style="margin-top:8px;">
+      ${escapeHtml(round.memo || "")}
     </div>
-
   `;
-
 }
 
+
+/* ================================
+   통계
+================================ */
 
 function renderStats() {
 
-  document.getElementById(
-    "memberCount"
-  ).innerText =
+  document
+    .getElementById("memberCount")
+    .textContent =
     members.length;
 
 
-  document.getElementById(
-    "roundCount"
-  ).innerText =
+  document
+    .getElementById("roundCount")
+    .textContent =
     rounds.length;
 
 
-  document.getElementById(
-    "scoreCount"
-  ).innerText =
+  document
+    .getElementById("scoreCount")
+    .textContent =
     scores.length;
-
 }
 
+
+/* ================================
+   보안용 HTML 문자 처리
+================================ */
+
+function escapeHtml(value) {
+
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+/* ================================
+   전체 화면 갱신
+================================ */
 
 function renderAll() {
 
   renderMembers();
-
   renderRounds();
-
   renderScores();
-
   renderRanking();
-
   renderMoney();
-
   renderNextRound();
-
   renderStats();
-
 }
 
 
-renderAll();
+/* ================================
+   오늘 날짜 기본 입력
+================================ */
+
+const todayString =
+  new Date()
+    .toISOString()
+    .split("T")[0];
+
+
+document
+  .getElementById("roundDate")
+  .value =
+  todayString;
+
+
+document
+  .getElementById("scoreDate")
+  .value =
+  todayString;
+
+
+/* ================================
+   앱 시작
+================================ */
+
+async function startApp() {
+
+  try {
+
+    await seedMembers();
+
+    startRealtimeListeners();
+
+  } catch(error) {
+
+    setError(error);
+  }
+}
+
+
+startApp();
 
 </script>
 
